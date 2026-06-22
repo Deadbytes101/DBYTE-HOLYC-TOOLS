@@ -16,6 +16,7 @@ holytools symbols <path> [--json]
 holytools find-symbol <path> <name> [--json]
 holytools includes <path> [--json]
 holytools include-graph <path> [--json]
+holytools resolve-includes <path> [--json]
 ```
 
 ## Rules
