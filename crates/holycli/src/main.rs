@@ -110,8 +110,12 @@ fn run() -> Result<(), String> {
             }
 
             matches.sort_by(|a, b| {
-                (display(&a.0), a.1.line, a.1.column, &a.1.name)
-                    .cmp(&(display(&b.0), b.1.line, b.1.column, &b.1.name))
+                (display(&a.0), a.1.line, a.1.column, &a.1.name).cmp(&(
+                    display(&b.0),
+                    b.1.line,
+                    b.1.column,
+                    &b.1.name,
+                ))
             });
 
             if json {
@@ -201,8 +205,12 @@ fn run() -> Result<(), String> {
             }
 
             edges.sort_by(|a, b| {
-                (display(&a.0), a.1.line, a.1.column, &a.1.target)
-                    .cmp(&(display(&b.0), b.1.line, b.1.column, &b.1.target))
+                (display(&a.0), a.1.line, a.1.column, &a.1.target).cmp(&(
+                    display(&b.0),
+                    b.1.line,
+                    b.1.column,
+                    &b.1.target,
+                ))
             });
 
             if json {

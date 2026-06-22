@@ -16,14 +16,24 @@ impl ScanReport {
     pub fn function_count(&self) -> usize {
         self.files
             .iter()
-            .map(|file| file.symbols.iter().filter(|symbol| symbol.kind == SymbolKind::Function).count())
+            .map(|file| {
+                file.symbols
+                    .iter()
+                    .filter(|symbol| symbol.kind == SymbolKind::Function)
+                    .count()
+            })
             .sum()
     }
 
     pub fn class_count(&self) -> usize {
         self.files
             .iter()
-            .map(|file| file.symbols.iter().filter(|symbol| symbol.kind == SymbolKind::Class).count())
+            .map(|file| {
+                file.symbols
+                    .iter()
+                    .filter(|symbol| symbol.kind == SymbolKind::Class)
+                    .count()
+            })
             .sum()
     }
 
@@ -149,7 +159,10 @@ fn collect_symbols(tokens: &[&Token]) -> Vec<Symbol> {
         let token = tokens[index];
 
         if token.kind == TokenKind::Keyword && token.lexeme == "class" {
-            if let Some(name) = tokens.get(index + 1).filter(|token| token.kind == TokenKind::Ident) {
+            if let Some(name) = tokens
+                .get(index + 1)
+                .filter(|token| token.kind == TokenKind::Ident)
+            {
                 symbols.push(Symbol {
                     kind: SymbolKind::Class,
                     name: name.lexeme.clone(),
@@ -161,7 +174,10 @@ fn collect_symbols(tokens: &[&Token]) -> Vec<Symbol> {
 
         if is_type_like(token) {
             if let (Some(name), Some(open)) = (tokens.get(index + 1), tokens.get(index + 2)) {
-                if name.kind == TokenKind::Ident && open.lexeme == "(" && !is_control_keyword(&token.lexeme) {
+                if name.kind == TokenKind::Ident
+                    && open.lexeme == "("
+                    && !is_control_keyword(&token.lexeme)
+                {
                     symbols.push(Symbol {
                         kind: SymbolKind::Function,
                         name: name.lexeme.clone(),
@@ -176,7 +192,9 @@ fn collect_symbols(tokens: &[&Token]) -> Vec<Symbol> {
     }
 
     symbols.sort_by(|a, b| (a.line, a.column, &a.name).cmp(&(b.line, b.column, &b.name)));
-    symbols.dedup_by(|a, b| a.kind == b.kind && a.name == b.name && a.line == b.line && a.column == b.column);
+    symbols.dedup_by(|a, b| {
+        a.kind == b.kind && a.name == b.name && a.line == b.line && a.column == b.column
+    });
     symbols
 }
 
@@ -213,7 +231,10 @@ fn is_type_like(token: &Token) -> bool {
 }
 
 fn is_control_keyword(text: &str) -> bool {
-    matches!(text, "if" | "for" | "while" | "switch" | "return" | "sizeof")
+    matches!(
+        text,
+        "if" | "for" | "while" | "switch" | "return" | "sizeof"
+    )
 }
 
 #[cfg(test)]
@@ -236,9 +257,16 @@ mod tests {
         let visible = visible_tokens(&tokens);
         let symbols = collect_symbols(&visible);
 
-        assert!(symbols.iter().any(|symbol| symbol.kind == SymbolKind::Class && symbol.name == "CPoint"));
-        assert!(symbols.iter().any(|symbol| symbol.kind == SymbolKind::Function && symbol.name == "Add"));
-        assert_eq!(path.extension().and_then(|value| value.to_str()), Some("HC"));
+        assert!(symbols
+            .iter()
+            .any(|symbol| symbol.kind == SymbolKind::Class && symbol.name == "CPoint"));
+        assert!(symbols
+            .iter()
+            .any(|symbol| symbol.kind == SymbolKind::Function && symbol.name == "Add"));
+        assert_eq!(
+            path.extension().and_then(|value| value.to_str()),
+            Some("HC")
+        );
     }
 
     #[test]

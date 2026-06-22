@@ -41,7 +41,12 @@ pub struct Token {
 
 impl Token {
     fn new(kind: TokenKind, lexeme: String, line: usize, column: usize) -> Self {
-        Self { kind, lexeme, line, column }
+        Self {
+            kind,
+            lexeme,
+            line,
+            column,
+        }
     }
 
     pub fn is_trivia(&self) -> bool {
@@ -51,8 +56,19 @@ impl Token {
 
 impl fmt::Display for Token {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        let lexeme = self.lexeme.replace('\r', "\\r").replace('\n', "\\n").replace('\t', "\\t");
-        write!(f, "{}:{}\t{}\t{}", self.line, self.column, self.kind.as_str(), lexeme)
+        let lexeme = self
+            .lexeme
+            .replace('\r', "\\r")
+            .replace('\n', "\\n")
+            .replace('\t', "\\t");
+        write!(
+            f,
+            "{}:{}\t{}\t{}",
+            self.line,
+            self.column,
+            self.kind.as_str(),
+            lexeme
+        )
     }
 }
 
@@ -64,11 +80,39 @@ pub fn lex(source: &str) -> Vec<Token> {
 pub fn is_keyword(text: &str) -> bool {
     matches!(
         text,
-        "asm" | "break" | "case" | "catch" | "class" | "const" | "default" | "do"
-            | "else" | "extern" | "for" | "goto" | "if" | "public" | "return"
-            | "sizeof" | "start" | "switch" | "throw" | "try" | "while" | "Bool"
-            | "F64" | "I0" | "I8" | "I16" | "I32" | "I64" | "U0" | "U8" | "U16"
-            | "U32" | "U64"
+        "asm"
+            | "break"
+            | "case"
+            | "catch"
+            | "class"
+            | "const"
+            | "default"
+            | "do"
+            | "else"
+            | "extern"
+            | "for"
+            | "goto"
+            | "if"
+            | "public"
+            | "return"
+            | "sizeof"
+            | "start"
+            | "switch"
+            | "throw"
+            | "try"
+            | "while"
+            | "Bool"
+            | "F64"
+            | "I0"
+            | "I8"
+            | "I16"
+            | "I32"
+            | "I64"
+            | "U0"
+            | "U8"
+            | "U16"
+            | "U32"
+            | "U64"
     )
 }
 
@@ -81,7 +125,12 @@ struct Lexer {
 
 impl Lexer {
     fn new(source: &str) -> Self {
-        Self { chars: source.chars().collect(), index: 0, line: 1, column: 1 }
+        Self {
+            chars: source.chars().collect(),
+            index: 0,
+            line: 1,
+            column: 1,
+        }
     }
 
     fn lex_all(&mut self) -> Vec<Token> {
@@ -113,8 +162,12 @@ impl Lexer {
         tokens
     }
 
-    fn peek(&self) -> Option<char> { self.chars.get(self.index).copied() }
-    fn peek_next(&self) -> Option<char> { self.chars.get(self.index + 1).copied() }
+    fn peek(&self) -> Option<char> {
+        self.chars.get(self.index).copied()
+    }
+    fn peek_next(&self) -> Option<char> {
+        self.chars.get(self.index + 1).copied()
+    }
 
     fn bump(&mut self) -> Option<char> {
         let ch = self.chars.get(self.index).copied()?;
@@ -150,7 +203,9 @@ impl Lexer {
         let column = self.column;
         let mut text = String::new();
         while let Some(ch) = self.peek() {
-            if !ch.is_whitespace() || ch == '\r' || ch == '\n' { break; }
+            if !ch.is_whitespace() || ch == '\r' || ch == '\n' {
+                break;
+            }
             text.push(self.bump().expect("whitespace char"));
         }
         Token::new(TokenKind::Whitespace, text, line, column)
@@ -161,7 +216,9 @@ impl Lexer {
         let column = self.column;
         let mut text = String::new();
         while let Some(ch) = self.peek() {
-            if ch == '\r' || ch == '\n' { break; }
+            if ch == '\r' || ch == '\n' {
+                break;
+            }
             text.push(self.bump().expect("comment char"));
         }
         Token::new(TokenKind::Comment, text, line, column)
@@ -199,7 +256,9 @@ impl Lexer {
                 escaped = true;
                 continue;
             }
-            if ch == quote { break; }
+            if ch == quote {
+                break;
+            }
         }
         Token::new(kind, text, line, column)
     }
@@ -209,10 +268,16 @@ impl Lexer {
         let column = self.column;
         let mut text = String::new();
         while let Some(ch) = self.peek() {
-            if !is_ident_continue(ch) { break; }
+            if !is_ident_continue(ch) {
+                break;
+            }
             text.push(self.bump().expect("ident char"));
         }
-        let kind = if is_keyword(&text) { TokenKind::Keyword } else { TokenKind::Ident };
+        let kind = if is_keyword(&text) {
+            TokenKind::Keyword
+        } else {
+            TokenKind::Ident
+        };
         Token::new(kind, text, line, column)
     }
 
@@ -221,7 +286,9 @@ impl Lexer {
         let column = self.column;
         let mut text = String::new();
         while let Some(ch) = self.peek() {
-            if !(ch.is_ascii_alphanumeric() || ch == '_' || ch == '.') { break; }
+            if !(ch.is_ascii_alphanumeric() || ch == '_' || ch == '.') {
+                break;
+            }
             text.push(self.bump().expect("number char"));
         }
         Token::new(TokenKind::Number, text, line, column)
@@ -242,15 +309,65 @@ impl Lexer {
     }
 }
 
-fn is_ident_start(ch: char) -> bool { ch == '_' || ch.is_ascii_alphabetic() }
-fn is_ident_continue(ch: char) -> bool { ch == '_' || ch.is_ascii_alphanumeric() }
+fn is_ident_start(ch: char) -> bool {
+    ch == '_' || ch.is_ascii_alphabetic()
+}
+fn is_ident_continue(ch: char) -> bool {
+    ch == '_' || ch.is_ascii_alphanumeric()
+}
 
 fn is_symbol_start(ch: char) -> bool {
-    matches!(ch, '#' | '(' | ')' | '{' | '}' | '[' | ']' | ';' | ',' | '.' | ':' | '?' | '~' | '+' | '-' | '*' | '/' | '%' | '=' | '!' | '<' | '>' | '&' | '|' | '^' | '@' | '$')
+    matches!(
+        ch,
+        '#' | '('
+            | ')'
+            | '{'
+            | '}'
+            | '['
+            | ']'
+            | ';'
+            | ','
+            | '.'
+            | ':'
+            | '?'
+            | '~'
+            | '+'
+            | '-'
+            | '*'
+            | '/'
+            | '%'
+            | '='
+            | '!'
+            | '<'
+            | '>'
+            | '&'
+            | '|'
+            | '^'
+            | '@'
+            | '$'
+    )
 }
 
 fn is_two_char_symbol(text: &str) -> bool {
-    matches!(text, "==" | "!=" | "<=" | ">=" | "&&" | "||" | "++" | "--" | "+=" | "-=" | "*=" | "/=" | "%=" | "<<" | ">>" | "->" | "::")
+    matches!(
+        text,
+        "==" | "!="
+            | "<="
+            | ">="
+            | "&&"
+            | "||"
+            | "++"
+            | "--"
+            | "+="
+            | "-="
+            | "*="
+            | "/="
+            | "%="
+            | "<<"
+            | ">>"
+            | "->"
+            | "::"
+    )
 }
 
 #[cfg(test)]
@@ -258,19 +375,32 @@ mod tests {
     use super::*;
 
     fn visible_lexemes(source: &str) -> Vec<String> {
-        lex(source).into_iter().filter(|token| !token.is_trivia()).map(|token| token.lexeme).collect()
+        lex(source)
+            .into_iter()
+            .filter(|token| !token.is_trivia())
+            .map(|token| token.lexeme)
+            .collect()
     }
 
     #[test]
     fn tokenizes_basic_holyc_function() {
         let lexemes = visible_lexemes("I64 Add(I64 a, I64 b) { return a + b; }");
-        assert_eq!(lexemes, vec!["I64", "Add", "(", "I64", "a", ",", "I64", "b", ")", "{", "return", "a", "+", "b", ";", "}"]);
+        assert_eq!(
+            lexemes,
+            vec![
+                "I64", "Add", "(", "I64", "a", ",", "I64", "b", ")", "{", "return", "a", "+", "b",
+                ";", "}"
+            ]
+        );
     }
 
     #[test]
     fn skips_utf8_bom() {
         let tokens = lex("\u{feff}I64 Add");
-        let visible: Vec<_> = tokens.into_iter().filter(|token| !token.is_trivia()).collect();
+        let visible: Vec<_> = tokens
+            .into_iter()
+            .filter(|token| !token.is_trivia())
+            .collect();
         assert_eq!(visible[0].lexeme, "I64");
         assert_eq!(visible[0].line, 1);
         assert_eq!(visible[0].column, 1);
