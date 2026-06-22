@@ -17,6 +17,7 @@ fn main() -> ExitCode {
 fn run() -> Result<(), String> {
     let args: Vec<String> = env::args().collect();
     let command = args.get(1).map(String::as_str).unwrap_or("help");
+
     match command {
         "version" => {
             println!("holytools {}", env!("CARGO_PKG_VERSION"));
@@ -34,9 +35,11 @@ fn run() -> Result<(), String> {
         "tokens" => {
             let path = args.get(2).ok_or("usage: holytools tokens <file>")?;
             let source = fs::read_to_string(path).map_err(|err| err.to_string())?;
-            for token in lex(&source) {
+
+            for token in lex(&source).into_iter().filter(|token| !token.is_trivia()) {
                 println!("{token}");
             }
+
             println!("status: ok");
             Ok(())
         }
@@ -53,17 +56,21 @@ fn collect(path: &Path, count: &mut usize) -> Result<(), String> {
         if is_holy(path) {
             *count += 1;
         }
+
         return Ok(());
     }
+
     for entry in fs::read_dir(path).map_err(|err| err.to_string())? {
         let entry = entry.map_err(|err| err.to_string())?;
         let path = entry.path();
+
         if path.is_dir() {
             collect(&path, count)?;
         } else if is_holy(&path) {
             *count += 1;
         }
     }
+
     Ok(())
 }
 
