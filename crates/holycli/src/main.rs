@@ -241,22 +241,7 @@ fn run() -> Result<(), String> {
             let path = required_path(&args, "resolve-includes")?;
             let root = Path::new(path);
             let report = scan_path(root)?;
-            let mut rows = Vec::new();
-
-            for file in report.files {
-                for include in file.includes {
-                    let resolved = resolve_include(root, &file.path, &include.target);
-                    rows.push(ResolvedInclude {
-                        file: file.path.clone(),
-                        line: include.line,
-                        column: include.column,
-                        target: include.target,
-                        resolved,
-                    });
-                }
-            }
-
-            rows.sort();
+            let rows = resolved_includes(root, &report.files);
             let resolved_count = rows.iter().filter(|row| row.resolved.is_some()).count();
             let missing_count = rows.len() - resolved_count;
 
@@ -317,6 +302,35 @@ fn run() -> Result<(), String> {
 
             Ok(())
         }
+        "dependency-order" => {
+            let path = required_path(&args, "dependency-order")?;
+            let root = Path::new(path);
+            let report = scan_path(root)?;
+            let order = dependency_order(root, &report.files);
+
+            if json {
+                print!("{{\"order\":[");
+                for (index, file) in order.iter().enumerate() {
+                    if index > 0 {
+                        print!(",");
+                    }
+                    print!(
+                        "{{\"index\":{},\"file\":\"{}\"}}",
+                        index + 1,
+                        json_escape(&display(file))
+                    );
+                }
+                println!("],\"count\":{},\"status\":\"ok\"}}", order.len());
+            } else {
+                for (index, file) in order.iter().enumerate() {
+                    println!("{}\t{}", index + 1, display(file));
+                }
+                println!("files: {}", order.len());
+                println!("status: ok");
+            }
+
+            Ok(())
+        }
         "includes" => {
             let path = required_path(&args, "includes")?;
             let report = scan_path(Path::new(path))?;
@@ -359,7 +373,7 @@ fn run() -> Result<(), String> {
         }
         _ => {
             println!("holytools");
-            println!("usage: holytools <version|scan|stats|tokens|outline|symbols|find-symbol|include-graph|resolve-includes|includes> [path] [name] [--json]");
+            println!("usage: holytools <version|scan|stats|tokens|outline|symbols|find-symbol|include-graph|resolve-includes|dependency-order|includes> [path] [name] [--json]");
             Ok(())
         }
     }
@@ -441,6 +455,76 @@ fn outline_rows(report: &FileReport) -> Vec<OutlineRow> {
 
     rows.sort();
     rows
+}
+
+fn resolved_includes(root: &Path, files: &[FileReport]) -> Vec<ResolvedInclude> {
+    let mut rows = Vec::new();
+
+    for file in files {
+        for include in &file.includes {
+            rows.push(ResolvedInclude {
+                file: file.path.clone(),
+                line: include.line,
+                column: include.column,
+                target: include.target.clone(),
+                resolved: resolve_include(root, &file.path, &include.target),
+            });
+        }
+    }
+
+    rows.sort();
+    rows
+}
+
+fn dependency_order(root: &Path, files: &[FileReport]) -> Vec<PathBuf> {
+    let mut all: Vec<PathBuf> = files.iter().map(|file| file.path.clone()).collect();
+    all.sort();
+
+    let mut ordered = Vec::new();
+    let mut visiting = Vec::new();
+    let mut visited = Vec::new();
+
+    for file in &all {
+        visit_dependency(root, files, file, &mut visiting, &mut visited, &mut ordered);
+    }
+
+    ordered
+}
+
+fn visit_dependency(
+    root: &Path,
+    files: &[FileReport],
+    file: &PathBuf,
+    visiting: &mut Vec<PathBuf>,
+    visited: &mut Vec<PathBuf>,
+    ordered: &mut Vec<PathBuf>,
+) {
+    if visited.contains(file) || visiting.contains(file) {
+        return;
+    }
+
+    visiting.push(file.clone());
+
+    if let Some(report) = files.iter().find(|item| item.path == *file) {
+        let mut deps = Vec::new();
+        for include in &report.includes {
+            if let Some(resolved) = resolve_include(root, &report.path, &include.target) {
+                if files.iter().any(|item| item.path == resolved) {
+                    deps.push(resolved);
+                }
+            }
+        }
+        deps.sort();
+        deps.dedup();
+
+        for dep in deps {
+            visit_dependency(root, files, &dep, visiting, visited, ordered);
+        }
+    }
+
+    visiting.retain(|item| item != file);
+    visited.push(file.clone());
+    ordered.push(file.clone());
 }
 
 fn resolve_include(root: &Path, source_file: &Path, target: &str) -> Option<PathBuf> {
