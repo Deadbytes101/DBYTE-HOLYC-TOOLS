@@ -266,8 +266,16 @@ fn run() -> Result<(), String> {
                     if index > 0 {
                         print!(",");
                     }
-                    let status = if row.resolved.is_some() { "resolved" } else { "missing" };
-                    let resolved = row.resolved.as_ref().map(display).unwrap_or_else(|| "".to_string());
+                    let status = if row.resolved.is_some() {
+                        "resolved"
+                    } else {
+                        "missing"
+                    };
+                    let resolved = row
+                        .resolved
+                        .as_ref()
+                        .map(|path| display(path))
+                        .unwrap_or_else(|| "".to_string());
                     print!(
                         "{{\"file\":\"{}\",\"line\":{},\"column\":{},\"target\":\"{}\",\"status\":\"{}\",\"resolved\":\"{}\"}}",
                         json_escape(&display(&row.file)),
@@ -437,7 +445,11 @@ fn outline_rows(report: &FileReport) -> Vec<OutlineRow> {
 
 fn resolve_include(root: &Path, source_file: &Path, target: &str) -> Option<PathBuf> {
     let target_path = Path::new(target);
-    let root_dir = if root.is_file() { root.parent().unwrap_or(root) } else { root };
+    let root_dir = if root.is_file() {
+        root.parent().unwrap_or(root)
+    } else {
+        root
+    };
     let mut candidates = Vec::new();
 
     if target_path.is_absolute() {
