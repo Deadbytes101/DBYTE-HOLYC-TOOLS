@@ -1,5 +1,13 @@
 # Changelog
 
+## v0.2.8
+
+Package manifest verification release.
+
+- Packaged Windows artifacts now include `MANIFEST.txt`.
+- `scripts/verify-package.ps1` verifies required manifest entries.
+- No `holytools` command behavior changes.
+
 ## v0.2.7
 
 Package manifest release.
