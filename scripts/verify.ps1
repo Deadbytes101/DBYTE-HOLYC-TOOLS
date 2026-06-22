@@ -1,4 +1,5 @@
 $ErrorActionPreference = "Stop"
+$PSNativeCommandUseErrorActionPreference = $true
 
 cargo fmt --check
 cargo check --workspace
@@ -13,5 +14,6 @@ cargo run -q -p holytools -- find-symbol tests/fixtures/tiny Add
 cargo run -q -p holytools -- includes tests/fixtures/tiny
 cargo run -q -p holytools -- include-graph tests/fixtures/tiny
 cargo run -q -p holytools -- resolve-includes tests/fixtures/tiny
+cargo run -q -p holytools -- resolve-includes tests/fixtures/tiny --json
 
 Write-Host "verify: ok"
