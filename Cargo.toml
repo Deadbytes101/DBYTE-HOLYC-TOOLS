@@ -1,0 +1,13 @@
+[workspace]
+members = [
+    "crates/holylex",
+    "crates/holyindex",
+    "crates/holycli",
+]
+resolver = "2"
+
+[workspace.package]
+edition = "2021"
+license = "Unlicense OR MIT"
+repository = "https://github.com/Deadbytes101/DBYTE-HOLYC-TOOLS"
+version = "0.1.0"
