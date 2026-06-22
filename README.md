@@ -46,6 +46,7 @@ holytools reverse-includes <path> [--json]
 ./scripts/check-includes.ps1 tests/fixtures/tiny
 ./scripts/package-windows.ps1
 ./scripts/verify-package.ps1
+./scripts/release.ps1 v1.0.0
 ```
 
 ## Package
@@ -66,6 +67,16 @@ VERSION.txt
 SHA256SUMS.txt
 MANIFEST.txt
 ```
+
+## Release
+
+Run the full release gate and push a tag with one command:
+
+```powershell
+./scripts/release.ps1 v1.0.0
+```
+
+The release script verifies formatting, builds, tests, source reports, package output, package manifest, package version text, SHA256 checksum, clean working tree, and remote tag state before pushing a tag.
 
 ## Example workflow
 
