@@ -1,5 +1,13 @@
 # Changelog
 
+## v0.3.0
+
+CLI smoke test milestone.
+
+- Added integration smoke tests for the `holytools` binary.
+- The smoke tests cover `version`, `stats`, `resolve-includes --json`, and `dependency-order`.
+- No `holytools` command behavior changes.
+
 ## v0.2.9
 
 Package version verification release.
