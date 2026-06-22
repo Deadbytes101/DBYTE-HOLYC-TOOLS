@@ -6,12 +6,13 @@ This project does not fork TempleOS and does not rewrite source files. It reads 
 
 ## Status
 
-`v1.0.0` is the FINAL stable release for the current read-only source navigator line.
+`v1.1.0` is the current source-map release for the read-only source navigator line.
 
 It provides:
 
 - tokenizer output for a single HolyC file
 - tree stats for HolyC source roots
+- source-map summary output for source tree overview
 - symbol listing and exact symbol lookup
 - file outline for includes, classes, and functions
 - include listing and include graph output
@@ -28,6 +29,7 @@ It provides:
 holytools version
 holytools scan <path> [--json]
 holytools stats <path> [--json]
+holytools source-map <path> [--json]
 holytools tokens <file>
 holytools outline <file> [--json]
 holytools symbols <path> [--json]
@@ -46,7 +48,7 @@ holytools reverse-includes <path> [--json]
 ./scripts/check-includes.ps1 tests/fixtures/tiny
 ./scripts/package-windows.ps1
 ./scripts/verify-package.ps1
-./scripts/release.ps1 v1.0.0
+./scripts/release.ps1 v1.1.0
 ```
 
 ## Package
@@ -73,7 +75,7 @@ MANIFEST.txt
 Run the full release gate and push a tag with one command:
 
 ```powershell
-./scripts/release.ps1 v1.0.0
+./scripts/release.ps1 v1.1.0
 ```
 
 The release script verifies formatting, builds, tests, source reports, package output, package manifest, package version text, SHA256 checksum, clean working tree, and remote tag state before pushing a tag.
@@ -81,6 +83,7 @@ The release script verifies formatting, builds, tests, source reports, package o
 ## Example workflow
 
 ```powershell
+holytools source-map tests/fixtures/tiny
 holytools stats tests/fixtures/tiny
 holytools outline tests/fixtures/tiny/hello.HC
 holytools find-symbol tests/fixtures/tiny Add
