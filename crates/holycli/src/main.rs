@@ -95,6 +95,61 @@ fn run() -> Result<(), String> {
 
             Ok(())
         }
+        "find-symbol" => {
+            let path = required_path(&args, "find-symbol")?;
+            let name = required_second_arg(&args, "find-symbol")?;
+            let report = scan_path(Path::new(path))?;
+            let mut matches = Vec::new();
+
+            for file in report.files {
+                for symbol in file.symbols {
+                    if symbol.name == name {
+                        matches.push((file.path.clone(), symbol));
+                    }
+                }
+            }
+
+            matches.sort_by(|a, b| {
+                (display(&a.0), a.1.line, a.1.column, &a.1.name)
+                    .cmp(&(display(&b.0), b.1.line, b.1.column, &b.1.name))
+            });
+
+            if json {
+                print!(
+                    "{{\"query\":\"{}\",\"matches\":[",
+                    json_escape(name)
+                );
+                for (index, (path, symbol)) in matches.iter().enumerate() {
+                    if index > 0 {
+                        print!(",");
+                    }
+                    print!(
+                        "{{\"file\":\"{}\",\"line\":{},\"column\":{},\"kind\":\"{}\",\"name\":\"{}\"}}",
+                        json_escape(&display(path)),
+                        symbol.line,
+                        symbol.column,
+                        symbol.kind.as_str(),
+                        json_escape(&symbol.name)
+                    );
+                }
+                println!("],\"count\":{},\"status\":\"ok\"}}", matches.len());
+            } else {
+                for (path, symbol) in &matches {
+                    println!(
+                        "{}:{}:{}\t{}\t{}",
+                        display(path),
+                        symbol.line,
+                        symbol.column,
+                        symbol.kind.as_str(),
+                        symbol.name
+                    );
+                }
+                println!("matches: {}", matches.len());
+                println!("status: ok");
+            }
+
+            Ok(())
+        }
         "symbols" => {
             let path = required_path(&args, "symbols")?;
             let report = scan_path(Path::new(path))?;
@@ -179,7 +234,7 @@ fn run() -> Result<(), String> {
         }
         _ => {
             println!("holytools");
-            println!("usage: holytools <version|scan|stats|tokens|outline|symbols|includes> [path] [--json]");
+            println!("usage: holytools <version|scan|stats|tokens|outline|symbols|find-symbol|includes> [path] [name] [--json]");
             Ok(())
         }
     }
@@ -260,6 +315,15 @@ fn required_path<'a>(args: &'a [String], command: &str) -> Result<&'a str, Strin
         .find(|arg| !arg.starts_with('-'))
         .map(String::as_str)
         .ok_or_else(|| format!("usage: holytools {command} <path>"))
+}
+
+fn required_second_arg<'a>(args: &'a [String], command: &str) -> Result<&'a str, String> {
+    args.iter()
+        .skip(2)
+        .filter(|arg| !arg.starts_with('-'))
+        .nth(1)
+        .map(String::as_str)
+        .ok_or_else(|| format!("usage: holytools {command} <path> <name>"))
 }
 
 fn has_flag(args: &[String], flag: &str) -> bool {
