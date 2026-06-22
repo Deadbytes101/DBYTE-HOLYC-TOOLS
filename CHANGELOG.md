@@ -1,5 +1,14 @@
 # Changelog
 
+## v0.2.4
+
+Release artifact workflow.
+
+- Added a Windows release workflow for version tags.
+- The workflow builds `holytools.exe` in release mode.
+- The workflow uploads `dbyte-holyc-tools-windows` with the binary, README, and changelog.
+- No `holytools` command behavior changes.
+
 ## v0.2.3
 
 Repository verification release.
