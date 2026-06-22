@@ -1,5 +1,14 @@
 # Changelog
 
+## v1.2.0
+
+Missing-include inspection release.
+
+- Added `holytools missing-includes <path> [--json]` for focused missing include reports.
+- Added a fixture with a real missing include target.
+- Added CLI smoke tests for text and JSON missing-include output.
+- Added missing-include checks to `scripts/verify.ps1`.
+
 ## v1.1.0
 
 Source-map release.
