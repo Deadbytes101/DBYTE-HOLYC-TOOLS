@@ -22,4 +22,13 @@ $version | Set-Content -Encoding UTF8 "$OutDir/VERSION.txt"
 $hash = Get-FileHash "$OutDir/holytools.exe" -Algorithm SHA256
 "$($hash.Hash.ToLowerInvariant())  holytools.exe" | Set-Content -Encoding UTF8 "$OutDir/SHA256SUMS.txt"
 
+@(
+    "holytools.exe",
+    "README.md",
+    "CHANGELOG.md",
+    "VERSION.txt",
+    "SHA256SUMS.txt",
+    "MANIFEST.txt"
+) | Set-Content -Encoding UTF8 "$OutDir/MANIFEST.txt"
+
 Write-Host "package: $OutDir"
