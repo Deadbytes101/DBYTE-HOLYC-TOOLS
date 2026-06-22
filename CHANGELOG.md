@@ -1,5 +1,13 @@
 # Changelog
 
+## v1.0.1
+
+Release automation patch.
+
+- Added `scripts/release.ps1` for one-shot release verification and tag publishing.
+- Documented the one-shot release flow in `README.md`.
+- No `holytools` command behavior changes.
+
 ## v1.0.0 FINAL
 
 Final stable release for the current read-only HolyC source navigator line.
