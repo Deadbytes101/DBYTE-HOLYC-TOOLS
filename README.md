@@ -15,6 +15,7 @@ holytools outline <file> [--json]
 holytools symbols <path> [--json]
 holytools find-symbol <path> <name> [--json]
 holytools includes <path> [--json]
+holytools include-graph <path> [--json]
 ```
 
 ## Rules
