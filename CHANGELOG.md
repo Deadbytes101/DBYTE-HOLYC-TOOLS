@@ -1,5 +1,15 @@
 # Changelog
 
+## v0.2.5
+
+Packaging script release.
+
+- Added `scripts/package-windows.ps1` for local Windows release packaging.
+- The release workflow now uses the same packaging script.
+- Ignored local `dist/` package output.
+- Artifact output remains `dbyte-holyc-tools-windows`.
+- No `holytools` command behavior changes.
+
 ## v0.2.4
 
 Release artifact workflow.
