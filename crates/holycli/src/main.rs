@@ -72,6 +72,48 @@ fn run() -> Result<(), String> {
 
             Ok(())
         }
+        "source-map" => {
+            let path = required_path(&args, "source-map")?;
+            let root = Path::new(path);
+            let report = scan_path(root)?;
+            let rows = resolved_includes(root, &report.files);
+            let resolved_count = rows.iter().filter(|row| row.resolved.is_some()).count();
+            let missing_count = rows.len() - resolved_count;
+            let dependency_files = dependency_order(root, &report.files).len();
+            let reverse_edges = rows.len();
+
+            if json {
+                println!(
+                    "{{\"root\":\"{}\",\"holy_files\":{},\"tokens\":{},\"functions\":{},\"classes\":{},\"includes\":{},\"asm_blocks\":{},\"resolved_includes\":{},\"missing_includes\":{},\"dependency_files\":{},\"reverse_edges\":{},\"status\":\"ok\"}}",
+                    json_escape(&display(root)),
+                    report.files.len(),
+                    report.token_count(),
+                    report.function_count(),
+                    report.class_count(),
+                    report.include_count(),
+                    report.asm_count(),
+                    resolved_count,
+                    missing_count,
+                    dependency_files,
+                    reverse_edges
+                );
+            } else {
+                println!("root: {}", display(root));
+                println!("holy-files: {}", report.files.len());
+                println!("tokens: {}", report.token_count());
+                println!("functions: {}", report.function_count());
+                println!("classes: {}", report.class_count());
+                println!("includes: {}", report.include_count());
+                println!("asm-blocks: {}", report.asm_count());
+                println!("resolved-includes: {resolved_count}");
+                println!("missing-includes: {missing_count}");
+                println!("dependency-files: {dependency_files}");
+                println!("reverse-edges: {reverse_edges}");
+                println!("status: ok");
+            }
+
+            Ok(())
+        }
         "tokens" => {
             let path = required_path(&args, "tokens")?;
             let source = fs::read_to_string(path).map_err(|err| err.to_string())?;
@@ -435,7 +477,7 @@ fn run() -> Result<(), String> {
         }
         _ => {
             println!("holytools");
-            println!("usage: holytools <version|scan|stats|tokens|outline|symbols|find-symbol|include-graph|resolve-includes|dependency-order|reverse-includes|includes> [path] [name] [--json]");
+            println!("usage: holytools <version|scan|stats|source-map|tokens|outline|symbols|find-symbol|include-graph|resolve-includes|dependency-order|reverse-includes|includes> [path] [name] [--json]");
             Ok(())
         }
     }
