@@ -1,5 +1,12 @@
 # Changelog
 
+## v0.2.9
+
+Package version verification release.
+
+- `scripts/verify-package.ps1` now verifies `VERSION.txt` against `holytools.exe version` output.
+- No `holytools` command behavior changes.
+
 ## v0.2.8
 
 Package manifest verification release.
@@ -52,7 +59,7 @@ Repository verification release.
 
 - Added a Windows verification workflow for push and pull request checks.
 - The workflow runs `./scripts/verify.ps1`.
-- No `holytools` command behavior changes.
+- No command behavior changes.
 
 ## v0.2.2
 
@@ -61,7 +68,7 @@ Include-check hardening release.
 - Added `scripts/check-includes.ps1` for CI-style include validation.
 - Added the include check script to `scripts/verify.ps1`.
 - The script exits with failure when resolved include data reports missing includes.
-- No `holytools` command behavior changes.
+- No command behavior changes.
 
 ## v0.2.1
 
