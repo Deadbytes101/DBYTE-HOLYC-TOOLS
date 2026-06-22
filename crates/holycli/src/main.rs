@@ -115,10 +115,7 @@ fn run() -> Result<(), String> {
             });
 
             if json {
-                print!(
-                    "{{\"query\":\"{}\",\"matches\":[",
-                    json_escape(name)
-                );
+                print!("{{\"query\":\"{}\",\"matches\":[", json_escape(name));
                 for (index, (path, symbol)) in matches.iter().enumerate() {
                     if index > 0 {
                         print!(",");
@@ -192,6 +189,54 @@ fn run() -> Result<(), String> {
 
             Ok(())
         }
+        "include-graph" => {
+            let path = required_path(&args, "include-graph")?;
+            let report = scan_path(Path::new(path))?;
+            let mut edges = Vec::new();
+
+            for file in report.files {
+                for include in file.includes {
+                    edges.push((file.path.clone(), include));
+                }
+            }
+
+            edges.sort_by(|a, b| {
+                (display(&a.0), a.1.line, a.1.column, &a.1.target)
+                    .cmp(&(display(&b.0), b.1.line, b.1.column, &b.1.target))
+            });
+
+            if json {
+                print!("{{\"edges\":[");
+                for (index, (from, include)) in edges.iter().enumerate() {
+                    if index > 0 {
+                        print!(",");
+                    }
+                    print!(
+                        "{{\"from\":\"{}\",\"to\":\"{}\",\"line\":{},\"column\":{}}}",
+                        json_escape(&display(from)),
+                        json_escape(&include.target),
+                        include.line,
+                        include.column
+                    );
+                }
+                println!("],\"count\":{},\"status\":\"ok\"}}", edges.len());
+            } else {
+                for (from, include) in &edges {
+                    println!(
+                        "{}:{}:{}\t{} -> {}",
+                        display(from),
+                        include.line,
+                        include.column,
+                        display(from),
+                        include.target
+                    );
+                }
+                println!("edges: {}", edges.len());
+                println!("status: ok");
+            }
+
+            Ok(())
+        }
         "includes" => {
             let path = required_path(&args, "includes")?;
             let report = scan_path(Path::new(path))?;
@@ -234,7 +279,7 @@ fn run() -> Result<(), String> {
         }
         _ => {
             println!("holytools");
-            println!("usage: holytools <version|scan|stats|tokens|outline|symbols|find-symbol|includes> [path] [name] [--json]");
+            println!("usage: holytools <version|scan|stats|tokens|outline|symbols|find-symbol|include-graph|includes> [path] [name] [--json]");
             Ok(())
         }
     }
