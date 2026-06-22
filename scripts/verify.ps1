@@ -9,6 +9,8 @@ cargo run -q -p holytools -- scan tests/fixtures/tiny --json
 cargo run -q -p holytools -- stats tests/fixtures/tiny
 cargo run -q -p holytools -- stats tests/fixtures/tiny --json
 cargo run -q -p holytools -- tokens tests/fixtures/tiny/hello.HC
+cargo run -q -p holytools -- outline tests/fixtures/tiny/hello.HC
+cargo run -q -p holytools -- outline tests/fixtures/tiny/hello.HC --json
 cargo run -q -p holytools -- symbols tests/fixtures/tiny
 cargo run -q -p holytools -- symbols tests/fixtures/tiny --json
 cargo run -q -p holytools -- includes tests/fixtures/tiny
