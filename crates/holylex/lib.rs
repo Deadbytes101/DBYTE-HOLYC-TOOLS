@@ -88,7 +88,7 @@ impl Lexer {
         let mut tokens = Vec::new();
         while let Some(ch) = self.peek() {
             if ch == '\u{feff}' {
-                self.bump();
+                self.index += 1;
                 continue;
             }
             let token = match ch {
@@ -269,8 +269,11 @@ mod tests {
 
     #[test]
     fn skips_utf8_bom() {
-        let lexemes = visible_lexemes("\u{feff}I64 Add");
-        assert_eq!(lexemes, vec!["I64", "Add"]);
+        let tokens = lex("\u{feff}I64 Add");
+        let visible: Vec<_> = tokens.into_iter().filter(|token| !token.is_trivia()).collect();
+        assert_eq!(visible[0].lexeme, "I64");
+        assert_eq!(visible[0].line, 1);
+        assert_eq!(visible[0].column, 1);
     }
 
     #[test]
