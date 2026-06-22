@@ -352,6 +352,46 @@ fn run() -> Result<(), String> {
 
             Ok(())
         }
+        "missing-includes" => {
+            let path = required_path(&args, "missing-includes")?;
+            let root = Path::new(path);
+            let report = scan_path(root)?;
+            let rows: Vec<_> = resolved_includes(root, &report.files)
+                .into_iter()
+                .filter(|row| row.resolved.is_none())
+                .collect();
+
+            if json {
+                print!("{{\"missing\":[");
+                for (index, row) in rows.iter().enumerate() {
+                    if index > 0 {
+                        print!(",");
+                    }
+                    print!(
+                        "{{\"file\":\"{}\",\"line\":{},\"column\":{},\"target\":\"{}\"}}",
+                        json_escape(&display(&row.file)),
+                        row.line,
+                        row.column,
+                        json_escape(&row.target)
+                    );
+                }
+                println!("],\"count\":{},\"status\":\"ok\"}}", rows.len());
+            } else {
+                for row in &rows {
+                    println!(
+                        "{}:{}:{}\t{}",
+                        display(&row.file),
+                        row.line,
+                        row.column,
+                        row.target
+                    );
+                }
+                println!("missing: {}", rows.len());
+                println!("status: ok");
+            }
+
+            Ok(())
+        }
         "dependency-order" => {
             let path = required_path(&args, "dependency-order")?;
             let root = Path::new(path);
@@ -477,7 +517,7 @@ fn run() -> Result<(), String> {
         }
         _ => {
             println!("holytools");
-            println!("usage: holytools <version|scan|stats|source-map|tokens|outline|symbols|find-symbol|include-graph|resolve-includes|dependency-order|reverse-includes|includes> [path] [name] [--json]");
+            println!("usage: holytools <version|scan|stats|source-map|tokens|outline|symbols|find-symbol|include-graph|resolve-includes|missing-includes|dependency-order|reverse-includes|includes> [path] [name] [--json]");
             Ok(())
         }
     }
