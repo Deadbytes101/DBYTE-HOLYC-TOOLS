@@ -11,6 +11,7 @@ holytools version
 holytools scan <path> [--json]
 holytools stats <path> [--json]
 holytools tokens <file>
+holytools outline <file> [--json]
 holytools symbols <path> [--json]
 holytools includes <path> [--json]
 ```
