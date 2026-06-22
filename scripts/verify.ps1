@@ -19,5 +19,6 @@ cargo run -q -p holytools -- dependency-order tests/fixtures/tiny
 cargo run -q -p holytools -- dependency-order tests/fixtures/tiny --json
 cargo run -q -p holytools -- reverse-includes tests/fixtures/tiny
 cargo run -q -p holytools -- reverse-includes tests/fixtures/tiny --json
+./scripts/check-includes.ps1 tests/fixtures/tiny
 
 Write-Host "verify: ok"
