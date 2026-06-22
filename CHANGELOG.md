@@ -1,5 +1,14 @@
 # Changelog
 
+## v1.1.0
+
+Source-map release.
+
+- Added `holytools source-map <path> [--json]` for one-shot source tree summary output.
+- Source-map reports file, token, function, class, include, resolved include, missing include, dependency file, and reverse include edge counts.
+- Added CLI smoke tests for text and JSON source-map output.
+- Added source-map checks to `scripts/verify.ps1`.
+
 ## v1.0.1
 
 Release automation patch.
