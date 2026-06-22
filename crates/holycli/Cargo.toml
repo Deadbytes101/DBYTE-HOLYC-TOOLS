@@ -1,0 +1,10 @@
+[package]
+name = "holycli"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[dependencies]
+holylex = { path = "../holylex" }
+holyindex = { path = "../holyindex" }
