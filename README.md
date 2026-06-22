@@ -13,6 +13,7 @@ holytools stats <path> [--json]
 holytools tokens <file>
 holytools outline <file> [--json]
 holytools symbols <path> [--json]
+holytools find-symbol <path> <name> [--json]
 holytools includes <path> [--json]
 ```
 
