@@ -22,6 +22,8 @@ Invoke-Step { cargo test --workspace }
 Invoke-Step { cargo run -q -p holytools -- version }
 Invoke-Step { cargo run -q -p holytools -- scan tests/fixtures/tiny }
 Invoke-Step { cargo run -q -p holytools -- stats tests/fixtures/tiny }
+Invoke-Step { cargo run -q -p holytools -- source-map tests/fixtures/tiny }
+Invoke-Step { cargo run -q -p holytools -- source-map tests/fixtures/tiny --json }
 Invoke-Step { cargo run -q -p holytools -- tokens tests/fixtures/tiny/hello.HC }
 Invoke-Step { cargo run -q -p holytools -- outline tests/fixtures/tiny/hello.HC }
 Invoke-Step { cargo run -q -p holytools -- symbols tests/fixtures/tiny }
