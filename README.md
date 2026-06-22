@@ -1,2 +1,5 @@
-# DBYTE-HOLYC-TOOLS
-WINDOWS TOOLS FOR HOLYC/TEMPLEOS/LOSETHOS SOURCE READ-ONLY NO FORK NO MODERNIZE NO FAKE C PARSER. HOLYC != C TEMPLEOS SOURCE = TRUTH
+# DBYTE HOLYC TOOLS
+
+Windows-native read-only source tools for HolyC, LoseThos, and TempleOS-style code.
+
+This project starts as a scanner and indexer. It does not fork TempleOS and does not rewrite source files.
