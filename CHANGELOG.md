@@ -1,5 +1,13 @@
 # Changelog
 
+## v0.2.1
+
+Hardening release after the first source-navigator milestone.
+
+- Synced rustfmt output for the source tree.
+- Ignored local `webhook.json` payload files.
+- No command behavior changes.
+
 ## v0.2.0
 
 First source-navigator milestone.
