@@ -1,5 +1,13 @@
 # Changelog
 
+## v0.2.3
+
+Repository verification release.
+
+- Added a Windows verification workflow for push and pull request checks.
+- The workflow runs `./scripts/verify.ps1`.
+- No `holytools` command behavior changes.
+
 ## v0.2.2
 
 Include-check hardening release.
