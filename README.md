@@ -1,8 +1,23 @@
 # DBYTE HOLYC TOOLS
 
-Windows-native read-only source tools for HolyC, LoseThos, and TempleOS-style code.
+Windows-native read-only source navigator for HolyC, LoseThos, and TempleOS-style code.
 
-This project starts as a scanner and indexer. It does not fork TempleOS and does not rewrite source files.
+This project does not fork TempleOS and does not rewrite source files. It reads HolyC-style source trees and emits deterministic text or JSON reports for inspection, indexing, source archaeology, and navigation.
+
+## Status
+
+`v0.2.0` is the first source-navigator milestone.
+
+It provides:
+
+- tokenizer output for a single HolyC file
+- tree stats for HolyC source roots
+- symbol listing and exact symbol lookup
+- file outline for includes, classes, and functions
+- include listing and include graph output
+- include resolution with missing/resolved status
+- dependency-first source ordering
+- reverse include lookup
 
 ## Commands
 
@@ -21,12 +36,24 @@ holytools dependency-order <path> [--json]
 holytools reverse-includes <path> [--json]
 ```
 
+## Example workflow
+
+```powershell
+holytools stats tests/fixtures/tiny
+holytools outline tests/fixtures/tiny/hello.HC
+holytools find-symbol tests/fixtures/tiny Add
+holytools resolve-includes tests/fixtures/tiny
+holytools dependency-order tests/fixtures/tiny
+holytools reverse-includes tests/fixtures/tiny
+```
+
 ## Rules
 
 - Read-only by default.
 - Original HolyC / LoseThos / TempleOS source compatibility comes first.
 - Do not pretend HolyC is ordinary C.
 - Keep output deterministic and easy to diff.
+- Do not rewrite source files without an explicit future write mode.
 
 ## Verify
 
