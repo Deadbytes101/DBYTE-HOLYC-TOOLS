@@ -18,6 +18,7 @@ holytools includes <path> [--json]
 holytools include-graph <path> [--json]
 holytools resolve-includes <path> [--json]
 holytools dependency-order <path> [--json]
+holytools reverse-includes <path> [--json]
 ```
 
 ## Rules
