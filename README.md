@@ -6,7 +6,7 @@ This project does not fork TempleOS and does not rewrite source files. It reads 
 
 ## Status
 
-`v0.2.0` is the first source-navigator milestone.
+`v1.0.0` is the FINAL stable release for the current read-only source navigator line.
 
 It provides:
 
@@ -19,6 +19,8 @@ It provides:
 - dependency-first source ordering
 - reverse include lookup
 - include checking script for CI-style missing include failure
+- Windows package output with manifest, version file, and SHA256 checksum
+- CLI smoke tests for the shipped `holytools` binary
 
 ## Commands
 
@@ -40,8 +42,29 @@ holytools reverse-includes <path> [--json]
 ## Scripts
 
 ```powershell
-./scripts/check-includes.ps1 tests/fixtures/tiny
 ./scripts/verify.ps1
+./scripts/check-includes.ps1 tests/fixtures/tiny
+./scripts/package-windows.ps1
+./scripts/verify-package.ps1
+```
+
+## Package
+
+The Windows package is written to:
+
+```txt
+dist/dbyte-holyc-tools-windows
+```
+
+Package contents:
+
+```txt
+holytools.exe
+README.md
+CHANGELOG.md
+VERSION.txt
+SHA256SUMS.txt
+MANIFEST.txt
 ```
 
 ## Example workflow
