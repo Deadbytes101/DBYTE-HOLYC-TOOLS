@@ -1,4 +1,4 @@
-use holyindex::scan_path;
+use holyindex::{scan_file_report, scan_path, FileReport};
 use holylex::lex;
 use std::env;
 use std::fs;
@@ -81,6 +81,18 @@ fn run() -> Result<(), String> {
             }
 
             println!("status: ok");
+            Ok(())
+        }
+        "outline" => {
+            let path = required_path(&args, "outline")?;
+            let report = scan_file_report(Path::new(path))?;
+
+            if json {
+                print_outline_json(path, &report);
+            } else {
+                print_outline_text(path, &report);
+            }
+
             Ok(())
         }
         "symbols" => {
@@ -167,10 +179,79 @@ fn run() -> Result<(), String> {
         }
         _ => {
             println!("holytools");
-            println!("usage: holytools <version|scan|stats|tokens|symbols|includes> [path] [--json]");
+            println!("usage: holytools <version|scan|stats|tokens|outline|symbols|includes> [path] [--json]");
             Ok(())
         }
     }
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+struct OutlineRow {
+    line: usize,
+    column: usize,
+    kind: String,
+    name: String,
+}
+
+fn print_outline_text(path: &str, report: &FileReport) {
+    println!("file: {}", display(Path::new(path)));
+
+    for row in outline_rows(report) {
+        println!("{}\t{}:{}\t{}", row.kind, row.line, row.column, row.name);
+    }
+
+    println!("tokens: {}", report.token_count);
+    println!("status: ok");
+}
+
+fn print_outline_json(path: &str, report: &FileReport) {
+    print!(
+        "{{\"file\":\"{}\",\"tokens\":{},\"items\":[",
+        json_escape(&display(Path::new(path))),
+        report.token_count
+    );
+
+    let mut first = true;
+    for row in outline_rows(report) {
+        if !first {
+            print!(",");
+        }
+        first = false;
+        print!(
+            "{{\"line\":{},\"column\":{},\"kind\":\"{}\",\"name\":\"{}\"}}",
+            row.line,
+            row.column,
+            json_escape(&row.kind),
+            json_escape(&row.name)
+        );
+    }
+
+    println!("],\"status\":\"ok\"}}");
+}
+
+fn outline_rows(report: &FileReport) -> Vec<OutlineRow> {
+    let mut rows = Vec::new();
+
+    for include in &report.includes {
+        rows.push(OutlineRow {
+            line: include.line,
+            column: include.column,
+            kind: "include".to_string(),
+            name: include.target.clone(),
+        });
+    }
+
+    for symbol in &report.symbols {
+        rows.push(OutlineRow {
+            line: symbol.line,
+            column: symbol.column,
+            kind: symbol.kind.as_str().to_string(),
+            name: symbol.name.clone(),
+        });
+    }
+
+    rows.sort();
+    rows
 }
 
 fn required_path<'a>(args: &'a [String], command: &str) -> Result<&'a str, String> {
