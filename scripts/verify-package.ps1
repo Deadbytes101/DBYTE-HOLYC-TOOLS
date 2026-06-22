@@ -35,9 +35,15 @@ foreach ($file in $requiredFiles) {
     }
 }
 
-& $exe version
+$actualVersion = & $exe version
 if ($LASTEXITCODE -ne 0) {
     exit $LASTEXITCODE
+}
+
+$expectedVersion = Get-Content $version
+if (($actualVersion -join "`n") -ne ($expectedVersion -join "`n")) {
+    Write-Error "version file mismatch"
+    exit 1
 }
 
 $actual = (Get-FileHash $exe -Algorithm SHA256).Hash.ToLowerInvariant()
