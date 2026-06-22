@@ -2,7 +2,7 @@ use holyindex::{scan_file_report, scan_path, FileReport};
 use holylex::lex;
 use std::env;
 use std::fs;
-use std::path::Path;
+use std::path::{Path, PathBuf};
 use std::process::ExitCode;
 
 fn main() -> ExitCode {
@@ -237,6 +237,78 @@ fn run() -> Result<(), String> {
 
             Ok(())
         }
+        "resolve-includes" => {
+            let path = required_path(&args, "resolve-includes")?;
+            let root = Path::new(path);
+            let report = scan_path(root)?;
+            let mut rows = Vec::new();
+
+            for file in report.files {
+                for include in file.includes {
+                    let resolved = resolve_include(root, &file.path, &include.target);
+                    rows.push(ResolvedInclude {
+                        file: file.path.clone(),
+                        line: include.line,
+                        column: include.column,
+                        target: include.target,
+                        resolved,
+                    });
+                }
+            }
+
+            rows.sort();
+            let resolved_count = rows.iter().filter(|row| row.resolved.is_some()).count();
+            let missing_count = rows.len() - resolved_count;
+
+            if json {
+                print!("{{\"includes\":[");
+                for (index, row) in rows.iter().enumerate() {
+                    if index > 0 {
+                        print!(",");
+                    }
+                    let status = if row.resolved.is_some() { "resolved" } else { "missing" };
+                    let resolved = row.resolved.as_ref().map(display).unwrap_or_else(|| "".to_string());
+                    print!(
+                        "{{\"file\":\"{}\",\"line\":{},\"column\":{},\"target\":\"{}\",\"status\":\"{}\",\"resolved\":\"{}\"}}",
+                        json_escape(&display(&row.file)),
+                        row.line,
+                        row.column,
+                        json_escape(&row.target),
+                        status,
+                        json_escape(&resolved)
+                    );
+                }
+                println!(
+                    "],\"resolved\":{},\"missing\":{},\"status\":\"ok\"}}",
+                    resolved_count, missing_count
+                );
+            } else {
+                for row in &rows {
+                    match &row.resolved {
+                        Some(resolved) => println!(
+                            "{}:{}:{}\t{}\tresolved\t{}",
+                            display(&row.file),
+                            row.line,
+                            row.column,
+                            row.target,
+                            display(resolved)
+                        ),
+                        None => println!(
+                            "{}:{}:{}\t{}\tmissing\t-",
+                            display(&row.file),
+                            row.line,
+                            row.column,
+                            row.target
+                        ),
+                    }
+                }
+                println!("resolved: {resolved_count}");
+                println!("missing: {missing_count}");
+                println!("status: ok");
+            }
+
+            Ok(())
+        }
         "includes" => {
             let path = required_path(&args, "includes")?;
             let report = scan_path(Path::new(path))?;
@@ -279,7 +351,7 @@ fn run() -> Result<(), String> {
         }
         _ => {
             println!("holytools");
-            println!("usage: holytools <version|scan|stats|tokens|outline|symbols|find-symbol|include-graph|includes> [path] [name] [--json]");
+            println!("usage: holytools <version|scan|stats|tokens|outline|symbols|find-symbol|include-graph|resolve-includes|includes> [path] [name] [--json]");
             Ok(())
         }
     }
@@ -291,6 +363,15 @@ struct OutlineRow {
     column: usize,
     kind: String,
     name: String,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+struct ResolvedInclude {
+    file: PathBuf,
+    line: usize,
+    column: usize,
+    target: String,
+    resolved: Option<PathBuf>,
 }
 
 fn print_outline_text(path: &str, report: &FileReport) {
@@ -352,6 +433,23 @@ fn outline_rows(report: &FileReport) -> Vec<OutlineRow> {
 
     rows.sort();
     rows
+}
+
+fn resolve_include(root: &Path, source_file: &Path, target: &str) -> Option<PathBuf> {
+    let target_path = Path::new(target);
+    let root_dir = if root.is_file() { root.parent().unwrap_or(root) } else { root };
+    let mut candidates = Vec::new();
+
+    if target_path.is_absolute() {
+        candidates.push(target_path.to_path_buf());
+    } else {
+        if let Some(parent) = source_file.parent() {
+            candidates.push(parent.join(target_path));
+        }
+        candidates.push(root_dir.join(target_path));
+    }
+
+    candidates.into_iter().find(|candidate| candidate.is_file())
 }
 
 fn required_path<'a>(args: &'a [String], command: &str) -> Result<&'a str, String> {
