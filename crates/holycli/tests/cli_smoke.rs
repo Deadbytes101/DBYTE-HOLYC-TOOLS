@@ -13,8 +13,16 @@ fn workspace_root() -> PathBuf {
         .to_path_buf()
 }
 
+fn fixture(name: &str) -> PathBuf {
+    workspace_root().join("tests").join("fixtures").join(name)
+}
+
 fn tiny_fixture() -> PathBuf {
-    workspace_root().join("tests").join("fixtures").join("tiny")
+    fixture("tiny")
+}
+
+fn missing_fixture() -> PathBuf {
+    fixture("missing")
 }
 
 fn run_command(mut command: Command, context: &str) -> String {
@@ -36,10 +44,18 @@ fn run(args: &[&str]) -> String {
     run_command(command, &format!("{args:?}"))
 }
 
-fn run_with_fixture(command_name: &str, extra: &[&str]) -> String {
+fn run_with_fixture(command_name: &str, path: PathBuf, extra: &[&str]) -> String {
     let mut command = holytools();
-    command.arg(command_name).arg(tiny_fixture()).args(extra);
+    command.arg(command_name).arg(path).args(extra);
     run_command(command, command_name)
+}
+
+fn run_with_tiny_fixture(command_name: &str, extra: &[&str]) -> String {
+    run_with_fixture(command_name, tiny_fixture(), extra)
+}
+
+fn run_with_missing_fixture(command_name: &str, extra: &[&str]) -> String {
+    run_with_fixture(command_name, missing_fixture(), extra)
 }
 
 #[test]
@@ -52,7 +68,7 @@ fn version_reports_current_package_version() {
 
 #[test]
 fn stats_reports_fixture_counts() {
-    let stdout = run_with_fixture("stats", &[]);
+    let stdout = run_with_tiny_fixture("stats", &[]);
 
     assert!(stdout.contains("holy-files: 2"));
     assert!(stdout.contains("functions: 2"));
@@ -63,7 +79,7 @@ fn stats_reports_fixture_counts() {
 
 #[test]
 fn source_map_reports_fixture_summary() {
-    let stdout = run_with_fixture("source-map", &[]);
+    let stdout = run_with_tiny_fixture("source-map", &[]);
 
     assert!(stdout.contains("holy-files: 2"));
     assert!(stdout.contains("tokens: 73"));
@@ -78,7 +94,7 @@ fn source_map_reports_fixture_summary() {
 
 #[test]
 fn source_map_json_reports_fixture_summary() {
-    let stdout = run_with_fixture("source-map", &["--json"]);
+    let stdout = run_with_tiny_fixture("source-map", &["--json"]);
 
     assert!(stdout.contains("\"holy_files\":2"));
     assert!(stdout.contains("\"tokens\":73"));
@@ -92,8 +108,27 @@ fn source_map_json_reports_fixture_summary() {
 }
 
 #[test]
+fn missing_includes_reports_missing_target() {
+    let stdout = run_with_missing_fixture("missing-includes", &[]);
+
+    assert!(stdout.contains("broken.HC:1:1"));
+    assert!(stdout.contains("absent.HH"));
+    assert!(stdout.contains("missing: 1"));
+    assert!(stdout.contains("status: ok"));
+}
+
+#[test]
+fn missing_includes_json_reports_missing_target() {
+    let stdout = run_with_missing_fixture("missing-includes", &["--json"]);
+
+    assert!(stdout.contains("\"target\":\"absent.HH\""));
+    assert!(stdout.contains("\"count\":1"));
+    assert!(stdout.contains("\"status\":\"ok\""));
+}
+
+#[test]
 fn resolve_includes_json_reports_no_missing_includes() {
-    let stdout = run_with_fixture("resolve-includes", &["--json"]);
+    let stdout = run_with_tiny_fixture("resolve-includes", &["--json"]);
 
     assert!(stdout.contains("\"resolved\":1"));
     assert!(stdout.contains("\"missing\":0"));
@@ -102,7 +137,7 @@ fn resolve_includes_json_reports_no_missing_includes() {
 
 #[test]
 fn dependency_order_reports_header_before_source() {
-    let stdout = run_with_fixture("dependency-order", &[]);
+    let stdout = run_with_tiny_fixture("dependency-order", &[]);
     let header = stdout.find("hello.HH").expect("header should be listed");
     let source = stdout.find("hello.HC").expect("source should be listed");
 
