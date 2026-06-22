@@ -15,5 +15,7 @@ cargo run -q -p holytools -- includes tests/fixtures/tiny
 cargo run -q -p holytools -- include-graph tests/fixtures/tiny
 cargo run -q -p holytools -- resolve-includes tests/fixtures/tiny
 cargo run -q -p holytools -- resolve-includes tests/fixtures/tiny --json
+cargo run -q -p holytools -- dependency-order tests/fixtures/tiny
+cargo run -q -p holytools -- dependency-order tests/fixtures/tiny --json
 
 Write-Host "verify: ok"
