@@ -1,5 +1,15 @@
 # Changelog
 
+## v0.2.6
+
+Package verification release.
+
+- Added `scripts/verify-package.ps1` for packaged artifact checks.
+- The release workflow verifies package contents before artifact upload.
+- The package verifier checks `holytools.exe`, `README.md`, and `CHANGELOG.md`.
+- The package verifier runs `holytools.exe version`.
+- No `holytools` command behavior changes.
+
 ## v0.2.5
 
 Packaging script release.
