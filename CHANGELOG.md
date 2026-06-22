@@ -1,5 +1,15 @@
 # Changelog
 
+## v1.0.0 FINAL
+
+Final stable release for the current read-only HolyC source navigator line.
+
+- Fixed `holytools` CLI smoke tests to resolve fixtures from the workspace root.
+- Hardened `scripts/verify.ps1` so native command failures stop the script immediately.
+- Documents the final Windows package shape and verification flow.
+- Keeps the package manifest, version file, and SHA256 checksum checks.
+- No `holytools` command behavior changes.
+
 ## v0.3.0
 
 CLI smoke test milestone.
