@@ -8,11 +8,11 @@ This project starts as a scanner and indexer. It does not fork TempleOS and does
 
 ```txt
 holytools version
-holytools scan <path>
-holytools stats <path>
+holytools scan <path> [--json]
+holytools stats <path> [--json]
 holytools tokens <file>
-holytools symbols <path>
-holytools includes <path>
+holytools symbols <path> [--json]
+holytools includes <path> [--json]
 ```
 
 ## Rules
