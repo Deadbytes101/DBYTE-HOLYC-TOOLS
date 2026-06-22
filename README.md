@@ -18,6 +18,7 @@ It provides:
 - include resolution with missing/resolved status
 - dependency-first source ordering
 - reverse include lookup
+- include checking script for CI-style missing include failure
 
 ## Commands
 
@@ -36,6 +37,13 @@ holytools dependency-order <path> [--json]
 holytools reverse-includes <path> [--json]
 ```
 
+## Scripts
+
+```powershell
+./scripts/check-includes.ps1 tests/fixtures/tiny
+./scripts/verify.ps1
+```
+
 ## Example workflow
 
 ```powershell
@@ -45,6 +53,7 @@ holytools find-symbol tests/fixtures/tiny Add
 holytools resolve-includes tests/fixtures/tiny
 holytools dependency-order tests/fixtures/tiny
 holytools reverse-includes tests/fixtures/tiny
+./scripts/check-includes.ps1 tests/fixtures/tiny
 ```
 
 ## Rules
