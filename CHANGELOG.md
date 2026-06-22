@@ -1,5 +1,14 @@
 # Changelog
 
+## v0.2.2
+
+Include-check hardening release.
+
+- Added `scripts/check-includes.ps1` for CI-style include validation.
+- Added the include check script to `scripts/verify.ps1`.
+- The script exits with failure when resolved include data reports missing includes.
+- No `holytools` command behavior changes.
+
 ## v0.2.1
 
 Hardening release after the first source-navigator milestone.
