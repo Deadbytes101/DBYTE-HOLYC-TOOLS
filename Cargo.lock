@@ -4,7 +4,7 @@ version = 4
 
 [[package]]
 name = "holycli"
-version = "0.1.1"
+version = "0.1.2"
 dependencies = [
  "holyindex",
  "holylex",
@@ -12,11 +12,11 @@ dependencies = [
 
 [[package]]
 name = "holyindex"
-version = "0.1.1"
+version = "0.1.2"
 dependencies = [
  "holylex",
 ]
 
 [[package]]
 name = "holylex"
-version = "0.1.1"
+version = "0.1.2"
