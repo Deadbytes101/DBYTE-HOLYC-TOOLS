@@ -1,5 +1,14 @@
 # Changelog
 
+## v0.2.7
+
+Package manifest release.
+
+- Packaged Windows artifacts now include `VERSION.txt`.
+- Packaged Windows artifacts now include `SHA256SUMS.txt`.
+- `scripts/verify-package.ps1` verifies the packaged checksum for `holytools.exe`.
+- No `holytools` command behavior changes.
+
 ## v0.2.6
 
 Package verification release.
