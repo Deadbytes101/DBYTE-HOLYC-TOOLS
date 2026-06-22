@@ -62,6 +62,36 @@ fn stats_reports_fixture_counts() {
 }
 
 #[test]
+fn source_map_reports_fixture_summary() {
+    let stdout = run_with_fixture("source-map", &[]);
+
+    assert!(stdout.contains("holy-files: 2"));
+    assert!(stdout.contains("tokens: 73"));
+    assert!(stdout.contains("functions: 2"));
+    assert!(stdout.contains("classes: 1"));
+    assert!(stdout.contains("resolved-includes: 1"));
+    assert!(stdout.contains("missing-includes: 0"));
+    assert!(stdout.contains("dependency-files: 2"));
+    assert!(stdout.contains("reverse-edges: 1"));
+    assert!(stdout.contains("status: ok"));
+}
+
+#[test]
+fn source_map_json_reports_fixture_summary() {
+    let stdout = run_with_fixture("source-map", &["--json"]);
+
+    assert!(stdout.contains("\"holy_files\":2"));
+    assert!(stdout.contains("\"tokens\":73"));
+    assert!(stdout.contains("\"functions\":2"));
+    assert!(stdout.contains("\"classes\":1"));
+    assert!(stdout.contains("\"resolved_includes\":1"));
+    assert!(stdout.contains("\"missing_includes\":0"));
+    assert!(stdout.contains("\"dependency_files\":2"));
+    assert!(stdout.contains("\"reverse_edges\":1"));
+    assert!(stdout.contains("\"status\":\"ok\""));
+}
+
+#[test]
 fn resolve_includes_json_reports_no_missing_includes() {
     let stdout = run_with_fixture("resolve-includes", &["--json"]);
 
