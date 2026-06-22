@@ -1,3 +1,4 @@
+use holyindex::scan_path;
 use holylex::lex;
 use std::env;
 use std::fs;
@@ -25,15 +26,28 @@ fn run() -> Result<(), String> {
             Ok(())
         }
         "scan" => {
-            let path = args.get(2).ok_or("usage: holytools scan <path>")?;
-            let mut count = 0usize;
-            collect(Path::new(path), &mut count)?;
-            println!("holy-files: {count}");
+            let path = required_path(&args, "scan")?;
+            let report = scan_path(Path::new(path))?;
+            println!("root: {}", display(Path::new(path)));
+            println!("holy-files: {}", report.files.len());
+            println!("status: ok");
+            Ok(())
+        }
+        "stats" => {
+            let path = required_path(&args, "stats")?;
+            let report = scan_path(Path::new(path))?;
+            println!("root: {}", display(Path::new(path)));
+            println!("holy-files: {}", report.files.len());
+            println!("tokens: {}", report.token_count());
+            println!("functions: {}", report.function_count());
+            println!("classes: {}", report.class_count());
+            println!("includes: {}", report.include_count());
+            println!("asm-blocks: {}", report.asm_count());
             println!("status: ok");
             Ok(())
         }
         "tokens" => {
-            let path = args.get(2).ok_or("usage: holytools tokens <file>")?;
+            let path = required_path(&args, "tokens")?;
             let source = fs::read_to_string(path).map_err(|err| err.to_string())?;
 
             for token in lex(&source).into_iter().filter(|token| !token.is_trivia()) {
@@ -43,40 +57,59 @@ fn run() -> Result<(), String> {
             println!("status: ok");
             Ok(())
         }
+        "symbols" => {
+            let path = required_path(&args, "symbols")?;
+            let report = scan_path(Path::new(path))?;
+
+            for file in report.files {
+                for symbol in file.symbols {
+                    println!(
+                        "{}:{}:{}\t{}\t{}",
+                        display(&file.path),
+                        symbol.line,
+                        symbol.column,
+                        symbol.kind.as_str(),
+                        symbol.name
+                    );
+                }
+            }
+
+            println!("status: ok");
+            Ok(())
+        }
+        "includes" => {
+            let path = required_path(&args, "includes")?;
+            let report = scan_path(Path::new(path))?;
+
+            for file in report.files {
+                for include in file.includes {
+                    println!(
+                        "{}:{}:{}\t{}",
+                        display(&file.path),
+                        include.line,
+                        include.column,
+                        include.target
+                    );
+                }
+            }
+
+            println!("status: ok");
+            Ok(())
+        }
         _ => {
             println!("holytools");
-            println!("usage: holytools <version|scan|tokens> [path]");
+            println!("usage: holytools <version|scan|stats|tokens|symbols|includes> [path]");
             Ok(())
         }
     }
 }
 
-fn collect(path: &Path, count: &mut usize) -> Result<(), String> {
-    if path.is_file() {
-        if is_holy(path) {
-            *count += 1;
-        }
-
-        return Ok(());
-    }
-
-    for entry in fs::read_dir(path).map_err(|err| err.to_string())? {
-        let entry = entry.map_err(|err| err.to_string())?;
-        let path = entry.path();
-
-        if path.is_dir() {
-            collect(&path, count)?;
-        } else if is_holy(&path) {
-            *count += 1;
-        }
-    }
-
-    Ok(())
+fn required_path<'a>(args: &'a [String], command: &str) -> Result<&'a str, String> {
+    args.get(2)
+        .map(String::as_str)
+        .ok_or_else(|| format!("usage: holytools {command} <path>"))
 }
 
-fn is_holy(path: &Path) -> bool {
-    path.extension()
-        .and_then(|value| value.to_str())
-        .map(|value| matches!(value.to_ascii_lowercase().as_str(), "hc" | "hh" | "zc" | "zh"))
-        .unwrap_or(false)
+fn display(path: &Path) -> String {
+    path.display().to_string().replace('\\', "/")
 }
