@@ -331,6 +331,60 @@ fn run() -> Result<(), String> {
 
             Ok(())
         }
+        "reverse-includes" => {
+            let path = required_path(&args, "reverse-includes")?;
+            let root = Path::new(path);
+            let report = scan_path(root)?;
+            let mut rows = Vec::new();
+
+            for include in resolved_includes(root, &report.files) {
+                let status = if include.resolved.is_some() {
+                    "resolved"
+                } else {
+                    "missing"
+                };
+                let target = include
+                    .resolved
+                    .as_ref()
+                    .map(|path| display(path))
+                    .unwrap_or_else(|| include.target.clone());
+                rows.push((
+                    target,
+                    display(&include.file),
+                    include.line,
+                    include.column,
+                    status.to_string(),
+                ));
+            }
+
+            rows.sort();
+
+            if json {
+                print!("{{\"reverse\":[");
+                for (index, (target, from, line, column, status)) in rows.iter().enumerate() {
+                    if index > 0 {
+                        print!(",");
+                    }
+                    print!(
+                        "{{\"target\":\"{}\",\"from\":\"{}\",\"line\":{},\"column\":{},\"status\":\"{}\"}}",
+                        json_escape(target),
+                        json_escape(from),
+                        line,
+                        column,
+                        status
+                    );
+                }
+                println!("],\"count\":{},\"status\":\"ok\"}}", rows.len());
+            } else {
+                for (target, from, line, column, status) in &rows {
+                    println!("{}\t<-\t{}:{}:{}\t{}", target, from, line, column, status);
+                }
+                println!("edges: {}", rows.len());
+                println!("status: ok");
+            }
+
+            Ok(())
+        }
         "includes" => {
             let path = required_path(&args, "includes")?;
             let report = scan_path(Path::new(path))?;
@@ -373,7 +427,7 @@ fn run() -> Result<(), String> {
         }
         _ => {
             println!("holytools");
-            println!("usage: holytools <version|scan|stats|tokens|outline|symbols|find-symbol|include-graph|resolve-includes|dependency-order|includes> [path] [name] [--json]");
+            println!("usage: holytools <version|scan|stats|tokens|outline|symbols|find-symbol|include-graph|resolve-includes|dependency-order|reverse-includes|includes> [path] [name] [--json]");
             Ok(())
         }
     }
