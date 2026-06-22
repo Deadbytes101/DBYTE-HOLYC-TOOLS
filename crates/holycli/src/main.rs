@@ -18,6 +18,7 @@ fn main() -> ExitCode {
 fn run() -> Result<(), String> {
     let args: Vec<String> = env::args().collect();
     let command = args.get(1).map(String::as_str).unwrap_or("help");
+    let json = has_flag(&args, "--json");
 
     match command {
         "version" => {
@@ -28,22 +29,47 @@ fn run() -> Result<(), String> {
         "scan" => {
             let path = required_path(&args, "scan")?;
             let report = scan_path(Path::new(path))?;
-            println!("root: {}", display(Path::new(path)));
-            println!("holy-files: {}", report.files.len());
-            println!("status: ok");
+
+            if json {
+                println!(
+                    "{{\"root\":\"{}\",\"holy_files\":{},\"status\":\"ok\"}}",
+                    json_escape(&display(Path::new(path))),
+                    report.files.len()
+                );
+            } else {
+                println!("root: {}", display(Path::new(path)));
+                println!("holy-files: {}", report.files.len());
+                println!("status: ok");
+            }
+
             Ok(())
         }
         "stats" => {
             let path = required_path(&args, "stats")?;
             let report = scan_path(Path::new(path))?;
-            println!("root: {}", display(Path::new(path)));
-            println!("holy-files: {}", report.files.len());
-            println!("tokens: {}", report.token_count());
-            println!("functions: {}", report.function_count());
-            println!("classes: {}", report.class_count());
-            println!("includes: {}", report.include_count());
-            println!("asm-blocks: {}", report.asm_count());
-            println!("status: ok");
+
+            if json {
+                println!(
+                    "{{\"root\":\"{}\",\"holy_files\":{},\"tokens\":{},\"functions\":{},\"classes\":{},\"includes\":{},\"asm_blocks\":{},\"status\":\"ok\"}}",
+                    json_escape(&display(Path::new(path))),
+                    report.files.len(),
+                    report.token_count(),
+                    report.function_count(),
+                    report.class_count(),
+                    report.include_count(),
+                    report.asm_count()
+                );
+            } else {
+                println!("root: {}", display(Path::new(path)));
+                println!("holy-files: {}", report.files.len());
+                println!("tokens: {}", report.token_count());
+                println!("functions: {}", report.function_count());
+                println!("classes: {}", report.class_count());
+                println!("includes: {}", report.include_count());
+                println!("asm-blocks: {}", report.asm_count());
+                println!("status: ok");
+            }
+
             Ok(())
         }
         "tokens" => {
@@ -61,55 +87,122 @@ fn run() -> Result<(), String> {
             let path = required_path(&args, "symbols")?;
             let report = scan_path(Path::new(path))?;
 
-            for file in report.files {
-                for symbol in file.symbols {
-                    println!(
-                        "{}:{}:{}\t{}\t{}",
-                        display(&file.path),
-                        symbol.line,
-                        symbol.column,
-                        symbol.kind.as_str(),
-                        symbol.name
-                    );
+            if json {
+                print!("{{\"symbols\":[");
+                let mut first = true;
+                for file in report.files {
+                    for symbol in file.symbols {
+                        if !first {
+                            print!(",");
+                        }
+                        first = false;
+                        print!(
+                            "{{\"file\":\"{}\",\"line\":{},\"column\":{},\"kind\":\"{}\",\"name\":\"{}\"}}",
+                            json_escape(&display(&file.path)),
+                            symbol.line,
+                            symbol.column,
+                            symbol.kind.as_str(),
+                            json_escape(&symbol.name)
+                        );
+                    }
                 }
+                println!("],\"status\":\"ok\"}}");
+            } else {
+                for file in report.files {
+                    for symbol in file.symbols {
+                        println!(
+                            "{}:{}:{}\t{}\t{}",
+                            display(&file.path),
+                            symbol.line,
+                            symbol.column,
+                            symbol.kind.as_str(),
+                            symbol.name
+                        );
+                    }
+                }
+                println!("status: ok");
             }
 
-            println!("status: ok");
             Ok(())
         }
         "includes" => {
             let path = required_path(&args, "includes")?;
             let report = scan_path(Path::new(path))?;
 
-            for file in report.files {
-                for include in file.includes {
-                    println!(
-                        "{}:{}:{}\t{}",
-                        display(&file.path),
-                        include.line,
-                        include.column,
-                        include.target
-                    );
+            if json {
+                print!("{{\"includes\":[");
+                let mut first = true;
+                for file in report.files {
+                    for include in file.includes {
+                        if !first {
+                            print!(",");
+                        }
+                        first = false;
+                        print!(
+                            "{{\"file\":\"{}\",\"line\":{},\"column\":{},\"target\":\"{}\"}}",
+                            json_escape(&display(&file.path)),
+                            include.line,
+                            include.column,
+                            json_escape(&include.target)
+                        );
+                    }
                 }
+                println!("],\"status\":\"ok\"}}");
+            } else {
+                for file in report.files {
+                    for include in file.includes {
+                        println!(
+                            "{}:{}:{}\t{}",
+                            display(&file.path),
+                            include.line,
+                            include.column,
+                            include.target
+                        );
+                    }
+                }
+                println!("status: ok");
             }
 
-            println!("status: ok");
             Ok(())
         }
         _ => {
             println!("holytools");
-            println!("usage: holytools <version|scan|stats|tokens|symbols|includes> [path]");
+            println!("usage: holytools <version|scan|stats|tokens|symbols|includes> [path] [--json]");
             Ok(())
         }
     }
 }
 
 fn required_path<'a>(args: &'a [String], command: &str) -> Result<&'a str, String> {
-    args.get(2)
+    args.iter()
+        .skip(2)
+        .find(|arg| !arg.starts_with('-'))
         .map(String::as_str)
         .ok_or_else(|| format!("usage: holytools {command} <path>"))
 }
 
+fn has_flag(args: &[String], flag: &str) -> bool {
+    args.iter().any(|arg| arg == flag)
+}
+
 fn display(path: &Path) -> String {
     path.display().to_string().replace('\\', "/")
+}
+
+fn json_escape(text: &str) -> String {
+    let mut out = String::new();
+
+    for ch in text.chars() {
+        match ch {
+            '"' => out.push_str("\\\""),
+            '\\' => out.push_str("\\\\"),
+            '\n' => out.push_str("\\n"),
+            '\r' => out.push_str("\\r"),
+            '\t' => out.push_str("\\t"),
+            c if c.is_control() => out.push_str(&format!("\\u{:04x}", c as u32)),
+            c => out.push(c),
+        }
+    }
+
+    out
 }
