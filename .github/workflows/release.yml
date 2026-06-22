@@ -1,0 +1,31 @@
+name: release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  windows:
+    runs-on: windows-latest
+
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4
+
+      - name: build
+        run: cargo build --release -p holytools
+
+      - name: package
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force dist | Out-Null
+          Copy-Item target/release/holytools.exe dist/holytools.exe
+          Copy-Item README.md dist/README.md
+          Copy-Item CHANGELOG.md dist/CHANGELOG.md
+
+      - name: upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: dbyte-holyc-tools-windows
+          path: dist/
