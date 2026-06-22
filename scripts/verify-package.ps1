@@ -10,10 +10,27 @@ $readme = Join-Path $PackageDir "README.md"
 $changelog = Join-Path $PackageDir "CHANGELOG.md"
 $version = Join-Path $PackageDir "VERSION.txt"
 $checksums = Join-Path $PackageDir "SHA256SUMS.txt"
+$manifest = Join-Path $PackageDir "MANIFEST.txt"
+$requiredFiles = @(
+    "holytools.exe",
+    "README.md",
+    "CHANGELOG.md",
+    "VERSION.txt",
+    "SHA256SUMS.txt",
+    "MANIFEST.txt"
+)
 
-foreach ($path in @($exe, $readme, $changelog, $version, $checksums)) {
+foreach ($path in @($exe, $readme, $changelog, $version, $checksums, $manifest)) {
     if (!(Test-Path $path)) {
         Write-Error "missing package file: $path"
+        exit 1
+    }
+}
+
+$manifestFiles = Get-Content $manifest
+foreach ($file in $requiredFiles) {
+    if ($manifestFiles -notcontains $file) {
+        Write-Error "manifest missing entry: $file"
         exit 1
     }
 }
