@@ -1,0 +1,13 @@
+[package]
+name = "holyindex"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[lib]
+name = "holyindex"
+path = "src/lib.rs"
+
+[dependencies]
+holylex = { path = "../holylex" }
