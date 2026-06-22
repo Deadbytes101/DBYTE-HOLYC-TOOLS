@@ -3,20 +3,20 @@
 version = 4
 
 [[package]]
-name = "holycli"
-version = "0.1.2"
-dependencies = [
- "holyindex",
- "holylex",
-]
-
-[[package]]
 name = "holyindex"
-version = "0.1.2"
+version = "0.1.3"
 dependencies = [
  "holylex",
 ]
 
 [[package]]
 name = "holylex"
-version = "0.1.2"
+version = "0.1.3"
+
+[[package]]
+name = "holytools"
+version = "0.1.3"
+dependencies = [
+ "holyindex",
+ "holylex",
+]
