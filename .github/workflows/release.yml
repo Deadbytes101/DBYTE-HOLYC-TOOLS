@@ -13,19 +13,12 @@ jobs:
       - name: checkout
         uses: actions/checkout@v4
 
-      - name: build
-        run: cargo build --release -p holytools
-
       - name: package
         shell: pwsh
-        run: |
-          New-Item -ItemType Directory -Force dist | Out-Null
-          Copy-Item target/release/holytools.exe dist/holytools.exe
-          Copy-Item README.md dist/README.md
-          Copy-Item CHANGELOG.md dist/CHANGELOG.md
+        run: ./scripts/package-windows.ps1
 
       - name: upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: dbyte-holyc-tools-windows
-          path: dist/
+          path: dist/dbyte-holyc-tools-windows/
