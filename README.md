@@ -6,7 +6,7 @@ This project does not fork TempleOS and does not rewrite source files. It reads 
 
 ## Status
 
-`v1.4.0` is the current source tree report release for the read-only source navigator line.
+`v1.5.0` is the current packaged support scripts release for the read-only source navigator line.
 
 It provides:
 
@@ -16,6 +16,7 @@ It provides:
 - missing include listing for source tree repair
 - entrypoint listing for files with no resolved incoming include
 - source tree report generation into text and JSON files
+- packaged support scripts for include checks and report generation
 - symbol listing and exact symbol lookup
 - file outline for includes, classes, and functions
 - include listing and include graph output
@@ -54,7 +55,7 @@ holytools reverse-includes <path> [--json]
 ./scripts/report.ps1 tests/fixtures/tiny reports/tiny
 ./scripts/package-windows.ps1
 ./scripts/verify-package.ps1
-./scripts/release.ps1 v1.4.0
+./scripts/release.ps1 v1.5.0
 ```
 
 ## Report
@@ -84,14 +85,18 @@ CHANGELOG.md
 VERSION.txt
 SHA256SUMS.txt
 MANIFEST.txt
+scripts/check-includes.ps1
+scripts/report.ps1
 ```
+
+Packaged scripts use the packaged `holytools.exe` when they are run from the package directory.
 
 ## Release
 
 Run the full release gate and push a tag with one command:
 
 ```powershell
-./scripts/release.ps1 v1.4.0
+./scripts/release.ps1 v1.5.0
 ```
 
 The release script verifies formatting, builds, tests, source reports, package output, package manifest, package version text, SHA256 checksum, clean working tree, and remote tag state before pushing a tag.
