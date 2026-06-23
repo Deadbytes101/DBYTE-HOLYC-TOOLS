@@ -1,43 +1,36 @@
-# DBYTE HOLYC TOOLS FINAL
+# DBYTE HOLYC TOOLS v1.6.0 FINAL
 
-Version: `1.0.0`
+This line is frozen as a finished Windows-native read-only HolyC source navigator.
 
-This is the final stable release for the current read-only HolyC source navigator line.
-
-## Artifact
-
-```txt
-dbyte-holyc-tools-windows
-```
-
-## Package contents
+Shipped:
 
 ```txt
 holytools.exe
-README.md
-CHANGELOG.md
-VERSION.txt
-SHA256SUMS.txt
-MANIFEST.txt
+source-map
+missing-includes
+entrypoints
+dependency-order
+reverse-includes
+report script
+packaged support scripts
+zip package
+sha256 sidecar
 ```
 
-## Required verification
+Release artifact:
 
-```powershell
-cargo fmt --check
-cargo check --workspace
-cargo test --workspace
-./scripts/verify.ps1
-./scripts/package-windows.ps1
-./scripts/verify-package.ps1
+```txt
+dbyte-holyc-tools-windows.zip
+dbyte-holyc-tools-windows.zip.sha256
 ```
 
-## Guarantees
+Rules:
 
-- Read-only operation by default.
-- No source rewriting.
-- Deterministic text and JSON reports.
-- Include resolution reports missing/resolved status.
-- Dependency ordering is dependency-first.
-- Package includes a version file, manifest, and SHA256 checksum.
-- Package verification checks binary execution, version text, manifest entries, and checksum.
+```txt
+read-only
+no source rewrite
+deterministic output
+HolyC first
+```
+
+Future work starts after this line. This line stays final.
