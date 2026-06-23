@@ -59,4 +59,14 @@ if ($actual -ne $expected) {
     exit 1
 }
 
+& $checkIncludes tests/fixtures/tiny
+if ($LASTEXITCODE -ne 0) {
+    exit $LASTEXITCODE
+}
+
+& $report tests/fixtures/tiny reports/package-verify
+if ($LASTEXITCODE -ne 0) {
+    exit $LASTEXITCODE
+}
+
 Write-Host "verify-package: ok"
