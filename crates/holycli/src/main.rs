@@ -392,6 +392,35 @@ fn run() -> Result<(), String> {
 
             Ok(())
         }
+        "entrypoints" => {
+            let path = required_path(&args, "entrypoints")?;
+            let root = Path::new(path);
+            let report = scan_path(root)?;
+            let rows = entrypoint_files(root, &report.files);
+
+            if json {
+                print!("{{\"entrypoints\":[");
+                for (index, file) in rows.iter().enumerate() {
+                    if index > 0 {
+                        print!(",");
+                    }
+                    print!(
+                        "{{\"index\":{},\"file\":\"{}\"}}",
+                        index + 1,
+                        json_escape(&display(file))
+                    );
+                }
+                println!("],\"count\":{},\"status\":\"ok\"}}", rows.len());
+            } else {
+                for (index, file) in rows.iter().enumerate() {
+                    println!("{}\t{}", index + 1, display(file));
+                }
+                println!("entrypoints: {}", rows.len());
+                println!("status: ok");
+            }
+
+            Ok(())
+        }
         "dependency-order" => {
             let path = required_path(&args, "dependency-order")?;
             let root = Path::new(path);
@@ -517,7 +546,7 @@ fn run() -> Result<(), String> {
         }
         _ => {
             println!("holytools");
-            println!("usage: holytools <version|scan|stats|source-map|tokens|outline|symbols|find-symbol|include-graph|resolve-includes|missing-includes|dependency-order|reverse-includes|includes> [path] [name] [--json]");
+            println!("usage: holytools <version|scan|stats|source-map|tokens|outline|symbols|find-symbol|include-graph|resolve-includes|missing-includes|entrypoints|dependency-order|reverse-includes|includes> [path] [name] [--json]");
             Ok(())
         }
     }
@@ -616,6 +645,27 @@ fn resolved_includes(root: &Path, files: &[FileReport]) -> Vec<ResolvedInclude> 
         }
     }
 
+    rows.sort();
+    rows
+}
+
+fn entrypoint_files(root: &Path, files: &[FileReport]) -> Vec<PathBuf> {
+    let mut incoming = Vec::new();
+    for row in resolved_includes(root, files) {
+        if let Some(resolved) = row.resolved {
+            if files.iter().any(|file| file.path == resolved) {
+                incoming.push(resolved);
+            }
+        }
+    }
+    incoming.sort();
+    incoming.dedup();
+
+    let mut rows: Vec<PathBuf> = files
+        .iter()
+        .map(|file| file.path.clone())
+        .filter(|file| !incoming.contains(file))
+        .collect();
     rows.sort();
     rows
 }
