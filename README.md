@@ -1,32 +1,24 @@
 # DBYTE HOLYC TOOLS
 
-Windows-native read-only source navigator for HolyC, LoseThos, and TempleOS-style code.
+Windows-native read-only source navigator for HolyC, LoseThos, and TempleOS-style trees.
 
-This project does not fork TempleOS and does not rewrite source files. It reads HolyC-style source trees and emits deterministic text or JSON reports for inspection, indexing, source archaeology, and navigation.
+Final line: `v1.6.0 FINAL`
 
-## Status
+No source rewrite. No formatter. No VM. No fake C parser.
 
-`v1.6.0` is the current zip packaging release for the read-only source navigator line.
+It scans HolyC-style source, indexes symbols/includes, checks include resolution, finds likely entry files, and emits deterministic text/JSON reports.
 
-It provides:
+## Build
 
-- tokenizer output for a single HolyC file
-- tree stats for HolyC source roots
-- source-map summary output for source tree overview
-- missing include listing for source tree repair
-- entrypoint listing for files with no resolved incoming include
-- source tree report generation into text and JSON files
-- packaged support scripts for include checks and report generation
-- local ZIP packaging with SHA256 sidecar output
-- symbol listing and exact symbol lookup
-- file outline for includes, classes, and functions
-- include listing and include graph output
-- include resolution with missing/resolved status
-- dependency-first source ordering
-- reverse include lookup
-- include checking script for CI-style missing include failure
-- Windows package output with manifest, version file, and SHA256 checksum
-- CLI smoke tests for the shipped `holytools` binary
+```powershell
+cargo build --release -p holytools
+```
+
+Binary:
+
+```txt
+target/release/holytools.exe
+```
 
 ## Commands
 
@@ -48,39 +40,43 @@ holytools dependency-order <path> [--json]
 holytools reverse-includes <path> [--json]
 ```
 
-## Scripts
+## Fast path
 
 ```powershell
-./scripts/verify.ps1
-./scripts/check-includes.ps1 tests/fixtures/tiny
-./scripts/report.ps1 tests/fixtures/tiny reports/tiny
-./scripts/package-windows.ps1
-./scripts/verify-package.ps1
-./scripts/package-zip.ps1
-./scripts/release.ps1 v1.6.0
+holytools source-map tests/fixtures/tiny
+holytools missing-includes tests/fixtures/tiny
+holytools entrypoints tests/fixtures/tiny
 ```
 
-## Report
-
-Generate a source tree report directory:
+## Report pack
 
 ```powershell
 ./scripts/report.ps1 tests/fixtures/tiny reports/tiny
 ```
 
-The report directory contains text and JSON outputs for version, source-map, missing-includes, entrypoints, dependency-order, and reverse-includes.
+The report directory contains text and JSON output for:
+
+```txt
+version
+source-map
+missing-includes
+entrypoints
+dependency-order
+reverse-includes
+```
 
 ## Package
 
-The Windows package is written to:
-
-```txt
-dist/dbyte-holyc-tools-windows
+```powershell
+./scripts/package-windows.ps1
+./scripts/verify-package.ps1
+./scripts/package-zip.ps1
 ```
 
-The ZIP package is written to:
+Output:
 
 ```txt
+dist/dbyte-holyc-tools-windows/
 dist/dbyte-holyc-tools-windows.zip
 dist/dbyte-holyc-tools-windows.zip.sha256
 ```
@@ -98,39 +94,31 @@ scripts/check-includes.ps1
 scripts/report.ps1
 ```
 
-Packaged scripts use the packaged `holytools.exe` when they are run from the package directory.
-
-## Release
-
-Run the full release gate and push a tag with one command:
+## Release gate
 
 ```powershell
 ./scripts/release.ps1 v1.6.0
 ```
 
-The release script verifies formatting, builds, tests, source reports, package output, package manifest, package version text, SHA256 checksum, creates the ZIP package, verifies clean working tree, and checks remote tag state before pushing a tag.
-
-## Example workflow
-
-```powershell
-holytools source-map tests/fixtures/tiny
-holytools missing-includes tests/fixtures/tiny
-holytools entrypoints tests/fixtures/tiny
-./scripts/report.ps1 tests/fixtures/tiny reports/tiny
-./scripts/package-zip.ps1
-./scripts/check-includes.ps1 tests/fixtures/tiny
-```
-
-## Rules
-
-- Read-only by default.
-- Original HolyC / LoseThos / TempleOS source compatibility comes first.
-- Do not pretend HolyC is ordinary C.
-- Keep output deterministic and easy to diff.
-- Do not rewrite source files without an explicit future write mode.
+The gate runs format check, workspace check, tests, CLI verification, package verification, ZIP creation, clean tree check, and tag push.
 
 ## Verify
 
 ```powershell
 ./scripts/verify.ps1
+```
+
+Current smoke line:
+
+```txt
+10 cli smoke tests
+```
+
+## Rules
+
+```txt
+read-only by default
+HolyC compatibility first
+deterministic output
+no source mutation
 ```
