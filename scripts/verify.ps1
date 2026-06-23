@@ -28,6 +28,8 @@ Invoke-Step { cargo run -q -p holytools -- missing-includes tests/fixtures/tiny 
 Invoke-Step { cargo run -q -p holytools -- missing-includes tests/fixtures/tiny --json }
 Invoke-Step { cargo run -q -p holytools -- missing-includes tests/fixtures/missing }
 Invoke-Step { cargo run -q -p holytools -- missing-includes tests/fixtures/missing --json }
+Invoke-Step { cargo run -q -p holytools -- entrypoints tests/fixtures/tiny }
+Invoke-Step { cargo run -q -p holytools -- entrypoints tests/fixtures/tiny --json }
 Invoke-Step { cargo run -q -p holytools -- tokens tests/fixtures/tiny/hello.HC }
 Invoke-Step { cargo run -q -p holytools -- outline tests/fixtures/tiny/hello.HC }
 Invoke-Step { cargo run -q -p holytools -- symbols tests/fixtures/tiny }
