@@ -1,5 +1,13 @@
 # Changelog
 
+## v1.3.0
+
+Entrypoint inspection release.
+
+- Added `holytools entrypoints <path> [--json]` for files with no resolved incoming include.
+- Added CLI smoke tests for text and JSON entrypoint output.
+- Added entrypoint checks to `scripts/verify.ps1`.
+
 ## v1.2.0
 
 Missing-include inspection release.
