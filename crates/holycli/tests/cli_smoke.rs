@@ -127,6 +127,26 @@ fn missing_includes_json_reports_missing_target() {
 }
 
 #[test]
+fn entrypoints_reports_source_file() {
+    let stdout = run_with_tiny_fixture("entrypoints", &[]);
+
+    assert!(stdout.contains("1\t"));
+    assert!(stdout.contains("hello.HC"));
+    assert!(stdout.contains("entrypoints: 1"));
+    assert!(stdout.contains("status: ok"));
+}
+
+#[test]
+fn entrypoints_json_reports_source_file() {
+    let stdout = run_with_tiny_fixture("entrypoints", &["--json"]);
+
+    assert!(stdout.contains("\"file\":"));
+    assert!(stdout.contains("hello.HC"));
+    assert!(stdout.contains("\"count\":1"));
+    assert!(stdout.contains("\"status\":\"ok\""));
+}
+
+#[test]
 fn resolve_includes_json_reports_no_missing_includes() {
     let stdout = run_with_tiny_fixture("resolve-includes", &["--json"]);
 
