@@ -6,7 +6,7 @@ This project does not fork TempleOS and does not rewrite source files. It reads 
 
 ## Status
 
-`v1.5.0` is the current packaged support scripts release for the read-only source navigator line.
+`v1.6.0` is the current zip packaging release for the read-only source navigator line.
 
 It provides:
 
@@ -17,6 +17,7 @@ It provides:
 - entrypoint listing for files with no resolved incoming include
 - source tree report generation into text and JSON files
 - packaged support scripts for include checks and report generation
+- local ZIP packaging with SHA256 sidecar output
 - symbol listing and exact symbol lookup
 - file outline for includes, classes, and functions
 - include listing and include graph output
@@ -55,7 +56,8 @@ holytools reverse-includes <path> [--json]
 ./scripts/report.ps1 tests/fixtures/tiny reports/tiny
 ./scripts/package-windows.ps1
 ./scripts/verify-package.ps1
-./scripts/release.ps1 v1.5.0
+./scripts/package-zip.ps1
+./scripts/release.ps1 v1.6.0
 ```
 
 ## Report
@@ -74,6 +76,13 @@ The Windows package is written to:
 
 ```txt
 dist/dbyte-holyc-tools-windows
+```
+
+The ZIP package is written to:
+
+```txt
+dist/dbyte-holyc-tools-windows.zip
+dist/dbyte-holyc-tools-windows.zip.sha256
 ```
 
 Package contents:
@@ -96,10 +105,10 @@ Packaged scripts use the packaged `holytools.exe` when they are run from the pac
 Run the full release gate and push a tag with one command:
 
 ```powershell
-./scripts/release.ps1 v1.5.0
+./scripts/release.ps1 v1.6.0
 ```
 
-The release script verifies formatting, builds, tests, source reports, package output, package manifest, package version text, SHA256 checksum, clean working tree, and remote tag state before pushing a tag.
+The release script verifies formatting, builds, tests, source reports, package output, package manifest, package version text, SHA256 checksum, creates the ZIP package, verifies clean working tree, and checks remote tag state before pushing a tag.
 
 ## Example workflow
 
@@ -108,6 +117,7 @@ holytools source-map tests/fixtures/tiny
 holytools missing-includes tests/fixtures/tiny
 holytools entrypoints tests/fixtures/tiny
 ./scripts/report.ps1 tests/fixtures/tiny reports/tiny
+./scripts/package-zip.ps1
 ./scripts/check-includes.ps1 tests/fixtures/tiny
 ```
 
