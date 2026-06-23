@@ -23,9 +23,16 @@ function Invoke-Step {
     }
 }
 
-$tool = Join-Path $PSScriptRoot "../target/release/holytools.exe"
-if (-not (Test-Path $tool)) {
-    Invoke-Step { cargo build --release -p holytools }
+$packagedTool = Join-Path $PSScriptRoot "../holytools.exe"
+$repoTool = Join-Path $PSScriptRoot "../target/release/holytools.exe"
+
+if (Test-Path $packagedTool) {
+    $tool = $packagedTool
+} else {
+    $tool = $repoTool
+    if (-not (Test-Path $tool)) {
+        Invoke-Step { cargo build --release -p holytools }
+    }
 }
 
 New-Item -ItemType Directory -Force -Path $Out | Out-Null
