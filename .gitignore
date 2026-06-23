@@ -1,5 +1,6 @@
 /target/
 /dist/
+/reports/
 .DS_Store
 Thumbs.db
 webhook.json
