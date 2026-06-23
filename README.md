@@ -8,6 +8,8 @@ No source rewrite. No formatter. No VM. No fake C parser.
 
 It scans HolyC-style source, indexes symbols/includes, checks include resolution, finds likely entry files, and emits deterministic text/JSON reports.
 
+Full docs: [DOCS.md](DOCS.md)
+
 ## Build
 
 ```powershell
