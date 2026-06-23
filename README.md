@@ -3,6 +3,7 @@
 Windows-native read-only source navigator for HolyC, LoseThos, and TempleOS-style trees.
 
 Final line: `v1.6.0 FINAL`
+<img width="1196" height="623" alt="SHOT" src="https://github.com/user-attachments/assets/7d34edc9-882b-4bb5-bc66-4da6049aaa4f" />
 
 No source rewrite. No formatter. No VM. No fake C parser.
 
