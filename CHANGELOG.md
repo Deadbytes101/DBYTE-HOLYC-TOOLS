@@ -1,5 +1,14 @@
 # Changelog
 
+## v1.4.0
+
+Source tree report release.
+
+- Added `scripts/report.ps1` for generating source tree report files.
+- Report output includes version, source-map, missing-includes, entrypoints, dependency-order, and reverse-includes outputs.
+- Added `/reports/` to `.gitignore`.
+- No `holytools` command behavior changes.
+
 ## v1.3.0
 
 Entrypoint inspection release.
