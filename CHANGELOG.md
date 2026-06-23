@@ -1,5 +1,16 @@
 # Changelog
 
+## v1.5.0
+
+Packaged support scripts release.
+
+- Packaged `scripts/check-includes.ps1` and `scripts/report.ps1` with the Windows artifact.
+- Updated the package manifest to list packaged support scripts.
+- Updated package verification to require packaged support scripts.
+- Updated packaged support scripts to use the packaged `holytools.exe` when run from the package.
+- Package verification now runs the packaged include check and report script.
+- No `holytools` command behavior changes.
+
 ## v1.4.0
 
 Source tree report release.
