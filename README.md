@@ -6,7 +6,7 @@ This project does not fork TempleOS and does not rewrite source files. It reads 
 
 ## Status
 
-`v1.3.0` is the current source entrypoint inspection release for the read-only source navigator line.
+`v1.4.0` is the current source tree report release for the read-only source navigator line.
 
 It provides:
 
@@ -15,6 +15,7 @@ It provides:
 - source-map summary output for source tree overview
 - missing include listing for source tree repair
 - entrypoint listing for files with no resolved incoming include
+- source tree report generation into text and JSON files
 - symbol listing and exact symbol lookup
 - file outline for includes, classes, and functions
 - include listing and include graph output
@@ -50,10 +51,21 @@ holytools reverse-includes <path> [--json]
 ```powershell
 ./scripts/verify.ps1
 ./scripts/check-includes.ps1 tests/fixtures/tiny
+./scripts/report.ps1 tests/fixtures/tiny reports/tiny
 ./scripts/package-windows.ps1
 ./scripts/verify-package.ps1
-./scripts/release.ps1 v1.3.0
+./scripts/release.ps1 v1.4.0
 ```
+
+## Report
+
+Generate a source tree report directory:
+
+```powershell
+./scripts/report.ps1 tests/fixtures/tiny reports/tiny
+```
+
+The report directory contains text and JSON outputs for version, source-map, missing-includes, entrypoints, dependency-order, and reverse-includes.
 
 ## Package
 
@@ -79,7 +91,7 @@ MANIFEST.txt
 Run the full release gate and push a tag with one command:
 
 ```powershell
-./scripts/release.ps1 v1.3.0
+./scripts/release.ps1 v1.4.0
 ```
 
 The release script verifies formatting, builds, tests, source reports, package output, package manifest, package version text, SHA256 checksum, clean working tree, and remote tag state before pushing a tag.
@@ -90,12 +102,7 @@ The release script verifies formatting, builds, tests, source reports, package o
 holytools source-map tests/fixtures/tiny
 holytools missing-includes tests/fixtures/tiny
 holytools entrypoints tests/fixtures/tiny
-holytools stats tests/fixtures/tiny
-holytools outline tests/fixtures/tiny/hello.HC
-holytools find-symbol tests/fixtures/tiny Add
-holytools resolve-includes tests/fixtures/tiny
-holytools dependency-order tests/fixtures/tiny
-holytools reverse-includes tests/fixtures/tiny
+./scripts/report.ps1 tests/fixtures/tiny reports/tiny
 ./scripts/check-includes.ps1 tests/fixtures/tiny
 ```
 
