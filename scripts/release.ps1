@@ -33,6 +33,7 @@ Invoke-Step { cargo test --workspace }
 Invoke-Step { ./scripts/verify.ps1 }
 Invoke-Step { ./scripts/package-windows.ps1 }
 Invoke-Step { ./scripts/verify-package.ps1 }
+Invoke-Step { ./scripts/package-zip.ps1 }
 
 $status = git status --short
 if ($status) {
