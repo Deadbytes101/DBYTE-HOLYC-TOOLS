@@ -5,7 +5,13 @@ param(
 $ErrorActionPreference = "Stop"
 $PSNativeCommandUseErrorActionPreference = $true
 
-$json = cargo run -q -p holytools -- resolve-includes $Path --json
+$packagedTool = Join-Path $PSScriptRoot "../holytools.exe"
+if (Test-Path $packagedTool) {
+    $json = & $packagedTool resolve-includes $Path --json
+} else {
+    $json = cargo run -q -p holytools -- resolve-includes $Path --json
+}
+
 if ($LASTEXITCODE -ne 0) {
     exit $LASTEXITCODE
 }
