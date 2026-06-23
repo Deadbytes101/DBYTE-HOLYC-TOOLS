@@ -21,8 +21,12 @@ jobs:
         shell: pwsh
         run: ./scripts/verify-package.ps1
 
-      - name: upload artifact
+      - name: zip package
+        shell: pwsh
+        run: ./scripts/package-zip.ps1
+
+      - name: upload artifacts
         uses: actions/upload-artifact@v4
         with:
           name: dbyte-holyc-tools-windows
-          path: dist/dbyte-holyc-tools-windows/
+          path: dist/
