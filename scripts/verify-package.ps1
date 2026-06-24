@@ -5,14 +5,6 @@ param(
 $ErrorActionPreference = "Stop"
 $PSNativeCommandUseErrorActionPreference = $true
 
-$exe = Join-Path $PackageDir "holytools.exe"
-$readme = Join-Path $PackageDir "README.md"
-$changelog = Join-Path $PackageDir "CHANGELOG.md"
-$version = Join-Path $PackageDir "VERSION.txt"
-$checksums = Join-Path $PackageDir "SHA256SUMS.txt"
-$manifest = Join-Path $PackageDir "MANIFEST.txt"
-$checkIncludes = Join-Path $PackageDir "scripts/check-includes.ps1"
-$report = Join-Path $PackageDir "scripts/report.ps1"
 $requiredFiles = @(
     "holytools.exe",
     "README.md",
@@ -21,15 +13,35 @@ $requiredFiles = @(
     "SHA256SUMS.txt",
     "MANIFEST.txt",
     "scripts/check-includes.ps1",
-    "scripts/report.ps1"
+    "scripts/report.ps1",
+    "scripts/resolve-archaeology-includes.ps1",
+    "scripts/reverse-archaeology.ps1",
+    "scripts/boot-chain-archaeology.ps1",
+    "scripts/spine-archaeology.ps1",
+    "scripts/kernel-contract-archaeology.ps1",
+    "scripts/compiler-contract-archaeology.ps1",
+    "scripts/adam-manifest-archaeology.ps1",
+    "scripts/desktop-surface-archaeology.ps1",
+    "scripts/adam-subsystems-archaeology.ps1",
+    "scripts/archaeology-findings.ps1",
+    "scripts/summarize-archaeology.ps1",
+    "scripts/run-archaeology.ps1"
 )
 
-foreach ($path in @($exe, $readme, $changelog, $version, $checksums, $manifest, $checkIncludes, $report)) {
+foreach ($file in $requiredFiles) {
+    $path = Join-Path $PackageDir $file
     if (!(Test-Path $path)) {
         Write-Error "missing package file: $path"
         exit 1
     }
 }
+
+$exe = Join-Path $PackageDir "holytools.exe"
+$version = Join-Path $PackageDir "VERSION.txt"
+$checksums = Join-Path $PackageDir "SHA256SUMS.txt"
+$manifest = Join-Path $PackageDir "MANIFEST.txt"
+$checkIncludes = Join-Path $PackageDir "scripts/check-includes.ps1"
+$report = Join-Path $PackageDir "scripts/report.ps1"
 
 $manifestFiles = Get-Content $manifest
 foreach ($file in $requiredFiles) {
