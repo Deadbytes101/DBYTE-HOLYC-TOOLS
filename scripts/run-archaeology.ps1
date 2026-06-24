@@ -39,6 +39,7 @@ function Invoke-Target {
 
     $targetOut = Join-Path $Out $Name
     Invoke-Step { ./scripts/report.ps1 $SourcePath $targetOut }
+    Invoke-Step { ./scripts/resolve-archaeology-includes.ps1 -SourcePath $SourcePath -OutDir $targetOut }
 
     $notes = Join-Path $targetOut "NOTES.md"
     if (-not (Test-Path $notes)) {
