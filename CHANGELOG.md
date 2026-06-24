@@ -1,5 +1,26 @@
 # Changelog
 
+## v1.7.0
+
+Source archaeology map release.
+
+- Added TempleOS archaeology report pipeline pages:
+  - `BOOT-CHAIN.md`
+  - `SPINE.md`
+  - `KERNEL-CONTRACT.md`
+  - `COMPILER-CONTRACT.md`
+  - `ADAM-MANIFEST.md`
+  - `DESKTOP-SURFACE.md`
+  - `ADAM-SUBSYSTEMS.md`
+  - `ARCHAEOLOGY-FINDINGS.md`
+- Added include resolver backed archaeology reports.
+- Added kernel, compiler, Adam, desktop, and subsystem contract/manifest classifiers.
+- Packaged the archaeology support scripts with the Windows artifact.
+- Updated package verification to require the archaeology support scripts.
+- Refreshed `README.md` and `ARCHAEOLOGY.md` for the archaeology map line.
+- Kept the source archaeology boundary read-only: no compile, no execute, no emulation, no source rewrite, no source-tree mutation.
+- No `holytools` command behavior changes.
+
 ## v1.6.0 FINAL
 
 Final package line.
