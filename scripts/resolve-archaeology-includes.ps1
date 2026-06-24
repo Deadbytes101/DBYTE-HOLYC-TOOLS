@@ -150,6 +150,6 @@ $html += "resolved: $resolvedCount"
 $html += "missing: $missingCount"
 $html += "status: ok</pre>"
 $html += "</section>"
-$html | Set-Content -Encoding utf8 (Join-Path $OutDir "include-resolve.html")
+$html | Set-Content -Encoding utf8 (Join-Path $OutDir "include-resolve.md")
 
 Write-Host "include-resolve: $OutDir"
