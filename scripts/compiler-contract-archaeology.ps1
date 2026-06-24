@@ -26,17 +26,18 @@ function CompilerAreaName {
 
     if ($Name -match '^(FSF_|FSG_)') { return "function-signature-flags" }
     if ($Name -match '^(CIntermediate|CIC|IC_|ICT_|ICF_)') { return "intermediate-code" }
-    if ($Name -match '^(COpt|OPT|OPTF_|OPTf_|GetOption|Echo)$') { return "optimizer-options" }
+    if ($Name -match '^(COpt|OPT|OPTF_|OPTf_|GetOption|Echo)') { return "optimizer-options" }
     if ($Name -match '^(CLex|Lex|LEX|TK_|CHashSrcSym|HTG_)') { return "lexer-symbols" }
-    if ($Name -match '^(CPrs|Prs|PRS)') { return "parser" }
+    if ($Name -match '^(CPrs|Prs|PRS|IsLexExpression)') { return "parser-expression" }
     if ($Name -match '^(CAsm|Asm|AOT_|CAOT|CInst|OC_|MDG_)') { return "assembler-aot" }
-    if ($Name -match '^(CCmp|Cmp|CMP|CInit)$') { return "compiler-control" }
+    if ($Name -match '^(CCmp|Cmp|CMP|CInit|CmpCtrl)') { return "compiler-control" }
     if ($Name -match '^(CHash|Hash)') { return "hash-symbol-table" }
     if ($Name -match '^(CCode|Code|CStreamBlk|StreamDir)') { return "code-stream" }
     if ($Name -match '^(ExeFile|ExeFile2|RunFile|RunFile2|LastFun)$') { return "execution-entry" }
     if ($Name -match '^(ExePrint|ExePrint2|ExePutS|ExePutS2|StreamExePrint|StreamPrint)$') { return "output-stream" }
     if ($Name -match '^(PassTrace|Trace)$') { return "trace-debug" }
-    if ($Name -match '^(ClassMemberLstDel)$') { return "class-metadata" }
+    if ($Name -match '^(ClassMemberLstDel|MemberLstDel|MemberMetaData)$') { return "class-metadata" }
+    if ($Name -match '^(Ui|Un)$') { return "builtin-types" }
     return "other"
 }
 
