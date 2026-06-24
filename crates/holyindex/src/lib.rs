@@ -230,7 +230,9 @@ fn collect_includes(tokens: &[&Token]) -> Vec<Include> {
 fn normalize_include_target(text: &str) -> String {
     let mut target = text.trim().trim_matches('"').trim().replace('\\', "/");
 
-    if let Some(rest) = target.strip_prefix("::/") {
+    if let Some(rest) = target.strip_prefix("~/") {
+        target = rest.to_string();
+    } else if let Some(rest) = target.strip_prefix("::/") {
         target = rest.to_string();
     } else {
         target = target.trim_start_matches('/').to_string();
@@ -325,5 +327,7 @@ mod tests {
             normalize_include_target("::/Adam/God/GodExt"),
             "Adam/God/GodExt.HC"
         );
+        assert_eq!(normalize_include_target("~/MakeHome"), "MakeHome.HC");
+        assert_eq!(normalize_include_target("~/TOS/MakeTOS"), "TOS/MakeTOS.HC");
     }
 }
