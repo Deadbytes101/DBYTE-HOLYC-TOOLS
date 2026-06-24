@@ -92,6 +92,11 @@ pub fn is_holy_source(path: &Path) -> bool {
         .unwrap_or(false)
 }
 
+pub fn read_source_lossy(path: &Path) -> Result<String, String> {
+    let bytes = fs::read(path).map_err(|err| format!("{}: {}", path.display(), err))?;
+    Ok(String::from_utf8_lossy(&bytes).into_owned())
+}
+
 pub fn scan_path(path: &Path) -> Result<ScanReport, String> {
     let mut paths = Vec::new();
     collect_files(path, &mut paths)?;
@@ -114,7 +119,7 @@ pub fn scan_file(path: &Path) -> Result<usize, String> {
 }
 
 pub fn scan_file_report(path: &Path) -> Result<FileReport, String> {
-    let source = fs::read_to_string(path).map_err(|err| format!("{}: {}", path.display(), err))?;
+    let source = read_source_lossy(path)?;
     let tokens = lex(&source);
     let visible = visible_tokens(&tokens);
 
@@ -247,6 +252,23 @@ mod tests {
         assert!(is_holy_source(Path::new("a.HH")));
         assert!(is_holy_source(Path::new("a.ZC")));
         assert!(!is_holy_source(Path::new("a.txt")));
+    }
+
+    #[test]
+    fn reads_source_with_non_utf8_bytes() {
+        let dir = std::env::temp_dir().join(format!(
+            "holyindex-non-utf8-{}",
+            std::process::id()
+        ));
+        let path = dir.join("Bad.HC");
+
+        fs::create_dir_all(&dir).unwrap();
+        fs::write(&path, b"I64 Main() { U8 *s=\"x\"; }\xff\n").unwrap();
+
+        let report = scan_file_report(&path).unwrap();
+        assert!(report.token_count > 0);
+
+        fs::remove_dir_all(&dir).unwrap();
     }
 
     #[test]
