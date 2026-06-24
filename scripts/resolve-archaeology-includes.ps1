@@ -39,8 +39,12 @@ function Normalize-Target {
 
     $value = $Target.Trim().Trim('"').Replace('\\', '/')
     $rooted = $false
+    $home = $false
 
-    if ($value.StartsWith('::/')) {
+    if ($value.StartsWith('~/')) {
+        $value = $value.Substring(2)
+        $home = $true
+    } elseif ($value.StartsWith('::/')) {
         $value = $value.Substring(3)
         $rooted = $true
     } elseif ($value.StartsWith('/')) {
@@ -51,6 +55,7 @@ function Normalize-Target {
     [pscustomobject]@{
         Target = $value
         Rooted = $rooted
+        Home = $home
     }
 }
 
@@ -62,13 +67,16 @@ function Resolve-Target {
     )
 
     $norm = Normalize-Target $Target
+    $fromPath = $From.Replace('/', '\\')
+    $parent = Split-Path $fromPath -Parent
     $candidates = @()
 
-    if ($norm.Rooted) {
+    if ($norm.Home) {
+        $candidates += Expand-Candidates $parent $norm.Target
+        $candidates += Expand-Candidates $Root $norm.Target
+    } elseif ($norm.Rooted) {
         $candidates += Expand-Candidates $Root $norm.Target
     } else {
-        $fromPath = $From.Replace('/', '\\')
-        $parent = Split-Path $fromPath -Parent
         $candidates += Expand-Candidates $parent $norm.Target
         $candidates += Expand-Candidates $Root $norm.Target
     }
