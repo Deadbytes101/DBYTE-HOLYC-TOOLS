@@ -35,6 +35,11 @@ function TreeName {
     $value
 }
 
+function FileName {
+    param([string]$Path)
+    [System.IO.Path]::GetFileName($Path.Replace('/', '\\'))
+}
+
 function ReadJson {
     param([string]$Path)
     if (Test-Path -LiteralPath $Path) {
@@ -63,10 +68,6 @@ $symbolsText = & $ToolPath symbols $SourcePath --json
 if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 $symbols = @(($symbolsText | ConvertFrom-Json).symbols)
 
-$includesText = & $ToolPath includes $SourcePath --json
-if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-$includes = @(($includesText | ConvertFrom-Json).includes)
-
 $sourceMap = ReadJson (Join-Path $OutDir "source-map.json")
 $includeResolve = ReadJson (Join-Path $OutDir "include-resolve.json")
 
@@ -74,11 +75,20 @@ $kindRows = @($symbols | Group-Object kind | Sort-Object Count -Descending)
 $dirRows = @($symbols | Group-Object { TreeName $_.file } | Sort-Object Count -Descending | Select-Object -First 30)
 $fileRows = @($symbols | Group-Object file | Sort-Object Count -Descending | Select-Object -First 30)
 
-$gateSymbols = @(
+$gateNameRows = @(
     $symbols |
         Where-Object { $_.name -match '^(Make|Load|Run|Start|Init|Boot|God|Doc|Gr|Cmp|Lex|Prs|Asm|K|Dsk)' } |
-        Sort-Object file,line,column |
-        Select-Object -First 160
+        Group-Object name |
+        Sort-Object Count -Descending |
+        Select-Object -First 80
+)
+
+$gateFileRows = @(
+    $symbols |
+        Where-Object { (FileName $_.file) -match '^(Make|Load|Run|Start|Boot|Init|Once|Home|Kernel|Compiler)' } |
+        Group-Object file |
+        Sort-Object Count -Descending |
+        Select-Object -First 80
 )
 
 $includeHotspots = @()
@@ -165,10 +175,19 @@ $html += "  </table>"
 $html += "</section>"
 
 $html += "<section>"
-$html += "  <h2>Gate Symbols</h2>"
+$html += "  <h2>Gate Name Pressure</h2>"
 $html += "  <table>"
-foreach ($row in $gateSymbols) {
-    $html += "    <tr><td>$(HtmlEscape (RepoPath $row.file))</td><td>$($row.line)</td><td>$(HtmlEscape $row.kind)</td><td>$(HtmlEscape $row.name)</td></tr>"
+foreach ($row in $gateNameRows) {
+    $html += "    <tr><td>$(HtmlEscape $row.Name)</td><td>$($row.Count)</td></tr>"
+}
+$html += "  </table>"
+$html += "</section>"
+
+$html += "<section>"
+$html += "  <h2>Gate File Pressure</h2>"
+$html += "  <table>"
+foreach ($row in $gateFileRows) {
+    $html += "    <tr><td>$(HtmlEscape (RepoPath $row.Name))</td><td>$($row.Count)</td></tr>"
 }
 $html += "  </table>"
 $html += "</section>"
