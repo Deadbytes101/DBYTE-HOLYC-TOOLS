@@ -213,7 +213,7 @@ fn collect_includes(tokens: &[&Token]) -> Vec<Include> {
             && matches!(tokens[index + 2].kind, TokenKind::String | TokenKind::Ident)
         {
             includes.push(Include {
-                target: trim_include_target(&tokens[index + 2].lexeme),
+                target: normalize_include_target(&tokens[index + 2].lexeme),
                 line: tokens[index].line,
                 column: tokens[index].column,
             });
@@ -227,8 +227,20 @@ fn collect_includes(tokens: &[&Token]) -> Vec<Include> {
     includes
 }
 
-fn trim_include_target(text: &str) -> String {
-    text.trim_matches('"').to_string()
+fn normalize_include_target(text: &str) -> String {
+    let mut target = text.trim().trim_matches('"').trim().replace('\\', "/");
+
+    if let Some(rest) = target.strip_prefix("::/") {
+        target = rest.to_string();
+    } else {
+        target = target.trim_start_matches('/').to_string();
+    }
+
+    if Path::new(&target).extension().is_none() {
+        target.push_str(".HC");
+    }
+
+    target
 }
 
 fn is_type_like(token: &Token) -> bool {
@@ -299,5 +311,19 @@ mod tests {
         assert_eq!(includes[0].target, "KernelA.HH");
         assert_eq!(includes[0].line, 1);
         assert_eq!(includes[0].column, 1);
+    }
+
+    #[test]
+    fn normalizes_templeos_include_targets() {
+        assert_eq!(normalize_include_target("  ADskA"), "ADskA.HC");
+        assert_eq!(normalize_include_target("Gr/MakeGr"), "Gr/MakeGr.HC");
+        assert_eq!(
+            normalize_include_target("/Kernel/KernelA.HH"),
+            "Kernel/KernelA.HH"
+        );
+        assert_eq!(
+            normalize_include_target("::/Adam/God/GodExt"),
+            "Adam/God/GodExt.HC"
+        );
     }
 }
