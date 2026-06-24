@@ -24,11 +24,17 @@ function HtmlEscape {
 function Write-Node {
     param(
         [string]$File,
-        [int]$Depth
+        [int]$Depth,
+        [string]$FromTarget = "",
+        [int]$FromLine = 0
     )
 
     $indent = "  " * $Depth
-    $script:lines += "$indent- $(RepoPath $File)"
+    if ($FromLine -gt 0) {
+        $script:lines += "$indent- line $FromLine $FromTarget -> $(RepoPath $File)"
+    } else {
+        $script:lines += "$indent- $(RepoPath $File)"
+    }
 
     if ($Depth -ge $MaxDepth) {
         return
@@ -41,9 +47,14 @@ function Write-Node {
 
     $script:visiting[$File] = $true
 
-    $children = @($script:edges[$File] | Sort-Object -Unique)
+    $children = @($script:edges[$File] | Sort-Object line,column,target,resolved)
+    $seen = @{}
     foreach ($child in $children) {
-        Write-Node $child ($Depth + 1)
+        if ($seen.ContainsKey($child.resolved)) {
+            continue
+        }
+        $seen[$child.resolved] = $true
+        Write-Node $child.resolved ($Depth + 1) $child.target $child.line
     }
 
     $script:visiting.Remove($File)
@@ -75,7 +86,12 @@ foreach ($row in $data.rows) {
         $script:edges[$from] = @()
     }
 
-    $script:edges[$from] += $to
+    $script:edges[$from] += [pscustomobject]@{
+        line = [int]$row.line
+        column = [int]$row.column
+        target = [string]$row.target
+        resolved = $to
+    }
 }
 
 $script:lines = @()
@@ -98,9 +114,9 @@ $html += "  <pre>$(HtmlEscape (($script:lines -join "`n")))</pre>"
 $html += "</section>"
 $html += "<section>"
 $html += "  <h2>Reading Rule</h2>"
-$html += "  <pre>Read top down.
+$html += "  <pre>Read top down by source include line.
 When a branch fans out, inspect the Make file first.
-Treat this as source order, not runtime proof.</pre>"
+Treat this as source include order, not runtime proof.</pre>"
 $html += "</section>"
 $html | Set-Content -Encoding utf8 (Join-Path $OutDir "BOOT-CHAIN.md")
 
