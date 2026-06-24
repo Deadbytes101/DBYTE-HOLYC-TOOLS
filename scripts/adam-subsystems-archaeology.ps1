@@ -22,6 +22,46 @@ function HtmlEscape {
 function AreaName {
     param([string]$Target)
 
+    if ($Target -match '^(GrInitA|GrInitB|GrEnd)') { return "graphics-init-end" }
+    if ($Target -match '^(Gr\.HH|GrExt|GrGlbls)') { return "graphics-core" }
+    if ($Target -match '^(GrTextBase)') { return "graphics-text" }
+    if ($Target -match '^(GrAsm)') { return "graphics-asm" }
+    if ($Target -match '^(GrPalette)') { return "graphics-palette" }
+    if ($Target -match '^(GrDC)') { return "graphics-dc" }
+    if ($Target -match '^(GrMath)') { return "graphics-math" }
+    if ($Target -match '^(GrScrn|ScrnCast)') { return "graphics-screen" }
+    if ($Target -match '^(GrBitMap)') { return "graphics-bitmap" }
+    if ($Target -match '^(GrPrimatives|GrComposites)') { return "graphics-primitives" }
+    if ($Target -match '^(Sprite|GrSpritePlot)') { return "sprite-editor" }
+
+    if ($Target -match '^(ADskA|ADskB)') { return "disk-core" }
+    if ($Target -match '^(DskPrt)') { return "disk-partition" }
+    if ($Target -match '^(Mount)') { return "disk-mount" }
+    if ($Target -match '^(DskChk)') { return "disk-check" }
+    if ($Target -match '^(FileMgr)') { return "file-manager" }
+
+    if ($Target -match '^(DocExt|DocNew|DocInit|DocPlain)') { return "doc-core" }
+    if ($Target -match '^(DocBin|DocForm|DocDblBuf)') { return "doc-binary-buffer" }
+    if ($Target -match '^(DocHighlight|DocRecalc|DocRecalcLib)') { return "doc-highlight-recalc" }
+    if ($Target -match '^(DocFile|DocClipBoard)') { return "doc-file-clipboard" }
+    if ($Target -match '^(DocRun|DocMacro|DocCodeTools)') { return "doc-runtime-code" }
+    if ($Target -match '^(DocGet|DocChar|DocFind|DocLink|DocEd|DocPopUp|DocWidgetWiz|DocPutKey|DocPutS|DocTree)') { return "doc-edit-navigation" }
+    if ($Target -match '^(DocGr)') { return "doc-graphics" }
+    if ($Target -match '^(DocTerm)') { return "doc-terminal" }
+
+    if ($Target -match '^(CtrlsA)') { return "controls-core" }
+    if ($Target -match '^(CtrlsBttn)') { return "controls-button" }
+    if ($Target -match '^(CtrlsSlider)') { return "controls-slider" }
+
+    if ($Target -match '^(ACFill)') { return "autocomplete-fill" }
+    if ($Target -match '^(ACTask)') { return "autocomplete-task" }
+    if ($Target -match '^(ACInit)') { return "autocomplete-init" }
+
+    if ($Target -match '^(GodBible)') { return "god-bible" }
+    if ($Target -match '^(HolySpirit)') { return "god-runtime" }
+    if ($Target -match '^(GodSong)') { return "god-song" }
+    if ($Target -match '^(GodDoodle)') { return "god-doodle" }
+
     if ($Target -match '(^|/)Gr/') { return "graphics" }
     if ($Target -match '(^|/)ABlkDev/') { return "block-device" }
     if ($Target -match '(^|/)DolDoc/') { return "document-doldoc" }
