@@ -270,10 +270,7 @@ mod tests {
 
     #[test]
     fn reads_source_with_non_utf8_bytes() {
-        let dir = std::env::temp_dir().join(format!(
-            "holyindex-non-utf8-{}",
-            std::process::id()
-        ));
+        let dir = std::env::temp_dir().join(format!("holyindex-non-utf8-{}", std::process::id()));
         let path = dir.join("Bad.HC");
 
         fs::create_dir_all(&dir).unwrap();
