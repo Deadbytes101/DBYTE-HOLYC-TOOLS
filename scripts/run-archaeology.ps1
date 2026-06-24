@@ -46,6 +46,7 @@ function Invoke-Target {
     Invoke-Step { ./scripts/kernel-contract-archaeology.ps1 -SourcePath $SourcePath -OutDir $targetOut }
     Invoke-Step { ./scripts/compiler-contract-archaeology.ps1 -SourcePath $SourcePath -OutDir $targetOut }
     Invoke-Step { ./scripts/adam-manifest-archaeology.ps1 -SourcePath $SourcePath -OutDir $targetOut }
+    Invoke-Step { ./scripts/desktop-surface-archaeology.ps1 -SourcePath $SourcePath -OutDir $targetOut }
 
     $notes = Join-Path $targetOut "NOTES.md"
     if (-not (Test-Path $notes)) {
