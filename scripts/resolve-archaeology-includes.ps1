@@ -12,82 +12,7 @@ $ErrorActionPreference = "Stop"
 
 function Convert-RepoPath {
     param([string]$Path)
-    $Path.Replace('\\', '/')
-}
-
-function Expand-Candidates {
-    param(
-        [string]$Base,
-        [string]$Target
-    )
-
-    $baseTarget = Join-Path $Base $Target
-    $items = @($baseTarget)
-
-    if ([System.IO.Path]::GetExtension($Target) -eq "") {
-        $items += "$baseTarget.HC"
-        $items += "$baseTarget.HH"
-        $items += "$baseTarget.ZC"
-        $items += "$baseTarget.ZH"
-    }
-
-    $items
-}
-
-function Normalize-Target {
-    param([string]$Target)
-
-    $value = $Target.Trim().Trim('"').Replace('\\', '/')
-    $isRooted = $false
-    $isHomeAlias = $false
-
-    if ($value.StartsWith('~/')) {
-        $value = $value.Substring(2)
-        $isHomeAlias = $true
-    } elseif ($value.StartsWith('::/')) {
-        $value = $value.Substring(3)
-        $isRooted = $true
-    } elseif ($value.StartsWith('/')) {
-        $value = $value.TrimStart('/')
-        $isRooted = $true
-    }
-
-    [pscustomobject]@{
-        Target = $value
-        Rooted = $isRooted
-        HomeAlias = $isHomeAlias
-    }
-}
-
-function Resolve-Target {
-    param(
-        [string]$Root,
-        [string]$From,
-        [string]$Target
-    )
-
-    $norm = Normalize-Target $Target
-    $fromPath = $From.Replace('/', '\\')
-    $parent = Split-Path $fromPath -Parent
-    $candidates = @()
-
-    if ($norm.HomeAlias) {
-        $candidates += Expand-Candidates $parent $norm.Target
-        $candidates += Expand-Candidates $Root $norm.Target
-    } elseif ($norm.Rooted) {
-        $candidates += Expand-Candidates $Root $norm.Target
-    } else {
-        $candidates += Expand-Candidates $parent $norm.Target
-        $candidates += Expand-Candidates $Root $norm.Target
-    }
-
-    foreach ($candidate in $candidates) {
-        if (Test-Path -LiteralPath $candidate -PathType Leaf) {
-            return (Convert-RepoPath (Resolve-Path -LiteralPath $candidate).Path)
-        }
-    }
-
-    ""
+    $Path.Replace([char]92, [char]47)
 }
 
 if (-not (Test-Path -LiteralPath $ToolPath -PathType Leaf)) {
@@ -106,8 +31,8 @@ if (-not (Test-Path -LiteralPath $SourcePath)) {
 
 New-Item -ItemType Directory -Force $OutDir | Out-Null
 
-$root = (Resolve-Path -LiteralPath $SourcePath).Path
-$jsonText = & $ToolPath includes $SourcePath --json
+$root = Convert-RepoPath (Resolve-Path -LiteralPath $SourcePath).Path
+$jsonText = & $ToolPath resolve-includes $SourcePath --json
 if ($LASTEXITCODE -ne 0) {
     exit $LASTEXITCODE
 }
@@ -116,25 +41,21 @@ $data = $jsonText | ConvertFrom-Json
 $rows = @()
 
 foreach ($include in $data.includes) {
-    $target = ([string]$include.target).Trim()
-    $resolved = Resolve-Target $root ([string]$include.file) $target
-    $status = if ($resolved) { "resolved" } else { "missing" }
-
     $rows += [pscustomobject]@{
-        file = [string]$include.file
+        file = Convert-RepoPath ([string]$include.file)
         line = [int]$include.line
         column = [int]$include.column
-        target = $target
-        status = $status
-        resolved = $resolved
+        target = [string]$include.target
+        status = [string]$include.status
+        resolved = Convert-RepoPath ([string]$include.resolved)
     }
 }
 
-$resolvedCount = @($rows | Where-Object { $_.status -eq "resolved" }).Count
-$missingCount = @($rows | Where-Object { $_.status -eq "missing" }).Count
+$resolvedCount = [int]$data.resolved
+$missingCount = [int]$data.missing
 
 [pscustomobject]@{
-    source = (Convert-RepoPath $root)
+    source = $root
     includes = $rows.Count
     resolved = $resolvedCount
     missing = $missingCount
