@@ -25,7 +25,7 @@ function AdamAreaName {
     if ($Target -match '^Gr/') { return "graphics" }
     if ($Target -match '^ABlkDev/') { return "block-device" }
     if ($Target -match '^DolDoc/') { return "document-doldoc" }
-    if ($Target -match '^God/') { return "god-layer" }
+    if ($Target -match '(^|/)God/') { return "god-layer" }
     if ($Target -match '^Ctrls/') { return "controls" }
     if ($Target -match '^AutoComplete/') { return "autocomplete" }
     if ($Target -match '^(Menu|Win|WinMgr)') { return "window-menu" }
