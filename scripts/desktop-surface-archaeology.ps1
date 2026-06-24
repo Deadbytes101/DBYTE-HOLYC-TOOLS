@@ -24,15 +24,21 @@ function HtmlEscape {
 function SurfaceAreaName {
     param([string]$Name)
 
-    if ($Name -match '^(Menu|CMenu)') { return "menu" }
-    if ($Name -match '^(Win|CWin|WinMgr|CWinMgr|WIG_|WINMGR_)') { return "window-manager" }
-    if ($Name -match '^(Doc|CDoc|DOC|DolDoc|Ed|CEd)') { return "document-editor" }
+    if ($Name -match '^(Menu|CMenu|DrawMenu)') { return "menu" }
+    if ($Name -match '^(Win|CWin|WinMgr|CWinMgr|WIG_|WINMGR_|PopUp|Refresh|Kill)') { return "window-manager" }
+    if ($Name -match '^(Doc|CDoc|DOC|DolDoc|Ed|CEd|CDolDoc)') { return "document-editor" }
     if ($Name -match '^(Ctrl|CCtrl|Slider|Check|Button|Grid)') { return "controls" }
     if ($Name -match '^(AutoComplete|AC|CAutoComplete)') { return "autocomplete" }
-    if ($Name -match '^(WallPaper|Wallpaper)') { return "wallpaper" }
-    if ($Name -match '^(Dbg|ADbg|Debug|Dump|ClassRep|ClassRepD)') { return "debug-ui" }
-    if ($Name -match '^(Training|Tip)') { return "training-help" }
-    if ($Name -match '^(Mouse|Ms|CMs)') { return "mouse-input" }
+    if ($Name -match '^(WallPaper|Wallpaper|CWallPaper|CTaskWallPaperData|DrawTermBttn|LeftClickTermBttn)') { return "wallpaper" }
+    if ($Name -match '^(Dbg|ADbg|Debug|Dump|ClassRep|ClassRepD|FunRep|Uf|U|UpdateRegVarImg)') { return "debug-ui" }
+    if ($Name -match '^(Training|Tip|KeyMap|KMCompare|PostMsg)') { return "training-help" }
+    if ($Name -match '^(Mouse|Ms|CMs|DrawMs|DrawGrabMs)') { return "mouse-input" }
+    if ($Name -match '^(Lex|LexExcept)') { return "lexer-menu" }
+    if ($Name -match '^(ProgressBars|PROGRESS_BAR|DrawProgressBars|CProgress)') { return "progress-bars" }
+    if ($Name -match '^(DrawWinGrid)') { return "window-render" }
+    if ($Name -match '^(TextPrint|ExtendedASCII)') { return "text-render" }
+    if ($Name -match '^(MemCpy)') { return "memory-runtime" }
+    if ($Name -match '^(Sprite)') { return "sprite-graphics" }
     return "other"
 }
 
