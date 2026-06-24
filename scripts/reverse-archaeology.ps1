@@ -191,7 +191,7 @@ Then inspect missing include grammar.
 Do not claim secrets without source evidence.</pre>"
 $html += "</section>"
 
-$html | Set-Content -Encoding utf8 (Join-Path $OutDir "REVERSE.html")
+$html | Set-Content -Encoding utf8 (Join-Path $OutDir "REVERSE.md")
 
 $txt = @()
 $txt += "SOURCE REVERSE ARCHAEOLOGY"
