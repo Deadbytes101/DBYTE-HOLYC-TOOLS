@@ -25,15 +25,17 @@ function AreaName {
     param([string]$Name)
 
     if ($Name -match '^(I8_MIN|I16_MIN|I32_MIN|I64_MIN|U64_F64_MAX|F64_MAX|F64_MIN|inf|pi|exp_1|log2_10|log2_e|log10_2|loge_2|sqrt2|eps|ToI64|ans|ansf)$') { return "base-math-constants" }
+    if ($Name -match '^(CDate|CDateStruct)$') { return "time-date" }
     if ($Name -match '^(Complex|CD2|CD3|CD2I32|CD3I32|CD2I64|CD3I64|COrder|CMass|CSpring|CMathODE|CColor|CBGR)') { return "geometry-physics" }
     if ($Name -match '^(CQue|CFifo|CArray|CMember)') { return "queue-array-metadata" }
-    if ($Name -match '^(C?CPU|LAPIC|HPET|RFLAG|MP_|CGDT|CTSS|CSysFixedArea|CSysLimitBase|CAP16BitInit)') { return "cpu-platform" }
+    if ($Name -match '^(CKernel|CSema|CCntsGlbls|CDevGlbls)$') { return "kernel-core" }
+    if ($Name -match '^(C?CPU|LAPIC|HPET|RFLAG|MP_|CGDT|CTSS|CSysFixedArea|CSysLimitBase|CAP16BitInit|CRAX|CPCIDev)') { return "cpu-platform" }
     if ($Name -match '^(CTask|CJob|Job|Task|SYS_TIMER|WINMGR|WIG_|RLf_|DISPLAY|CWin|Win|CViewAngles|CProgress)') { return "task-window-runtime" }
     if ($Name -match '^(CMem|MEM_|CHeap|Heap|CBlkPool)') { return "memory-heap" }
-    if ($Name -match '^(CDrv|CBlkDev|CBlkDevGlbls|CDir|CFile|FAT|RS_|DVD_|BLK_|Dsk|File|FUG_|CDIR|CMBR|CMasterBoot|CRedSeaBoot|CFAT|CATAPI|CISO|CPalindrome)') { return "disk-file-system" }
+    if ($Name -match '^(CBinFile|CPatchTable|CDrv|CBlkDev|CBlkDevGlbls|CDir|CFile|FAT|RS_|DVD_|BLK_|Dsk|File|FUG_|CDIR|CMBR|CMasterBoot|CRedSeaBoot|CFAT|CATAPI|CISO|CPalindrome)') { return "disk-file-system" }
     if ($Name -match '^(CDoc|Doc|DOC|CEd)') { return "document-doldoc" }
     if ($Name -match '^(CDC|CGr|Gr|CBGR|ROP_|SFG_|CColor|CScrn|Sprite|CGrid)') { return "graphics" }
-    if ($Name -match '^(CHash|Hash|HTG_|CAOT|CIntermediate|CCode|CLex|CCmp|CAsm|COpt|CInst|OC_|MDG_|FSF_|FSG_|CStreamBlk|CUAsm)') { return "compiler-runtime" }
+    if ($Name -match '^(CHash|Hash|HTG_|CAOT|CIntermediate|CIC|CPrs|CCode|CLex|CCmp|CAsm|COpt|CInst|OC_|MDG_|FSF_|FSG_|CStreamBlk|CUAsm|OPTF_|AOT_|CAbsCnts|CExternUsage|offset)') { return "compiler-runtime" }
     if ($Name -match '^(CKbd|CMs|SCF_|CKey)') { return "input" }
     if ($Name -match '^(CAutoComplete|CHashAC)') { return "autocomplete" }
     if ($Name -match '^(CSnd|CAUData)') { return "sound" }
