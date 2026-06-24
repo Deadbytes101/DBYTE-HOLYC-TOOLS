@@ -12,7 +12,7 @@ $ErrorActionPreference = "Stop"
 
 function RepoPath {
     param([string]$Path)
-    $Path.Replace('\\', '/')
+    $Path.Replace([char]92, [char]47)
 }
 
 function HtmlEscape {
@@ -58,7 +58,7 @@ if (-not (Test-Path -LiteralPath $resolvePath)) {
 }
 
 $data = Get-Content -LiteralPath $resolvePath -Raw | ConvertFrom-Json
-$root = (Resolve-Path -LiteralPath $SourcePath).Path
+$root = RepoPath (Resolve-Path -LiteralPath $SourcePath).Path
 $start = Join-Path $root "StartOS.HC"
 $start = RepoPath (Resolve-Path -LiteralPath $start).Path
 
