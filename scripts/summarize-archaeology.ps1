@@ -50,13 +50,11 @@ $lines += "If reverse edges are high, the tree has shared pressure points."
 $lines += ""
 $lines += "## NEXT FILES"
 $lines += ""
-$lines += "```txt"
 $lines += "templeos/source-map.txt"
 $lines += "templeos/entrypoints.txt"
 $lines += "templeos/reverse-includes.txt"
 $lines += "losethos/source-map.txt"
 $lines += "sparrowos/source-map.txt"
-$lines += "```"
 
 $lines | Set-Content -Encoding utf8 $Out
 Write-Host "summary: $Out"
