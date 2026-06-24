@@ -12,6 +12,16 @@ foreach ($target in $targets) {
     $map = Join-Path $Root "$target/source-map.json"
     if (Test-Path $map) {
         $json = Get-Content $map -Raw | ConvertFrom-Json
+        $resolvePath = Join-Path $Root "$target/include-resolve.json"
+        $resolved = $json.resolved_includes
+        $missing = $json.missing_includes
+
+        if (Test-Path $resolvePath) {
+            $resolve = Get-Content $resolvePath -Raw | ConvertFrom-Json
+            $resolved = $resolve.resolved
+            $missing = $resolve.missing
+        }
+
         $rows += [pscustomobject]@{
             Name = $target
             Files = $json.holy_files
@@ -20,8 +30,8 @@ foreach ($target in $targets) {
             Classes = $json.classes
             Includes = $json.includes
             AsmBlocks = $json.asm_blocks
-            Resolved = $json.resolved_includes
-            Missing = $json.missing_includes
+            Resolved = $resolved
+            Missing = $missing
             DependencyFiles = $json.dependency_files
             ReverseEdges = $json.reverse_edges
         }
@@ -31,30 +41,26 @@ foreach ($target in $targets) {
 New-Item -ItemType Directory -Force (Split-Path $Out) | Out-Null
 
 $lines = @()
-$lines += "# SOURCE ARCHAEOLOGY SUMMARY"
-$lines += ""
-$lines += "| target | files | tokens | funcs | classes | includes | asm | resolved | missing | deps | reverse |"
-$lines += "|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|"
+$lines += "<h1>SOURCE ARCHAEOLOGY SUMMARY</h1>"
+$lines += "<section>"
+$lines += "  <h2>Counts</h2>"
+$lines += "  <table>"
+$lines += "    <tr><th>target</th><th>files</th><th>tokens</th><th>funcs</th><th>classes</th><th>includes</th><th>asm</th><th>resolved</th><th>missing</th><th>deps</th><th>reverse</th></tr>"
 
 foreach ($row in $rows) {
-    $lines += "| $($row.Name) | $($row.Files) | $($row.Tokens) | $($row.Functions) | $($row.Classes) | $($row.Includes) | $($row.AsmBlocks) | $($row.Resolved) | $($row.Missing) | $($row.DependencyFiles) | $($row.ReverseEdges) |"
+    $lines += "    <tr><td>$($row.Name)</td><td>$($row.Files)</td><td>$($row.Tokens)</td><td>$($row.Functions)</td><td>$($row.Classes)</td><td>$($row.Includes)</td><td>$($row.AsmBlocks)</td><td>$($row.Resolved)</td><td>$($row.Missing)</td><td>$($row.DependencyFiles)</td><td>$($row.ReverseEdges)</td></tr>"
 }
 
-$lines += ""
-$lines += "## READ THIS FIRST"
-$lines += ""
-$lines += "Start with the tree that has the cleanest include graph."
-$lines += "If missing includes are high, fix the source root path before making theories."
-$lines += "If entrypoints are high, the tree may be split into many independent programs."
-$lines += "If reverse edges are high, the tree has shared pressure points."
-$lines += ""
-$lines += "## NEXT FILES"
-$lines += ""
-$lines += "templeos/source-map.txt"
-$lines += "templeos/entrypoints.txt"
-$lines += "templeos/reverse-includes.txt"
+$lines += "  </table>"
+$lines += "</section>"
+$lines += "<section>"
+$lines += "  <h2>Next</h2>"
+$lines += "  <pre>templeos/source-map.txt"
+$lines += "templeos/include-resolve.md"
+$lines += "templeos/REVERSE.md"
 $lines += "losethos/source-map.txt"
-$lines += "sparrowos/source-map.txt"
+$lines += "sparrowos/source-map.txt</pre>"
+$lines += "</section>"
 
 $lines | Set-Content -Encoding utf8 $Out
 Write-Host "summary: $Out"
