@@ -1,11 +1,11 @@
 <h1>DBYTE HOLYC TOOLS</h1>
 
 <p>
-  Windows-native read-only source navigator for HolyC, LoseThos, and TempleOS-style trees.
+  Windows-native read-only source navigator and archaeology reporter for HolyC, LoseThos, SparrowOS, and TempleOS-style trees.
 </p>
 
 <p>
-  <strong>Final line:</strong> <code>v1.6.0 FINAL</code>
+  <strong>Current line:</strong> <code>v1.7.0 ARCHAEOLOGY MAP</code>
 </p>
 
 <img width="1196" height="623" alt="SHOT" src="https://github.com/user-attachments/assets/7d34edc9-882b-4bb5-bc66-4da6049aaa4f" />
@@ -15,14 +15,16 @@
   <pre>No source rewrite.
 No formatter.
 No VM.
-No fake C parser.</pre>
+No fake C parser.
+No source-tree mutation.</pre>
 </section>
 
 <section>
   <h2>What it does</h2>
   <p>
     It scans HolyC-style source, indexes symbols/includes, checks include resolution,
-    finds likely entry files, and emits deterministic text/JSON reports.
+    finds likely entry files, emits deterministic text/JSON reports, and builds
+    read-only source archaeology maps.
   </p>
 </section>
 
@@ -35,7 +37,7 @@ No fake C parser.</pre>
     </tr>
     <tr>
       <td><a href="ARCHAEOLOGY.md">ARCHAEOLOGY.md</a></td>
-      <td>TempleOS / LoseThos / SparrowOS dig site</td>
+      <td>source archaeology workflow</td>
     </tr>
   </table>
 </section>
@@ -77,12 +79,17 @@ holytools entrypoints tests/fixtures/tiny</pre>
   <h2>Report pack</h2>
   <pre>./scripts/report.ps1 tests/fixtures/tiny reports/tiny</pre>
   <table>
-    <tr><td>version</td></tr>
-    <tr><td>source-map</td></tr>
-    <tr><td>missing-includes</td></tr>
-    <tr><td>entrypoints</td></tr>
-    <tr><td>dependency-order</td></tr>
-    <tr><td>reverse-includes</td></tr>
+    <tr><td>version.txt</td></tr>
+    <tr><td>source-map.txt</td></tr>
+    <tr><td>source-map.json</td></tr>
+    <tr><td>missing-includes.txt</td></tr>
+    <tr><td>missing-includes.json</td></tr>
+    <tr><td>entrypoints.txt</td></tr>
+    <tr><td>entrypoints.json</td></tr>
+    <tr><td>dependency-order.txt</td></tr>
+    <tr><td>dependency-order.json</td></tr>
+    <tr><td>reverse-includes.txt</td></tr>
+    <tr><td>reverse-includes.json</td></tr>
   </table>
 </section>
 
@@ -95,6 +102,30 @@ holytools entrypoints tests/fixtures/tiny</pre>
 reports/archaeology/templeos/
 reports/archaeology/losethos/
 reports/archaeology/sparrowos/</pre>
+</section>
+
+<section>
+  <h2>TempleOS archaeology evidence</h2>
+  <table>
+    <tr><td>include-resolve.md</td><td>include resolver proof</td></tr>
+    <tr><td>REVERSE.md</td><td>reverse include pressure</td></tr>
+    <tr><td>BOOT-CHAIN.md</td><td>StartOS source load chain</td></tr>
+    <tr><td>SPINE.md</td><td>root outline checkpoints</td></tr>
+    <tr><td>KERNEL-CONTRACT.md</td><td>KernelA public contract map</td></tr>
+    <tr><td>COMPILER-CONTRACT.md</td><td>CompilerA/B contract map</td></tr>
+    <tr><td>ADAM-MANIFEST.md</td><td>Adam top-level manifest</td></tr>
+    <tr><td>DESKTOP-SURFACE.md</td><td>Adam desktop and UI surface</td></tr>
+    <tr><td>ADAM-SUBSYSTEMS.md</td><td>second-level Adam subsystem manifests</td></tr>
+    <tr><td>ARCHAEOLOGY-FINDINGS.md</td><td>single-page findings summary</td></tr>
+  </table>
+</section>
+
+<section>
+  <h2>Known TempleOS proof line</h2>
+  <pre>includes: 229
+resolved-includes: 229
+missing-includes: 0
+pipeline: ok</pre>
 </section>
 
 <section>
@@ -117,12 +148,24 @@ VERSION.txt
 SHA256SUMS.txt
 MANIFEST.txt
 scripts/check-includes.ps1
-scripts/report.ps1</pre>
+scripts/report.ps1
+scripts/resolve-archaeology-includes.ps1
+scripts/reverse-archaeology.ps1
+scripts/boot-chain-archaeology.ps1
+scripts/spine-archaeology.ps1
+scripts/kernel-contract-archaeology.ps1
+scripts/compiler-contract-archaeology.ps1
+scripts/adam-manifest-archaeology.ps1
+scripts/desktop-surface-archaeology.ps1
+scripts/adam-subsystems-archaeology.ps1
+scripts/archaeology-findings.ps1
+scripts/summarize-archaeology.ps1
+scripts/run-archaeology.ps1</pre>
 </section>
 
 <section>
   <h2>Release gate</h2>
-  <pre>./scripts/release.ps1 v1.6.0</pre>
+  <pre>./scripts/release.ps1 v1.7.0</pre>
   <p>
     The gate runs format check, workspace check, tests, CLI verification,
     package verification, ZIP creation, clean tree check, and tag push.
@@ -141,5 +184,5 @@ scripts/report.ps1</pre>
   <pre>read-only by default
 HolyC compatibility first
 deterministic output
-no source mutation</pre>
+source archaeology without source mutation</pre>
 </section>
