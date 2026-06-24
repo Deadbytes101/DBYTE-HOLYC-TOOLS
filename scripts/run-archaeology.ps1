@@ -86,4 +86,5 @@ if (-not $TempleOS -and -not $LoseThos -and -not $SparrowOS) {
     exit 1
 }
 
+Invoke-Step { ./scripts/summarize-archaeology.ps1 $Out }
 Write-Host "archaeology: ok"
