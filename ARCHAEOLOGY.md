@@ -33,6 +33,7 @@ Do not compare everything before the first full map exists.
 ## Report layout
 
 ```txt
+reports/archaeology/SUMMARY.md
 reports/archaeology/templeos/
 reports/archaeology/losethos/
 reports/archaeology/sparrowos/
@@ -72,6 +73,12 @@ Run one target at a time if the trees are not all ready.
 ./scripts/run-archaeology.ps1 -TempleOS D:/src/TempleOS
 ```
 
+The runner writes target reports and refreshes:
+
+```txt
+reports/archaeology/SUMMARY.md
+```
+
 ## Reading order
 
 For every target:
@@ -83,6 +90,12 @@ For every target:
 4. dependency-order.txt
 5. reverse-includes.txt
 6. NOTES.md
+```
+
+Then read the summary table.
+
+```txt
+reports/archaeology/SUMMARY.md
 ```
 
 Do not start with opinions. Start with counts.
