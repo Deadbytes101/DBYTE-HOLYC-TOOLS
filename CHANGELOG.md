@@ -1,5 +1,17 @@
 # Changelog
 
+## v1.8.1
+
+Oracle voice release.
+
+- Added `--voice plain|uncle` to `holytools oracle`.
+- Added `OLD EGYPTIAN UNCLE` voice rendering for built-in oracle lines.
+- Added `voice` to text and JSON oracle output.
+- Stripped UTF-8 BOM from custom corpus lines.
+- Updated `holytools oracle-keymap` helper text to mention voice mode.
+- Added CLI smoke tests for uncle text and JSON output.
+- Documented voice mode as a display skin over random text, not a supernatural claim.
+
 ## v1.8.0
 
 Oracle/random text lab release.
