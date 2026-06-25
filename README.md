@@ -1,11 +1,11 @@
 <h1>DBYTE HOLYC TOOLS</h1>
 
 <p>
-  Windows-native read-only source navigator and archaeology reporter for HolyC, LoseThos, SparrowOS, and TempleOS-style trees.
+  Windows-native read-only source navigator, archaeology reporter, and oracle/random text lab for HolyC, LoseThos, SparrowOS, and TempleOS-style research.
 </p>
 
 <p>
-  <strong>Current line:</strong> <code>v1.7.0 ARCHAEOLOGY MAP</code>
+  <strong>Current line:</strong> <code>v1.8.0 ORACLE LAB</code>
 </p>
 
 <img width="1196" height="623" alt="SHOT" src="https://github.com/user-attachments/assets/7d34edc9-882b-4bb5-bc66-4da6049aaa4f" />
@@ -16,37 +16,17 @@
 No formatter.
 No VM.
 No fake C parser.
-No source-tree mutation.</pre>
+No source-tree mutation.
+Oracle output is random text lab output, not prophecy.</pre>
 </section>
 
 <section>
   <h2>What it does</h2>
   <p>
     It scans HolyC-style source, indexes symbols/includes, checks include resolution,
-    finds likely entry files, emits deterministic text/JSON reports, and builds
-    read-only source archaeology maps.
+    finds likely entry files, emits deterministic text/JSON reports, builds
+    read-only source archaeology maps, and provides a Windows-friendly random text lab.
   </p>
-</section>
-
-<section>
-  <h2>Docs</h2>
-  <table>
-    <tr>
-      <td><a href="DOCS.md">DOCS.md</a></td>
-      <td>full manual</td>
-    </tr>
-    <tr>
-      <td><a href="ARCHAEOLOGY.md">ARCHAEOLOGY.md</a></td>
-      <td>source archaeology workflow</td>
-    </tr>
-  </table>
-</section>
-
-<section>
-  <h2>Build</h2>
-  <pre>cargo build --release -p holytools</pre>
-  <p>Binary:</p>
-  <pre>target/release/holytools.exe</pre>
 </section>
 
 <section>
@@ -65,14 +45,37 @@ holytools includes &lt;path&gt; [--json]
 holytools include-graph &lt;path&gt; [--json]
 holytools resolve-includes &lt;path&gt; [--json]
 holytools dependency-order &lt;path&gt; [--json]
-holytools reverse-includes &lt;path&gt; [--json]</pre>
+holytools reverse-includes &lt;path&gt; [--json]
+holytools oracle [--preset core|after-egypt] [--count N] [--seed N] [--corpus file.txt] [--json]
+holytools oracle-keymap</pre>
+</section>
+
+<section>
+  <h2>Oracle Lab</h2>
+  <pre>holytools oracle
+holytools oracle --seed 777 --count 3
+holytools oracle --preset after-egypt --seed 777
+holytools oracle --corpus my-lines.txt --count 5
+holytools oracle --json
+holytools oracle-keymap</pre>
+  <p>
+    The oracle command is a TempleOS-inspired random text research tool. It does not claim supernatural output.
+  </p>
+</section>
+
+<section>
+  <h2>Build</h2>
+  <pre>cargo build --release -p holytools</pre>
+  <p>Binary:</p>
+  <pre>target/release/holytools.exe</pre>
 </section>
 
 <section>
   <h2>Fast path</h2>
   <pre>holytools source-map tests/fixtures/tiny
 holytools missing-includes tests/fixtures/tiny
-holytools entrypoints tests/fixtures/tiny</pre>
+holytools entrypoints tests/fixtures/tiny
+holytools oracle --preset after-egypt --seed 7 --count 2</pre>
 </section>
 
 <section>
@@ -165,7 +168,7 @@ scripts/run-archaeology.ps1</pre>
 
 <section>
   <h2>Release gate</h2>
-  <pre>./scripts/release.ps1 v1.7.0</pre>
+  <pre>./scripts/release.ps1 v1.8.0</pre>
   <p>
     The gate runs format check, workspace check, tests, CLI verification,
     package verification, ZIP creation, clean tree check, and tag push.
@@ -176,13 +179,14 @@ scripts/run-archaeology.ps1</pre>
   <h2>Verify</h2>
   <pre>./scripts/verify.ps1</pre>
   <p>Current smoke line:</p>
-  <pre>10 cli smoke tests</pre>
+  <pre>12 cli smoke tests</pre>
 </section>
 
 <section>
   <h2>Final stance</h2>
   <pre>read-only by default
 HolyC compatibility first
-deterministic output
-source archaeology without source mutation</pre>
+deterministic output when seeded
+source archaeology without source mutation
+oracle/random text lab without supernatural claims</pre>
 </section>
