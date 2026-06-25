@@ -183,9 +183,7 @@ fn render_uncle(text: &str) -> String {
         "AFTER EGYPT: BUILD WITHOUT CHAINS" => {
             "build without chains. A tool should serve the hand, not own it."
         }
-        "AFTER EGYPT: READ BEFORE BELIEF" => {
-            "read before belief. Inspection keeps the fog away."
-        }
+        "AFTER EGYPT: READ BEFORE BELIEF" => "read before belief. Inspection keeps the fog away.",
         "AFTER EGYPT: THE SOURCE IS STILL" => {
             "the source is still. Sit down and listen with your eyes."
         }
