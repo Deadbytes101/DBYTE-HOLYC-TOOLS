@@ -377,7 +377,10 @@ fn run_resolve_includes(args: &[String], json: bool) -> Result<(), String> {
                 ),
                 None => println!(
                     "{}:{}:{}\t{}\tmissing\t-",
-                    display(&row.file), row.line, row.column, row.target
+                    display(&row.file),
+                    row.line,
+                    row.column,
+                    row.target
                 ),
             }
         }
@@ -417,7 +420,10 @@ fn run_missing_includes(args: &[String], json: bool) -> Result<(), String> {
         for row in &rows {
             println!(
                 "{}:{}:{}\t{}",
-                display(&row.file), row.line, row.column, row.target
+                display(&row.file),
+                row.line,
+                row.column,
+                row.target
             );
         }
         println!("missing: {}", rows.len());
@@ -570,7 +576,10 @@ fn run_includes(args: &[String], json: bool) -> Result<(), String> {
             for include in file.includes {
                 println!(
                     "{}:{}:{}\t{}",
-                    display(&file.path), include.line, include.column, include.target
+                    display(&file.path),
+                    include.line,
+                    include.column,
+                    include.target
                 );
             }
         }
