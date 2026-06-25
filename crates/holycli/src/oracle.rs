@@ -61,11 +61,9 @@ pub fn run(args: &[String], json: bool) -> Result<(), String> {
 }
 
 pub fn print_keymap() {
-    println!("PowerShell F7 current-session binding:");
-    println!("Set-PSReadLineKeyHandler -Key F7 -BriefDescription 'holytools oracle' -LongDescription 'Run holytools oracle' -ScriptBlock {{");
-    println!("    [Microsoft.PowerShell.PSConsoleReadLine]::Insert('& ./target/release/holytools.exe oracle --count 1')");
-    println!("    [Microsoft.PowerShell.PSConsoleReadLine]::AcceptLine()");
-    println!("}}");
+    println!("PowerShell F7 binding helper:");
+    println!("Bind F7 to run holytools oracle --count 1 from your shell profile.");
+    println!("Use a session-only binding first, then move it into your profile after testing.");
     println!("status: ok");
 }
 
@@ -106,7 +104,10 @@ fn load_corpus(args: &[String], preset: &str) -> Result<Vec<String>, String> {
             .collect();
 
         if lines.is_empty() {
-            return Err(format!("empty oracle corpus: {}", Path::new(path).display()));
+            return Err(format!(
+                "empty oracle corpus: {}",
+                Path::new(path).display()
+            ));
         }
 
         return Ok(lines);
@@ -217,7 +218,11 @@ struct XorShift64 {
 
 impl XorShift64 {
     fn new(seed: u64) -> Self {
-        let state = if seed == 0 { 0x9e37_79b9_7f4a_7c15 } else { seed };
+        let state = if seed == 0 {
+            0x9e37_79b9_7f4a_7c15
+        } else {
+            seed
+        };
         Self { state }
     }
 
