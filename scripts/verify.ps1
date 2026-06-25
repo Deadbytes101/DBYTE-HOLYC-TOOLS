@@ -42,6 +42,9 @@ Invoke-Step { cargo run -q -p holytools -- dependency-order tests/fixtures/tiny 
 Invoke-Step { cargo run -q -p holytools -- dependency-order tests/fixtures/tiny --json }
 Invoke-Step { cargo run -q -p holytools -- reverse-includes tests/fixtures/tiny }
 Invoke-Step { cargo run -q -p holytools -- reverse-includes tests/fixtures/tiny --json }
+Invoke-Step { cargo run -q -p holytools -- oracle --seed 7 --count 2 }
+Invoke-Step { cargo run -q -p holytools -- oracle --preset after-egypt --seed 7 --count 1 --json }
+Invoke-Step { cargo run -q -p holytools -- oracle-keymap }
 Invoke-Step { ./scripts/check-includes.ps1 tests/fixtures/tiny }
 
 Write-Host "verify: ok"
