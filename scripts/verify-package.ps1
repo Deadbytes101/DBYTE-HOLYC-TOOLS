@@ -81,4 +81,14 @@ if ($LASTEXITCODE -ne 0) {
     exit $LASTEXITCODE
 }
 
+& $exe oracle --seed 7 --count 2
+if ($LASTEXITCODE -ne 0) {
+    exit $LASTEXITCODE
+}
+
+& $exe oracle --preset after-egypt --seed 7 --count 1 --json
+if ($LASTEXITCODE -ne 0) {
+    exit $LASTEXITCODE
+}
+
 Write-Host "verify-package: ok"
