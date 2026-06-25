@@ -173,22 +173,18 @@ fn render_voice(text: &str, voice: Voice) -> String {
 fn render_uncle(text: &str) -> String {
     let body = match text {
         "AFTER EGYPT: LEAVE THE OLD MAP" => {
-            "boy, leave the old map. It taught you to walk, not where to stop."
+            "leave the old map. It taught you to walk, not where to stop."
         }
-        "AFTER EGYPT: COUNT THE GATES" => {
-            "count the gates before you call the noise a sign."
-        }
+        "AFTER EGYPT: COUNT THE GATES" => "count the gates before you call the noise a sign.",
         "AFTER EGYPT: CROSS THE TEXT DESERT" => {
             "cross the text desert. Dry code still carries water."
         }
-        "AFTER EGYPT: TRACE THE LIGHT" => {
-            "trace the light, but keep one hand on the source."
-        }
+        "AFTER EGYPT: TRACE THE LIGHT" => "trace the light, but keep one hand on the source.",
         "AFTER EGYPT: BUILD WITHOUT CHAINS" => {
             "build without chains. A tool should serve the hand, not own it."
         }
         "AFTER EGYPT: READ BEFORE BELIEF" => {
-            "read before belief. Faith without inspection is just fog."
+            "read before belief. Inspection keeps the fog away."
         }
         "AFTER EGYPT: THE SOURCE IS STILL" => {
             "the source is still. Sit down and listen with your eyes."
@@ -196,14 +192,14 @@ fn render_uncle(text: &str) -> String {
         "AFTER EGYPT: RANDOMNESS IS SIGNAL SHAPED BY THE READER" => {
             "randomness is sand. The reader shapes the footprint."
         }
-        "BUILD THE MAP" => "build the map, nephew. Wandering is cheaper after that.",
+        "BUILD THE MAP" => "build the map. Wandering is cheaper after that.",
         "COUNT BEFORE CLAIM" => "count before claim. A number is cleaner than a feeling.",
         "SOURCE STAYS STILL" => "source stays still. People are the moving part.",
         "READ THE BOOT CHAIN" => "read the boot chain. Beginnings confess more than endings.",
         "TRACE THE SYMBOL" => "trace the symbol until it stops lying by omission.",
         "ZERO MUTATION" => "zero mutation first. Touch nothing until you know what breathes.",
         "RANDOM IS A TOOL" => "random is a tool, not a throne.",
-        "MACHINE FIRST" => "machine first. Romance later.",
+        "MACHINE FIRST" => "machine first. Decoration later.",
         "FIND THE EDGE" => "find the edge. The edge tells you the shape.",
         "KEEP THE BOUNDARY" => "keep the boundary. That is how tools stay honest.",
         "WRITE THE REPORT" => "write the report. Memory without proof rots fast.",
