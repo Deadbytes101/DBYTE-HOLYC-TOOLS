@@ -1,3 +1,5 @@
+mod oracle;
+
 use holyindex::{scan_file_report, scan_path, FileReport};
 use holylex::lex;
 use std::env;
@@ -21,535 +23,566 @@ fn run() -> Result<(), String> {
     let json = has_flag(&args, "--json");
 
     match command {
-        "version" => {
-            println!("holytools {}", env!("CARGO_PKG_VERSION"));
-            println!("writes: none");
-            Ok(())
-        }
-        "scan" => {
-            let path = required_path(&args, "scan")?;
-            let report = scan_path(Path::new(path))?;
-
-            if json {
-                println!(
-                    "{{\"root\":\"{}\",\"holy_files\":{},\"status\":\"ok\"}}",
-                    json_escape(&display(Path::new(path))),
-                    report.files.len()
-                );
-            } else {
-                println!("root: {}", display(Path::new(path)));
-                println!("holy-files: {}", report.files.len());
-                println!("status: ok");
-            }
-
-            Ok(())
-        }
-        "stats" => {
-            let path = required_path(&args, "stats")?;
-            let report = scan_path(Path::new(path))?;
-
-            if json {
-                println!(
-                    "{{\"root\":\"{}\",\"holy_files\":{},\"tokens\":{},\"functions\":{},\"classes\":{},\"includes\":{},\"asm_blocks\":{},\"status\":\"ok\"}}",
-                    json_escape(&display(Path::new(path))),
-                    report.files.len(),
-                    report.token_count(),
-                    report.function_count(),
-                    report.class_count(),
-                    report.include_count(),
-                    report.asm_count()
-                );
-            } else {
-                println!("root: {}", display(Path::new(path)));
-                println!("holy-files: {}", report.files.len());
-                println!("tokens: {}", report.token_count());
-                println!("functions: {}", report.function_count());
-                println!("classes: {}", report.class_count());
-                println!("includes: {}", report.include_count());
-                println!("asm-blocks: {}", report.asm_count());
-                println!("status: ok");
-            }
-
-            Ok(())
-        }
-        "source-map" => {
-            let path = required_path(&args, "source-map")?;
-            let root = Path::new(path);
-            let report = scan_path(root)?;
-            let rows = resolved_includes(root, &report.files);
-            let resolved_count = rows.iter().filter(|row| row.resolved.is_some()).count();
-            let missing_count = rows.len() - resolved_count;
-            let dependency_files = dependency_order(root, &report.files).len();
-            let reverse_edges = rows.len();
-
-            if json {
-                println!(
-                    "{{\"root\":\"{}\",\"holy_files\":{},\"tokens\":{},\"functions\":{},\"classes\":{},\"includes\":{},\"asm_blocks\":{},\"resolved_includes\":{},\"missing_includes\":{},\"dependency_files\":{},\"reverse_edges\":{},\"status\":\"ok\"}}",
-                    json_escape(&display(root)),
-                    report.files.len(),
-                    report.token_count(),
-                    report.function_count(),
-                    report.class_count(),
-                    report.include_count(),
-                    report.asm_count(),
-                    resolved_count,
-                    missing_count,
-                    dependency_files,
-                    reverse_edges
-                );
-            } else {
-                println!("root: {}", display(root));
-                println!("holy-files: {}", report.files.len());
-                println!("tokens: {}", report.token_count());
-                println!("functions: {}", report.function_count());
-                println!("classes: {}", report.class_count());
-                println!("includes: {}", report.include_count());
-                println!("asm-blocks: {}", report.asm_count());
-                println!("resolved-includes: {resolved_count}");
-                println!("missing-includes: {missing_count}");
-                println!("dependency-files: {dependency_files}");
-                println!("reverse-edges: {reverse_edges}");
-                println!("status: ok");
-            }
-
-            Ok(())
-        }
-        "tokens" => {
-            let path = required_path(&args, "tokens")?;
-            let source = fs::read_to_string(path).map_err(|err| err.to_string())?;
-
-            for token in lex(&source).into_iter().filter(|token| !token.is_trivia()) {
-                println!("{token}");
-            }
-
-            println!("status: ok");
-            Ok(())
-        }
-        "outline" => {
-            let path = required_path(&args, "outline")?;
-            let report = scan_file_report(Path::new(path))?;
-
-            if json {
-                print_outline_json(path, &report);
-            } else {
-                print_outline_text(path, &report);
-            }
-
-            Ok(())
-        }
-        "find-symbol" => {
-            let path = required_path(&args, "find-symbol")?;
-            let name = required_second_arg(&args, "find-symbol")?;
-            let report = scan_path(Path::new(path))?;
-            let mut matches = Vec::new();
-
-            for file in report.files {
-                for symbol in file.symbols {
-                    if symbol.name == name {
-                        matches.push((file.path.clone(), symbol));
-                    }
-                }
-            }
-
-            matches.sort_by(|a, b| {
-                (display(&a.0), a.1.line, a.1.column, &a.1.name).cmp(&(
-                    display(&b.0),
-                    b.1.line,
-                    b.1.column,
-                    &b.1.name,
-                ))
-            });
-
-            if json {
-                print!("{{\"query\":\"{}\",\"matches\":[", json_escape(name));
-                for (index, (path, symbol)) in matches.iter().enumerate() {
-                    if index > 0 {
-                        print!(",");
-                    }
-                    print!(
-                        "{{\"file\":\"{}\",\"line\":{},\"column\":{},\"kind\":\"{}\",\"name\":\"{}\"}}",
-                        json_escape(&display(path)),
-                        symbol.line,
-                        symbol.column,
-                        symbol.kind.as_str(),
-                        json_escape(&symbol.name)
-                    );
-                }
-                println!("],\"count\":{},\"status\":\"ok\"}}", matches.len());
-            } else {
-                for (path, symbol) in &matches {
-                    println!(
-                        "{}:{}:{}\t{}\t{}",
-                        display(path),
-                        symbol.line,
-                        symbol.column,
-                        symbol.kind.as_str(),
-                        symbol.name
-                    );
-                }
-                println!("matches: {}", matches.len());
-                println!("status: ok");
-            }
-
-            Ok(())
-        }
-        "symbols" => {
-            let path = required_path(&args, "symbols")?;
-            let report = scan_path(Path::new(path))?;
-
-            if json {
-                print!("{{\"symbols\":[");
-                let mut first = true;
-                for file in report.files {
-                    for symbol in file.symbols {
-                        if !first {
-                            print!(",");
-                        }
-                        first = false;
-                        print!(
-                            "{{\"file\":\"{}\",\"line\":{},\"column\":{},\"kind\":\"{}\",\"name\":\"{}\"}}",
-                            json_escape(&display(&file.path)),
-                            symbol.line,
-                            symbol.column,
-                            symbol.kind.as_str(),
-                            json_escape(&symbol.name)
-                        );
-                    }
-                }
-                println!("],\"status\":\"ok\"}}");
-            } else {
-                for file in report.files {
-                    for symbol in file.symbols {
-                        println!(
-                            "{}:{}:{}\t{}\t{}",
-                            display(&file.path),
-                            symbol.line,
-                            symbol.column,
-                            symbol.kind.as_str(),
-                            symbol.name
-                        );
-                    }
-                }
-                println!("status: ok");
-            }
-
-            Ok(())
-        }
-        "include-graph" => {
-            let path = required_path(&args, "include-graph")?;
-            let report = scan_path(Path::new(path))?;
-            let mut edges = Vec::new();
-
-            for file in report.files {
-                for include in file.includes {
-                    edges.push((file.path.clone(), include));
-                }
-            }
-
-            edges.sort_by(|a, b| {
-                (display(&a.0), a.1.line, a.1.column, &a.1.target).cmp(&(
-                    display(&b.0),
-                    b.1.line,
-                    b.1.column,
-                    &b.1.target,
-                ))
-            });
-
-            if json {
-                print!("{{\"edges\":[");
-                for (index, (from, include)) in edges.iter().enumerate() {
-                    if index > 0 {
-                        print!(",");
-                    }
-                    print!(
-                        "{{\"from\":\"{}\",\"to\":\"{}\",\"line\":{},\"column\":{}}}",
-                        json_escape(&display(from)),
-                        json_escape(&include.target),
-                        include.line,
-                        include.column
-                    );
-                }
-                println!("],\"count\":{},\"status\":\"ok\"}}", edges.len());
-            } else {
-                for (from, include) in &edges {
-                    println!(
-                        "{}:{}:{}\t{} -> {}",
-                        display(from),
-                        include.line,
-                        include.column,
-                        display(from),
-                        include.target
-                    );
-                }
-                println!("edges: {}", edges.len());
-                println!("status: ok");
-            }
-
-            Ok(())
-        }
-        "resolve-includes" => {
-            let path = required_path(&args, "resolve-includes")?;
-            let root = Path::new(path);
-            let report = scan_path(root)?;
-            let rows = resolved_includes(root, &report.files);
-            let resolved_count = rows.iter().filter(|row| row.resolved.is_some()).count();
-            let missing_count = rows.len() - resolved_count;
-
-            if json {
-                print!("{{\"includes\":[");
-                for (index, row) in rows.iter().enumerate() {
-                    if index > 0 {
-                        print!(",");
-                    }
-                    let status = if row.resolved.is_some() {
-                        "resolved"
-                    } else {
-                        "missing"
-                    };
-                    let resolved = row
-                        .resolved
-                        .as_ref()
-                        .map(|path| display(path))
-                        .unwrap_or_else(|| "".to_string());
-                    print!(
-                        "{{\"file\":\"{}\",\"line\":{},\"column\":{},\"target\":\"{}\",\"status\":\"{}\",\"resolved\":\"{}\"}}",
-                        json_escape(&display(&row.file)),
-                        row.line,
-                        row.column,
-                        json_escape(&row.target),
-                        status,
-                        json_escape(&resolved)
-                    );
-                }
-                println!(
-                    "],\"resolved\":{},\"missing\":{},\"status\":\"ok\"}}",
-                    resolved_count, missing_count
-                );
-            } else {
-                for row in &rows {
-                    match &row.resolved {
-                        Some(resolved) => println!(
-                            "{}:{}:{}\t{}\tresolved\t{}",
-                            display(&row.file),
-                            row.line,
-                            row.column,
-                            row.target,
-                            display(resolved)
-                        ),
-                        None => println!(
-                            "{}:{}:{}\t{}\tmissing\t-",
-                            display(&row.file),
-                            row.line,
-                            row.column,
-                            row.target
-                        ),
-                    }
-                }
-                println!("resolved: {resolved_count}");
-                println!("missing: {missing_count}");
-                println!("status: ok");
-            }
-
-            Ok(())
-        }
-        "missing-includes" => {
-            let path = required_path(&args, "missing-includes")?;
-            let root = Path::new(path);
-            let report = scan_path(root)?;
-            let rows: Vec<_> = resolved_includes(root, &report.files)
-                .into_iter()
-                .filter(|row| row.resolved.is_none())
-                .collect();
-
-            if json {
-                print!("{{\"missing\":[");
-                for (index, row) in rows.iter().enumerate() {
-                    if index > 0 {
-                        print!(",");
-                    }
-                    print!(
-                        "{{\"file\":\"{}\",\"line\":{},\"column\":{},\"target\":\"{}\"}}",
-                        json_escape(&display(&row.file)),
-                        row.line,
-                        row.column,
-                        json_escape(&row.target)
-                    );
-                }
-                println!("],\"count\":{},\"status\":\"ok\"}}", rows.len());
-            } else {
-                for row in &rows {
-                    println!(
-                        "{}:{}:{}\t{}",
-                        display(&row.file),
-                        row.line,
-                        row.column,
-                        row.target
-                    );
-                }
-                println!("missing: {}", rows.len());
-                println!("status: ok");
-            }
-
-            Ok(())
-        }
-        "entrypoints" => {
-            let path = required_path(&args, "entrypoints")?;
-            let root = Path::new(path);
-            let report = scan_path(root)?;
-            let rows = entrypoint_files(root, &report.files);
-
-            if json {
-                print!("{{\"entrypoints\":[");
-                for (index, file) in rows.iter().enumerate() {
-                    if index > 0 {
-                        print!(",");
-                    }
-                    print!(
-                        "{{\"index\":{},\"file\":\"{}\"}}",
-                        index + 1,
-                        json_escape(&display(file))
-                    );
-                }
-                println!("],\"count\":{},\"status\":\"ok\"}}", rows.len());
-            } else {
-                for (index, file) in rows.iter().enumerate() {
-                    println!("{}\t{}", index + 1, display(file));
-                }
-                println!("entrypoints: {}", rows.len());
-                println!("status: ok");
-            }
-
-            Ok(())
-        }
-        "dependency-order" => {
-            let path = required_path(&args, "dependency-order")?;
-            let root = Path::new(path);
-            let report = scan_path(root)?;
-            let order = dependency_order(root, &report.files);
-
-            if json {
-                print!("{{\"order\":[");
-                for (index, file) in order.iter().enumerate() {
-                    if index > 0 {
-                        print!(",");
-                    }
-                    print!(
-                        "{{\"index\":{},\"file\":\"{}\"}}",
-                        index + 1,
-                        json_escape(&display(file))
-                    );
-                }
-                println!("],\"count\":{},\"status\":\"ok\"}}", order.len());
-            } else {
-                for (index, file) in order.iter().enumerate() {
-                    println!("{}\t{}", index + 1, display(file));
-                }
-                println!("files: {}", order.len());
-                println!("status: ok");
-            }
-
-            Ok(())
-        }
-        "reverse-includes" => {
-            let path = required_path(&args, "reverse-includes")?;
-            let root = Path::new(path);
-            let report = scan_path(root)?;
-            let mut rows = Vec::new();
-
-            for include in resolved_includes(root, &report.files) {
-                let status = if include.resolved.is_some() {
-                    "resolved"
-                } else {
-                    "missing"
-                };
-                let target = include
-                    .resolved
-                    .as_ref()
-                    .map(|path| display(path))
-                    .unwrap_or_else(|| include.target.clone());
-                rows.push((
-                    target,
-                    display(&include.file),
-                    include.line,
-                    include.column,
-                    status.to_string(),
-                ));
-            }
-
-            rows.sort();
-
-            if json {
-                print!("{{\"reverse\":[");
-                for (index, (target, from, line, column, status)) in rows.iter().enumerate() {
-                    if index > 0 {
-                        print!(",");
-                    }
-                    print!(
-                        "{{\"target\":\"{}\",\"from\":\"{}\",\"line\":{},\"column\":{},\"status\":\"{}\"}}",
-                        json_escape(target),
-                        json_escape(from),
-                        line,
-                        column,
-                        status
-                    );
-                }
-                println!("],\"count\":{},\"status\":\"ok\"}}", rows.len());
-            } else {
-                for (target, from, line, column, status) in &rows {
-                    println!("{}\t<-\t{}:{}:{}\t{}", target, from, line, column, status);
-                }
-                println!("edges: {}", rows.len());
-                println!("status: ok");
-            }
-
-            Ok(())
-        }
-        "includes" => {
-            let path = required_path(&args, "includes")?;
-            let report = scan_path(Path::new(path))?;
-
-            if json {
-                print!("{{\"includes\":[");
-                let mut first = true;
-                for file in report.files {
-                    for include in file.includes {
-                        if !first {
-                            print!(",");
-                        }
-                        first = false;
-                        print!(
-                            "{{\"file\":\"{}\",\"line\":{},\"column\":{},\"target\":\"{}\"}}",
-                            json_escape(&display(&file.path)),
-                            include.line,
-                            include.column,
-                            json_escape(&include.target)
-                        );
-                    }
-                }
-                println!("],\"status\":\"ok\"}}");
-            } else {
-                for file in report.files {
-                    for include in file.includes {
-                        println!(
-                            "{}:{}:{}\t{}",
-                            display(&file.path),
-                            include.line,
-                            include.column,
-                            include.target
-                        );
-                    }
-                }
-                println!("status: ok");
-            }
-
+        "version" => print_version(),
+        "scan" => run_scan(&args, json),
+        "stats" => run_stats(&args, json),
+        "source-map" => run_source_map(&args, json),
+        "tokens" => run_tokens(&args),
+        "outline" => run_outline(&args, json),
+        "find-symbol" => run_find_symbol(&args, json),
+        "symbols" => run_symbols(&args, json),
+        "include-graph" => run_include_graph(&args, json),
+        "resolve-includes" => run_resolve_includes(&args, json),
+        "missing-includes" => run_missing_includes(&args, json),
+        "entrypoints" => run_entrypoints(&args, json),
+        "dependency-order" => run_dependency_order(&args, json),
+        "reverse-includes" => run_reverse_includes(&args, json),
+        "includes" => run_includes(&args, json),
+        "oracle" => oracle::run(&args, json),
+        "oracle-keymap" => {
+            oracle::print_keymap();
             Ok(())
         }
         _ => {
-            println!("holytools");
-            println!("usage: holytools <version|scan|stats|source-map|tokens|outline|symbols|find-symbol|include-graph|resolve-includes|missing-includes|entrypoints|dependency-order|reverse-includes|includes> [path] [name] [--json]");
+            print_help();
             Ok(())
         }
     }
+}
+
+fn print_version() -> Result<(), String> {
+    println!("holytools {}", env!("CARGO_PKG_VERSION"));
+    println!("writes: none");
+    Ok(())
+}
+
+fn run_scan(args: &[String], json: bool) -> Result<(), String> {
+    let path = required_path(args, "scan")?;
+    let report = scan_path(Path::new(path))?;
+
+    if json {
+        println!(
+            "{{\"root\":\"{}\",\"holy_files\":{},\"status\":\"ok\"}}",
+            json_escape(&display(Path::new(path))),
+            report.files.len()
+        );
+    } else {
+        println!("root: {}", display(Path::new(path)));
+        println!("holy-files: {}", report.files.len());
+        println!("status: ok");
+    }
+
+    Ok(())
+}
+
+fn run_stats(args: &[String], json: bool) -> Result<(), String> {
+    let path = required_path(args, "stats")?;
+    let report = scan_path(Path::new(path))?;
+
+    if json {
+        println!(
+            "{{\"root\":\"{}\",\"holy_files\":{},\"tokens\":{},\"functions\":{},\"classes\":{},\"includes\":{},\"asm_blocks\":{},\"status\":\"ok\"}}",
+            json_escape(&display(Path::new(path))),
+            report.files.len(),
+            report.token_count(),
+            report.function_count(),
+            report.class_count(),
+            report.include_count(),
+            report.asm_count()
+        );
+    } else {
+        println!("root: {}", display(Path::new(path)));
+        println!("holy-files: {}", report.files.len());
+        println!("tokens: {}", report.token_count());
+        println!("functions: {}", report.function_count());
+        println!("classes: {}", report.class_count());
+        println!("includes: {}", report.include_count());
+        println!("asm-blocks: {}", report.asm_count());
+        println!("status: ok");
+    }
+
+    Ok(())
+}
+
+fn run_source_map(args: &[String], json: bool) -> Result<(), String> {
+    let path = required_path(args, "source-map")?;
+    let root = Path::new(path);
+    let report = scan_path(root)?;
+    let rows = resolved_includes(root, &report.files);
+    let resolved_count = rows.iter().filter(|row| row.resolved.is_some()).count();
+    let missing_count = rows.len() - resolved_count;
+    let dependency_files = dependency_order(root, &report.files).len();
+    let reverse_edges = rows.len();
+
+    if json {
+        println!(
+            "{{\"root\":\"{}\",\"holy_files\":{},\"tokens\":{},\"functions\":{},\"classes\":{},\"includes\":{},\"asm_blocks\":{},\"resolved_includes\":{},\"missing_includes\":{},\"dependency_files\":{},\"reverse_edges\":{},\"status\":\"ok\"}}",
+            json_escape(&display(root)),
+            report.files.len(),
+            report.token_count(),
+            report.function_count(),
+            report.class_count(),
+            report.include_count(),
+            report.asm_count(),
+            resolved_count,
+            missing_count,
+            dependency_files,
+            reverse_edges
+        );
+    } else {
+        println!("root: {}", display(root));
+        println!("holy-files: {}", report.files.len());
+        println!("tokens: {}", report.token_count());
+        println!("functions: {}", report.function_count());
+        println!("classes: {}", report.class_count());
+        println!("includes: {}", report.include_count());
+        println!("asm-blocks: {}", report.asm_count());
+        println!("resolved-includes: {resolved_count}");
+        println!("missing-includes: {missing_count}");
+        println!("dependency-files: {dependency_files}");
+        println!("reverse-edges: {reverse_edges}");
+        println!("status: ok");
+    }
+
+    Ok(())
+}
+
+fn run_tokens(args: &[String]) -> Result<(), String> {
+    let path = required_path(args, "tokens")?;
+    let bytes = fs::read(path).map_err(|err| err.to_string())?;
+    let source = String::from_utf8_lossy(&bytes);
+
+    for token in lex(&source).into_iter().filter(|token| !token.is_trivia()) {
+        println!("{token}");
+    }
+
+    println!("status: ok");
+    Ok(())
+}
+
+fn run_outline(args: &[String], json: bool) -> Result<(), String> {
+    let path = required_path(args, "outline")?;
+    let report = scan_file_report(Path::new(path))?;
+
+    if json {
+        print_outline_json(path, &report);
+    } else {
+        print_outline_text(path, &report);
+    }
+
+    Ok(())
+}
+
+fn run_find_symbol(args: &[String], json: bool) -> Result<(), String> {
+    let path = required_path(args, "find-symbol")?;
+    let name = required_second_arg(args, "find-symbol")?;
+    let report = scan_path(Path::new(path))?;
+    let mut matches = Vec::new();
+
+    for file in report.files {
+        for symbol in file.symbols {
+            if symbol.name == name {
+                matches.push((file.path.clone(), symbol));
+            }
+        }
+    }
+
+    matches.sort_by(|a, b| {
+        (display(&a.0), a.1.line, a.1.column, &a.1.name).cmp(&(
+            display(&b.0),
+            b.1.line,
+            b.1.column,
+            &b.1.name,
+        ))
+    });
+
+    if json {
+        print!("{{\"query\":\"{}\",\"matches\":[", json_escape(name));
+        for (index, (path, symbol)) in matches.iter().enumerate() {
+            if index > 0 {
+                print!(",");
+            }
+            print!(
+                "{{\"file\":\"{}\",\"line\":{},\"column\":{},\"kind\":\"{}\",\"name\":\"{}\"}}",
+                json_escape(&display(path)),
+                symbol.line,
+                symbol.column,
+                symbol.kind.as_str(),
+                json_escape(&symbol.name)
+            );
+        }
+        println!("],\"count\":{},\"status\":\"ok\"}}", matches.len());
+    } else {
+        for (path, symbol) in &matches {
+            println!(
+                "{}:{}:{}\t{}\t{}",
+                display(path),
+                symbol.line,
+                symbol.column,
+                symbol.kind.as_str(),
+                symbol.name
+            );
+        }
+        println!("matches: {}", matches.len());
+        println!("status: ok");
+    }
+
+    Ok(())
+}
+
+fn run_symbols(args: &[String], json: bool) -> Result<(), String> {
+    let path = required_path(args, "symbols")?;
+    let report = scan_path(Path::new(path))?;
+
+    if json {
+        print!("{{\"symbols\":[");
+        let mut first = true;
+        for file in report.files {
+            for symbol in file.symbols {
+                if !first {
+                    print!(",");
+                }
+                first = false;
+                print!(
+                    "{{\"file\":\"{}\",\"line\":{},\"column\":{},\"kind\":\"{}\",\"name\":\"{}\"}}",
+                    json_escape(&display(&file.path)),
+                    symbol.line,
+                    symbol.column,
+                    symbol.kind.as_str(),
+                    json_escape(&symbol.name)
+                );
+            }
+        }
+        println!("],\"status\":\"ok\"}}");
+    } else {
+        for file in report.files {
+            for symbol in file.symbols {
+                println!(
+                    "{}:{}:{}\t{}\t{}",
+                    display(&file.path),
+                    symbol.line,
+                    symbol.column,
+                    symbol.kind.as_str(),
+                    symbol.name
+                );
+            }
+        }
+        println!("status: ok");
+    }
+
+    Ok(())
+}
+
+fn run_include_graph(args: &[String], json: bool) -> Result<(), String> {
+    let path = required_path(args, "include-graph")?;
+    let report = scan_path(Path::new(path))?;
+    let mut edges = Vec::new();
+
+    for file in report.files {
+        for include in file.includes {
+            edges.push((file.path.clone(), include));
+        }
+    }
+
+    edges.sort_by(|a, b| {
+        (display(&a.0), a.1.line, a.1.column, &a.1.target).cmp(&(
+            display(&b.0),
+            b.1.line,
+            b.1.column,
+            &b.1.target,
+        ))
+    });
+
+    if json {
+        print!("{{\"edges\":[");
+        for (index, (from, include)) in edges.iter().enumerate() {
+            if index > 0 {
+                print!(",");
+            }
+            print!(
+                "{{\"from\":\"{}\",\"to\":\"{}\",\"line\":{},\"column\":{}}}",
+                json_escape(&display(from)),
+                json_escape(&include.target),
+                include.line,
+                include.column
+            );
+        }
+        println!("],\"count\":{},\"status\":\"ok\"}}", edges.len());
+    } else {
+        for (from, include) in &edges {
+            println!(
+                "{}:{}:{}\t{} -> {}",
+                display(from),
+                include.line,
+                include.column,
+                display(from),
+                include.target
+            );
+        }
+        println!("edges: {}", edges.len());
+        println!("status: ok");
+    }
+
+    Ok(())
+}
+
+fn run_resolve_includes(args: &[String], json: bool) -> Result<(), String> {
+    let path = required_path(args, "resolve-includes")?;
+    let root = Path::new(path);
+    let report = scan_path(root)?;
+    let rows = resolved_includes(root, &report.files);
+    let resolved_count = rows.iter().filter(|row| row.resolved.is_some()).count();
+    let missing_count = rows.len() - resolved_count;
+
+    if json {
+        print!("{{\"includes\":[");
+        for (index, row) in rows.iter().enumerate() {
+            if index > 0 {
+                print!(",");
+            }
+            let status = if row.resolved.is_some() {
+                "resolved"
+            } else {
+                "missing"
+            };
+            let resolved = row
+                .resolved
+                .as_ref()
+                .map(|path| display(path))
+                .unwrap_or_else(|| "".to_string());
+            print!(
+                "{{\"file\":\"{}\",\"line\":{},\"column\":{},\"target\":\"{}\",\"status\":\"{}\",\"resolved\":\"{}\"}}",
+                json_escape(&display(&row.file)),
+                row.line,
+                row.column,
+                json_escape(&row.target),
+                status,
+                json_escape(&resolved)
+            );
+        }
+        println!(
+            "],\"resolved\":{},\"missing\":{},\"status\":\"ok\"}}",
+            resolved_count, missing_count
+        );
+    } else {
+        for row in &rows {
+            match &row.resolved {
+                Some(resolved) => println!(
+                    "{}:{}:{}\t{}\tresolved\t{}",
+                    display(&row.file),
+                    row.line,
+                    row.column,
+                    row.target,
+                    display(resolved)
+                ),
+                None => println!(
+                    "{}:{}:{}\t{}\tmissing\t-",
+                    display(&row.file), row.line, row.column, row.target
+                ),
+            }
+        }
+        println!("resolved: {resolved_count}");
+        println!("missing: {missing_count}");
+        println!("status: ok");
+    }
+
+    Ok(())
+}
+
+fn run_missing_includes(args: &[String], json: bool) -> Result<(), String> {
+    let path = required_path(args, "missing-includes")?;
+    let root = Path::new(path);
+    let report = scan_path(root)?;
+    let rows: Vec<_> = resolved_includes(root, &report.files)
+        .into_iter()
+        .filter(|row| row.resolved.is_none())
+        .collect();
+
+    if json {
+        print!("{{\"missing\":[");
+        for (index, row) in rows.iter().enumerate() {
+            if index > 0 {
+                print!(",");
+            }
+            print!(
+                "{{\"file\":\"{}\",\"line\":{},\"column\":{},\"target\":\"{}\"}}",
+                json_escape(&display(&row.file)),
+                row.line,
+                row.column,
+                json_escape(&row.target)
+            );
+        }
+        println!("],\"count\":{},\"status\":\"ok\"}}", rows.len());
+    } else {
+        for row in &rows {
+            println!(
+                "{}:{}:{}\t{}",
+                display(&row.file), row.line, row.column, row.target
+            );
+        }
+        println!("missing: {}", rows.len());
+        println!("status: ok");
+    }
+
+    Ok(())
+}
+
+fn run_entrypoints(args: &[String], json: bool) -> Result<(), String> {
+    let path = required_path(args, "entrypoints")?;
+    let root = Path::new(path);
+    let report = scan_path(root)?;
+    let rows = entrypoint_files(root, &report.files);
+
+    if json {
+        print!("{{\"entrypoints\":[");
+        for (index, file) in rows.iter().enumerate() {
+            if index > 0 {
+                print!(",");
+            }
+            print!(
+                "{{\"index\":{},\"file\":\"{}\"}}",
+                index + 1,
+                json_escape(&display(file))
+            );
+        }
+        println!("],\"count\":{},\"status\":\"ok\"}}", rows.len());
+    } else {
+        for (index, file) in rows.iter().enumerate() {
+            println!("{}\t{}", index + 1, display(file));
+        }
+        println!("entrypoints: {}", rows.len());
+        println!("status: ok");
+    }
+
+    Ok(())
+}
+
+fn run_dependency_order(args: &[String], json: bool) -> Result<(), String> {
+    let path = required_path(args, "dependency-order")?;
+    let root = Path::new(path);
+    let report = scan_path(root)?;
+    let order = dependency_order(root, &report.files);
+
+    if json {
+        print!("{{\"order\":[");
+        for (index, file) in order.iter().enumerate() {
+            if index > 0 {
+                print!(",");
+            }
+            print!(
+                "{{\"index\":{},\"file\":\"{}\"}}",
+                index + 1,
+                json_escape(&display(file))
+            );
+        }
+        println!("],\"count\":{},\"status\":\"ok\"}}", order.len());
+    } else {
+        for (index, file) in order.iter().enumerate() {
+            println!("{}\t{}", index + 1, display(file));
+        }
+        println!("files: {}", order.len());
+        println!("status: ok");
+    }
+
+    Ok(())
+}
+
+fn run_reverse_includes(args: &[String], json: bool) -> Result<(), String> {
+    let path = required_path(args, "reverse-includes")?;
+    let root = Path::new(path);
+    let report = scan_path(root)?;
+    let mut rows = Vec::new();
+
+    for include in resolved_includes(root, &report.files) {
+        let status = if include.resolved.is_some() {
+            "resolved"
+        } else {
+            "missing"
+        };
+        let target = include
+            .resolved
+            .as_ref()
+            .map(|path| display(path))
+            .unwrap_or_else(|| include.target.clone());
+        rows.push((
+            target,
+            display(&include.file),
+            include.line,
+            include.column,
+            status.to_string(),
+        ));
+    }
+
+    rows.sort();
+
+    if json {
+        print!("{{\"reverse\":[");
+        for (index, (target, from, line, column, status)) in rows.iter().enumerate() {
+            if index > 0 {
+                print!(",");
+            }
+            print!(
+                "{{\"target\":\"{}\",\"from\":\"{}\",\"line\":{},\"column\":{},\"status\":\"{}\"}}",
+                json_escape(target),
+                json_escape(from),
+                line,
+                column,
+                status
+            );
+        }
+        println!("],\"count\":{},\"status\":\"ok\"}}", rows.len());
+    } else {
+        for (target, from, line, column, status) in &rows {
+            println!("{}\t<-\t{}:{}:{}\t{}", target, from, line, column, status);
+        }
+        println!("edges: {}", rows.len());
+        println!("status: ok");
+    }
+
+    Ok(())
+}
+
+fn run_includes(args: &[String], json: bool) -> Result<(), String> {
+    let path = required_path(args, "includes")?;
+    let report = scan_path(Path::new(path))?;
+
+    if json {
+        print!("{{\"includes\":[");
+        let mut first = true;
+        for file in report.files {
+            for include in file.includes {
+                if !first {
+                    print!(",");
+                }
+                first = false;
+                print!(
+                    "{{\"file\":\"{}\",\"line\":{},\"column\":{},\"target\":\"{}\"}}",
+                    json_escape(&display(&file.path)),
+                    include.line,
+                    include.column,
+                    json_escape(&include.target)
+                );
+            }
+        }
+        println!("],\"status\":\"ok\"}}");
+    } else {
+        for file in report.files {
+            for include in file.includes {
+                println!(
+                    "{}:{}:{}\t{}",
+                    display(&file.path), include.line, include.column, include.target
+                );
+            }
+        }
+        println!("status: ok");
+    }
+
+    Ok(())
+}
+
+fn print_help() {
+    println!("holytools");
+    println!("usage: holytools <version|scan|stats|source-map|tokens|outline|symbols|find-symbol|include-graph|resolve-includes|missing-includes|entrypoints|dependency-order|reverse-includes|includes|oracle|oracle-keymap> [path] [name] [--json]");
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
