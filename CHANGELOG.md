@@ -1,5 +1,19 @@
 # Changelog
 
+## v1.8.0
+
+Oracle/random text lab release.
+
+- Added `holytools oracle` for Windows-friendly random text output.
+- Added deterministic seeded output with `--seed`.
+- Added multi-line output with `--count`.
+- Added corpus-file support with `--corpus file.txt`.
+- Added `--preset core` and `--preset after-egypt`.
+- Added `holytools oracle-keymap` for a PowerShell F7 binding snippet.
+- Added CLI smoke tests for oracle text and JSON output.
+- Updated verify script to run oracle commands.
+- Documented the oracle lab boundary: random text lab output, not prophecy.
+
 ## v1.7.0
 
 Source archaeology map release.
