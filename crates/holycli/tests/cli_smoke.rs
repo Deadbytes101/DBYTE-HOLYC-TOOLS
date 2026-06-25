@@ -170,6 +170,7 @@ fn oracle_reports_seeded_random_text() {
     let stdout = run(&["oracle", "--seed", "7", "--count", "2"]);
 
     assert!(stdout.contains("mode: oracle"));
+    assert!(stdout.contains("voice: plain"));
     assert!(stdout.contains("seed: 7"));
     assert!(stdout.contains("boundary: random text lab, not prophecy"));
     assert!(stdout.contains("count: 2"));
@@ -191,7 +192,47 @@ fn oracle_json_reports_seeded_after_egypt_text() {
 
     assert!(stdout.contains("\"mode\":\"oracle\""));
     assert!(stdout.contains("\"preset\":\"after-egypt\""));
+    assert!(stdout.contains("\"voice\":\"plain\""));
     assert!(stdout.contains("\"seed\":7"));
     assert!(stdout.contains("\"count\":1"));
+    assert!(stdout.contains("\"status\":\"ok\""));
+}
+
+#[test]
+fn oracle_uncle_voice_reports_speaker() {
+    let stdout = run(&[
+        "oracle",
+        "--preset",
+        "after-egypt",
+        "--voice",
+        "uncle",
+        "--seed",
+        "7",
+        "--count",
+        "1",
+    ]);
+
+    assert!(stdout.contains("voice: uncle"));
+    assert!(stdout.contains("OLD EGYPTIAN UNCLE:"));
+    assert!(stdout.contains("status: ok"));
+}
+
+#[test]
+fn oracle_uncle_json_reports_voice() {
+    let stdout = run(&[
+        "oracle",
+        "--preset",
+        "after-egypt",
+        "--voice",
+        "uncle",
+        "--seed",
+        "7",
+        "--count",
+        "1",
+        "--json",
+    ]);
+
+    assert!(stdout.contains("\"voice\":\"uncle\""));
+    assert!(stdout.contains("OLD EGYPTIAN UNCLE:"));
     assert!(stdout.contains("\"status\":\"ok\""));
 }
