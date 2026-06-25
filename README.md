@@ -5,7 +5,7 @@
 </p>
 
 <p>
-  <strong>Current line:</strong> <code>v1.8.0 ORACLE LAB</code>
+  <strong>Current line:</strong> <code>v1.8.1 ORACLE VOICE</code>
 </p>
 
 <img width="1196" height="623" alt="SHOT" src="https://github.com/user-attachments/assets/7d34edc9-882b-4bb5-bc66-4da6049aaa4f" />
@@ -46,7 +46,7 @@ holytools include-graph &lt;path&gt; [--json]
 holytools resolve-includes &lt;path&gt; [--json]
 holytools dependency-order &lt;path&gt; [--json]
 holytools reverse-includes &lt;path&gt; [--json]
-holytools oracle [--preset core|after-egypt] [--count N] [--seed N] [--corpus file.txt] [--json]
+holytools oracle [--preset core|after-egypt] [--voice plain|uncle] [--count N] [--seed N] [--corpus file.txt] [--json]
 holytools oracle-keymap</pre>
 </section>
 
@@ -55,11 +55,12 @@ holytools oracle-keymap</pre>
   <pre>holytools oracle
 holytools oracle --seed 777 --count 3
 holytools oracle --preset after-egypt --seed 777
-holytools oracle --corpus my-lines.txt --count 5
+holytools oracle --preset after-egypt --voice uncle --count 3
+holytools oracle --corpus my-lines.txt --voice uncle --count 5
 holytools oracle --json
 holytools oracle-keymap</pre>
   <p>
-    The oracle command is a TempleOS-inspired random text research tool. It does not claim supernatural output.
+    The oracle command is a TempleOS-inspired random text research tool. Voice mode is a display skin over random text, not a supernatural claim.
   </p>
 </section>
 
@@ -75,7 +76,7 @@ holytools oracle-keymap</pre>
   <pre>holytools source-map tests/fixtures/tiny
 holytools missing-includes tests/fixtures/tiny
 holytools entrypoints tests/fixtures/tiny
-holytools oracle --preset after-egypt --seed 7 --count 2</pre>
+holytools oracle --preset after-egypt --voice uncle --seed 7 --count 2</pre>
 </section>
 
 <section>
@@ -168,7 +169,7 @@ scripts/run-archaeology.ps1</pre>
 
 <section>
   <h2>Release gate</h2>
-  <pre>./scripts/release.ps1 v1.8.0</pre>
+  <pre>./scripts/release.ps1 v1.8.1</pre>
   <p>
     The gate runs format check, workspace check, tests, CLI verification,
     package verification, ZIP creation, clean tree check, and tag push.
@@ -179,7 +180,7 @@ scripts/run-archaeology.ps1</pre>
   <h2>Verify</h2>
   <pre>./scripts/verify.ps1</pre>
   <p>Current smoke line:</p>
-  <pre>12 cli smoke tests</pre>
+  <pre>14 cli smoke tests</pre>
 </section>
 
 <section>
@@ -188,5 +189,6 @@ scripts/run-archaeology.ps1</pre>
 HolyC compatibility first
 deterministic output when seeded
 source archaeology without source mutation
-oracle/random text lab without supernatural claims</pre>
+oracle/random text lab without supernatural claims
+voice skins without oracle authority claims</pre>
 </section>
