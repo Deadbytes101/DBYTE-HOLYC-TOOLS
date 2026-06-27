@@ -16,7 +16,7 @@
     Raw terminal-board architecture map. It is a hand-written SVG in this repository,
     built from monospace text, ASCII boxes, and fixed 16-color VGA colors.
   </p>
-  <img width="1280" height="720" alt="DBYTE HOLYC TOOLS raw terminal architecture map" src="docs/architecture.svg" />
+  <img alt="DBYTE HOLYC TOOLS raw terminal architecture map" src="docs/architecture.svg" />
   <pre>source trees
   -> holylex / holyindex
   -> holytools.exe
