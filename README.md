@@ -12,13 +12,16 @@
 
 <section>
   <h2>Architecture</h2>
-  <p>
-    The toolchain is split into read-only scanners, a Windows CLI, deterministic report scripts,
-    target-specific archaeology passes, and generated evidence reports. The diagram below is a
-    hand-authored, 16-color VGA-style SVG kept in-repository. It is not AI-generated artwork and
-    does not depend on an external image host.
-  </p>
-  <img width="1280" height="760" alt="DBYTE HOLYC TOOLS read-only source archaeology architecture" src="docs/architecture.svg" />
+  <pre>source trees
+  -> holylex / holyindex
+  -> holytools.exe
+  -> report scripts
+  -> archaeology reports
+
+read-only scanner
+no source rewrite
+no source-tree mutation
+no runtime proof claims</pre>
 </section>
 
 <section>
