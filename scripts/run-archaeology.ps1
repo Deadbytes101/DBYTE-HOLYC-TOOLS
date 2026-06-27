@@ -3,7 +3,8 @@ param(
     [string]$LoseThos,
     [string]$SparrowOS,
     [string]$Out = "reports/archaeology",
-    [switch]$ReportsOnly
+    [switch]$ReportsOnly,
+    [switch]$DeepLoseThos
 )
 
 $ErrorActionPreference = "Stop"
@@ -169,8 +170,8 @@ function Invoke-CrossTargetReports {
 }
 
 if ($ReportsOnly) {
-    if ($TempleOS -or $LoseThos -or $SparrowOS) {
-        Write-Error "-ReportsOnly cannot be combined with source path parameters"
+    if ($TempleOS -or $LoseThos -or $SparrowOS -or $DeepLoseThos) {
+        Write-Error "-ReportsOnly cannot be combined with source path parameters or -DeepLoseThos"
         exit 1
     }
 
@@ -180,12 +181,20 @@ if ($ReportsOnly) {
     return
 }
 
+if ($DeepLoseThos -and -not $LoseThos) {
+    Write-Error "-DeepLoseThos requires -LoseThos"
+    exit 1
+}
+
 if ($TempleOS) {
     Invoke-Target "templeos" $TempleOS
 }
 
 if ($LoseThos) {
     Invoke-Target "losethos" $LoseThos
+    if ($DeepLoseThos) {
+        Invoke-Step { ./scripts/run-losethos-deep-archaeology.ps1 -LoseThos $LoseThos -Out $Out }
+    }
 }
 
 if ($SparrowOS) {
