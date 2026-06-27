@@ -88,7 +88,12 @@ pub struct Include {
 pub fn is_holy_source(path: &Path) -> bool {
     path.extension()
         .and_then(|e| e.to_str())
-        .map(|e| matches!(e.to_ascii_lowercase().as_str(), "hc" | "hh" | "zc" | "zh"))
+        .map(|e| {
+            matches!(
+                e.to_ascii_lowercase().as_str(),
+                "hc" | "hh" | "zc" | "zh" | "cpz" | "hpz" | "asz" | "mpz"
+            )
+        })
         .unwrap_or(false)
 }
 
@@ -265,6 +270,12 @@ mod tests {
         assert!(is_holy_source(Path::new("a.HC")));
         assert!(is_holy_source(Path::new("a.HH")));
         assert!(is_holy_source(Path::new("a.ZC")));
+        assert!(is_holy_source(Path::new("a.CPZ")));
+        assert!(is_holy_source(Path::new("a.HPZ")));
+        assert!(is_holy_source(Path::new("a.ASZ")));
+        assert!(is_holy_source(Path::new("a.MPZ")));
+        assert!(!is_holy_source(Path::new("a.BIZ")));
+        assert!(!is_holy_source(Path::new("a.MUZ")));
         assert!(!is_holy_source(Path::new("a.txt")));
     }
 
