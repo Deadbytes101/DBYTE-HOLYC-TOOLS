@@ -46,5 +46,6 @@ Invoke-Step { cargo run -q -p holytools -- oracle --seed 7 --count 2 }
 Invoke-Step { cargo run -q -p holytools -- oracle --preset after-egypt --seed 7 --count 1 --json }
 Invoke-Step { cargo run -q -p holytools -- oracle-keymap }
 Invoke-Step { ./scripts/check-includes.ps1 tests/fixtures/tiny }
+Invoke-Step { ./scripts/verify-losethos-deep-archaeology.ps1 }
 
 Write-Host "verify: ok"
