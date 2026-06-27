@@ -7,21 +7,25 @@ param(
 $ErrorActionPreference = "Stop"
 function E { param([string]$Text) if ($null -eq $Text) { return "" } $Text.Replace('&', '&amp;').Replace('<', '&lt;').Replace('>', '&gt;').Replace('"', '&quot;') }
 
-$extensions = @("*.HC", "*.HH", "*.DD", "*.PRJ", "*.ASM", "*.ASZ", "*.HCZ", "*.HHZ", "*.CPZ", "*.HPZ")
+$extensions = @(
+    "*.HC", "*.HH", "*.DD", "*.PRJ", "*.ASM", "*.ASZ", "*.C", "*.CPP", "*.HPP", "*.TXT",
+    "*.HCZ", "*.HHZ", "*.CPZ", "*.HPZ",
+    "*.HC.Z", "*.HH.Z", "*.CPP.Z", "*.HPP.Z", "*.TXT.Z", "*.PRJ.Z", "*.DAT.Z", "*.AUT.Z"
+)
 $files = @()
 foreach ($ext in $extensions) {
     $files += @(Get-ChildItem -LiteralPath $SparrowOS -Recurse -File -Filter $ext -ErrorAction SilentlyContinue)
 }
 
 $rows = @()
-foreach ($file in $files) {
+foreach ($file in @($files | Sort-Object FullName -Unique)) {
     $relative = [System.IO.Path]::GetRelativePath((Resolve-Path -LiteralPath $SparrowOS).Path, $file.FullName).Replace('\', '/')
     $top = ($relative -split '/')[0]
     $text = ""
     try { $text = Get-Content -LiteralPath $file.FullName -Raw -ErrorAction Stop } catch { $text = "" }
     $lineCount = if ($text.Length -eq 0) { 0 } else { @($text -split "`r?`n").Count }
-    $includeCount = ([regex]::Matches($text, '#include|#help_index|#exe|#define')).Count
-    $asmCount = ([regex]::Matches($text, '\basm\b|\bASM\b|\bU0\s+_')).Count
+    $includeCount = ([regex]::Matches($text, '#include|#help_index|#exe|#define|#define_str|#exe\{|#help_file')).Count
+    $asmCount = ([regex]::Matches($text, '\basm\b|\bASM\b|\bU0\s+_|\bAX\b|\bRAX\b|\bPUSH\b|\bPOP\b')).Count
     $rows += [pscustomobject]@{ file = $relative; top = $top; bytes = $file.Length; lines = $lineCount; directives = $includeCount; asmHints = $asmCount }
 }
 
@@ -50,6 +54,7 @@ foreach ($row in @($rows | Sort-Object @{Expression = "directives"; Descending =
 }
 $html += "  </table></section>"
 $html += "<section><h2>Read Line</h2><pre>This report measures broad SparrowOS source shape before target-specific claims are made."
+$html += "It includes SparrowOS zipped text source extensions such as .CPP.Z, .HPP.Z, .TXT.Z, and .PRJ.Z."
 $html += "It favors directory pressure, largest files, directives, and assembly hints as next archaeology anchors.</pre></section>"
 $html += "<section><h2>Boundary</h2><pre>No compile. No execute. No rewrite. No source-tree mutation.</pre></section>"
 $html | Set-Content -Encoding utf8 $OutPath
