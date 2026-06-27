@@ -60,6 +60,31 @@ function Write-Node {
     $script:visiting.Remove($File)
 }
 
+function Write-SkippedReport {
+    param(
+        [string]$Root,
+        [string]$Reason
+    )
+
+    $html = @()
+    $html += "<h1>BOOT CHAIN ARCHAEOLOGY</h1>"
+    $html += "<section>"
+    $html += "  <h2>Root</h2>"
+    $html += "  <pre>$(HtmlEscape (RepoPath $Root))</pre>"
+    $html += "</section>"
+    $html += "<section>"
+    $html += "  <h2>Status</h2>"
+    $html += "  <pre>skipped: $(HtmlEscape $Reason)"
+    $html += "status: ok</pre>"
+    $html += "</section>"
+    $html += "<section>"
+    $html += "  <h2>Reading Rule</h2>"
+    $html += "  <pre>No TempleOS StartOS.HC assumption is made for this target."
+    $html += "Inspect source-map, entrypoints, dependency-order, and include-resolve before naming a load-chain root.</pre>"
+    $html += "</section>"
+    $html | Set-Content -Encoding utf8 (Join-Path $OutDir "BOOT-CHAIN.md")
+}
+
 New-Item -ItemType Directory -Force $OutDir | Out-Null
 
 $resolvePath = Join-Path $OutDir "include-resolve.json"
@@ -70,8 +95,15 @@ if (-not (Test-Path -LiteralPath $resolvePath)) {
 
 $data = Get-Content -LiteralPath $resolvePath -Raw | ConvertFrom-Json
 $root = RepoPath (Resolve-Path -LiteralPath $SourcePath).Path
-$start = Join-Path $root "StartOS.HC"
-$start = RepoPath (Resolve-Path -LiteralPath $start).Path
+$startCandidate = Join-Path $root "StartOS.HC"
+
+if (-not (Test-Path -LiteralPath $startCandidate -PathType Leaf)) {
+    Write-SkippedReport $root "StartOS.HC not found"
+    Write-Host "boot-chain: $OutDir"
+    return
+}
+
+$start = RepoPath (Resolve-Path -LiteralPath $startCandidate).Path
 
 $script:edges = @{}
 foreach ($row in $data.rows) {
