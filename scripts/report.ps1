@@ -29,10 +29,8 @@ $repoTool = Join-Path $PSScriptRoot "../target/release/holytools.exe"
 if (Test-Path $packagedTool) {
     $tool = $packagedTool
 } else {
+    Invoke-Step { cargo build --release -p holytools }
     $tool = $repoTool
-    if (-not (Test-Path $tool)) {
-        Invoke-Step { cargo build --release -p holytools }
-    }
 }
 
 New-Item -ItemType Directory -Force -Path $Out | Out-Null
