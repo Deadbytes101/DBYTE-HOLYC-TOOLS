@@ -4,18 +4,18 @@ version = 4
 
 [[package]]
 name = "holyindex"
-version = "1.8.1"
+version = "1.9.1"
 dependencies = [
  "holylex",
 ]
 
 [[package]]
 name = "holylex"
-version = "1.8.1"
+version = "1.9.1"
 
 [[package]]
 name = "holytools"
-version = "1.8.1"
+version = "1.9.1"
 dependencies = [
  "holyindex",
  "holylex",
