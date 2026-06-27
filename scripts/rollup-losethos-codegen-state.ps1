@@ -21,7 +21,8 @@ $required = @(
     "LOSETHOS-COMPILER-EXPORT-CONTEXT.md",
     "LOSETHOS-FILL-TABLES.md",
     "LOSETHOS-FIXUP-TABLES.md",
-    "LOSETHOS-FIXUP-COMPARE.md"
+    "LOSETHOS-FIXUP-COMPARE.md",
+    "LOSETHOS-FIXUP-GRAMMAR.md"
 )
 
 $html = @()
@@ -41,15 +42,16 @@ $html += "Each family has 285 labels and the same 285 suffixes; no ICT/UCT/DCT s
 $html += "UCT is the primary body-heavy family; ICT carries signed/integer-special bodies; DCT carries sparse double/FPU bodies."
 $html += "LEX.CPZ exports table pointers such as code_table, unsigned_code_table, double_code_table, and internal_types_table."
 $html += "COMPILE.CPZ FillCompilerTables assigns signed, unsigned, and double fix-up table regions and maps EC_* entries to FUT_* formats."
-$html += "Fix-up comparison separates shared grammar, unsigned-only grammar, and format disagreements across type families.</pre></section>"
+$html += "Fix-up comparison and grammar summaries separate shared branch grammar, unsigned-only grammar, and signed/unsigned format disagreements.</pre></section>"
 
 $html += "<section><h2>Working Model</h2><pre>LoseThos compiler codegen is not a loose blob: it has an exported map plus a triad code-template table."
 $html += "CMP.MPZ points outward to source locations. CODE.ASZ holds the code-template substrate."
 $html += "LEX.CPZ exposes the table symbols; COMPILE.CPZ owns initialization, fix-up table assignment, selected unsigned table patching, and type-family fix-up grammar."
 $html += "ICT/UCT/DCT appear to represent integer/signed-ish, unsigned/generic, and double/FPU code paths, respectively."
+$html += "Shared all-three fix-up grammar is branch/skip oriented; most address/immediate and literal grammar lives in unsigned/signed lanes."
 $html += "This is a lexical archaeology model, not runtime proof.</pre></section>"
 
-$html += "<section><h2>Next Targets</h2><pre>1. Inspect LOSETHOS-FIXUP-COMPARE.md for shared and divergent EC_* mappings."
+$html += "<section><h2>Next Targets</h2><pre>1. Inspect LOSETHOS-FIXUP-GRAMMAR.md for category pressure."
 $html += "2. Split unsigned_code_table patching from fix-up table assignment if more detail is needed."
 $html += "3. Keep all claims report-grounded; do not execute or rewrite LoseThos sources.</pre></section>"
 
