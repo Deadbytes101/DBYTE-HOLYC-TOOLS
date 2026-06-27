@@ -142,6 +142,31 @@ function Invoke-Target {
     Write-Host "archaeology: $Name -> $targetOut"
 }
 
+function Invoke-CrossTargetReports {
+    param(
+        [Parameter(Mandatory = $true)]
+        [string]$Root
+    )
+
+    $templeSourceMap = Join-Path $Root "templeos/source-map.json"
+    $loseSourceMap = Join-Path $Root "losethos/source-map.json"
+    if (-not (Test-Path -LiteralPath $templeSourceMap -PathType Leaf) -or -not (Test-Path -LiteralPath $loseSourceMap -PathType Leaf)) {
+        Write-Host "archaeology: cross-target LoseThos reports skipped; templeos and losethos reports are both required"
+        return
+    }
+
+    Invoke-Step { ./scripts/compare-templeos-losethos.ps1 -Root $Root -Out (Join-Path $Root "TEMPLEOS-LOSETHOS-COMPARE.md") }
+    Invoke-Step { ./scripts/compare-boot-chain.ps1 -Root $Root -Out (Join-Path $Root "TEMPLEOS-LOSETHOS-BOOT-COMPARE.md") }
+    Invoke-Step { ./scripts/compare-kernel-adamk.ps1 -Root $Root -Out (Join-Path $Root "TEMPLEOS-LOSETHOS-KERNEL-ADAMK-COMPARE.md") }
+    Invoke-Step { ./scripts/compare-compiler-cmp.ps1 -Root $Root -Out (Join-Path $Root "TEMPLEOS-LOSETHOS-COMPILER-CMP-COMPARE.md") }
+    Invoke-Step { ./scripts/compare-losethos-compiler-pipeline.ps1 -Root $Root -Out (Join-Path $Root "LOSETHOS-COMPILER-PIPELINE.md") }
+    Invoke-Step { ./scripts/compare-losethos-adam-surface.ps1 -Root $Root -Out (Join-Path $Root "LOSETHOS-ADAM-SURFACE.md") }
+    Invoke-Step { ./scripts/compare-adam-layer.ps1 -Root $Root -Out (Join-Path $Root "TEMPLEOS-LOSETHOS-ADAM-LAYER-COMPARE.md") }
+    Invoke-Step { ./scripts/rollup-losethos-research-state.ps1 -Root $Root -OutPath (Join-Path $Root "LOSETHOS-RESEARCH-STATE.md") }
+
+    Write-Host "archaeology: cross-target LoseThos reports -> $Root"
+}
+
 if ($TempleOS) {
     Invoke-Target "templeos" $TempleOS
 }
@@ -159,5 +184,6 @@ if (-not $TempleOS -and -not $LoseThos -and -not $SparrowOS) {
     exit 1
 }
 
+Invoke-CrossTargetReports $Out
 Invoke-Step { ./scripts/summarize-archaeology.ps1 $Out }
 Write-Host "archaeology: ok"
