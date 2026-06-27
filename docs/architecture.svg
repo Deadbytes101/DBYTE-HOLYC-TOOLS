@@ -1,43 +1,86 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="620" viewBox="0 0 1100 620" role="img" aria-labelledby="title desc">
-  <title id="title">DBYTE HOLYC TOOLS raw terminal architecture map</title>
-  <desc id="desc">Hand-written terminal style architecture map for the read-only HolyC source archaeology toolchain.</desc>
-  <rect width="1100" height="620" fill="#0000aa"/>
-  <rect x="20" y="20" width="1060" height="580" fill="#000000" stroke="#aaaaaa" stroke-width="4"/>
-  <style>
-    text { font-family: Consolas, 'Courier New', monospace; font-size: 17px; font-weight: 700; white-space: pre; }
-    .w { fill: #ffffff; }
-    .y { fill: #ffff55; }
-    .c { fill: #55ffff; }
-    .g { fill: #55ff55; }
-    .r { fill: #ff5555; }
-    .dim { fill: #aaaaaa; }
-  </style>
+<svg xmlns="http://www.w3.org/2000/svg" width="1180" height="620" viewBox="0 0 1180 620" role="img" aria-labelledby="title desc">
+  <title id="title">DBYTE HOLYC TOOLS architecture</title>
+  <desc id="desc">Clean hand-authored architecture diagram for the DBYTE HOLYC TOOLS read-only source archaeology pipeline.</desc>
+  <defs>
+    <style>
+      .bg { fill: #101418; }
+      .frame { fill: #0b0f12; stroke: #d6dde6; stroke-width: 2; }
+      .box { fill: #111820; stroke: #d6dde6; stroke-width: 2; }
+      .box2 { fill: #152018; stroke: #d6dde6; stroke-width: 2; }
+      .box3 { fill: #201a13; stroke: #d6dde6; stroke-width: 2; }
+      .line { stroke: #d6dde6; stroke-width: 2; fill: none; marker-end: url(#arrow); }
+      .line-soft { stroke: #7f8a96; stroke-width: 2; fill: none; marker-end: url(#arrow-soft); }
+      .title { fill: #f2f6fa; font-family: Consolas, 'Courier New', monospace; font-size: 24px; font-weight: 700; }
+      .head { fill: #f2f6fa; font-family: Consolas, 'Courier New', monospace; font-size: 17px; font-weight: 700; }
+      .txt { fill: #ccd5df; font-family: Consolas, 'Courier New', monospace; font-size: 14px; }
+      .muted { fill: #8d98a5; font-family: Consolas, 'Courier New', monospace; font-size: 13px; }
+      .accent { fill: #b8f7d4; font-family: Consolas, 'Courier New', monospace; font-size: 13px; }
+    </style>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L8,3 z" fill="#d6dde6" />
+    </marker>
+    <marker id="arrow-soft" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L8,3 z" fill="#7f8a96" />
+    </marker>
+  </defs>
 
-  <text class="y" x="40" y="54">DBYTE HOLYC TOOLS / ARCHITECTURE / RAW TEXT MAP</text>
-  <text class="dim" x="40" y="80">hand-written svg. terminal board. no polished render. read-only source archaeology.</text>
+  <rect class="bg" width="1180" height="620" />
+  <rect class="frame" x="28" y="28" width="1124" height="564" />
 
-  <text class="c" x="44" y="118">+-------------------+    +-------------------+    +-------------------+    +-------------------+</text>
-  <text class="c" x="44" y="140">| SOURCE TREES      | =&gt; | SCAN CORE         | =&gt; | REPORT PASS       | =&gt; | EVIDENCE FILES    |</text>
-  <text class="c" x="44" y="162">+-------------------+    +-------------------+    +-------------------+    +-------------------+</text>
+  <text class="title" x="52" y="68">DBYTE HOLYC TOOLS - ARCHITECTURE</text>
+  <text class="muted" x="52" y="96">repo-authored svg / read-only archaeology / no generated artwork dependency</text>
 
-  <text class="w" x="44" y="198">  TempleOS              holylex                report.ps1             SUMMARY.md</text>
-  <text class="dim" x="44" y="220">    *.HC *.HH             tokens/trivia          base pack              counts/ok</text>
+  <rect class="box" x="58" y="138" width="190" height="268" />
+  <text class="head" x="78" y="170">source trees</text>
+  <text class="txt" x="78" y="202">TempleOS</text>
+  <text class="muted" x="78" y="224">.HC .HH</text>
+  <text class="txt" x="78" y="258">LoseThos</text>
+  <text class="muted" x="78" y="280">.CPZ .HPZ</text>
+  <text class="muted" x="78" y="300">.ASZ .MPZ</text>
+  <text class="txt" x="78" y="334">SparrowOS</text>
+  <text class="muted" x="78" y="356">comparison target</text>
 
-  <text class="w" x="44" y="260">  LoseThos              holyindex              run-archaeology        REVERSE.md</text>
-  <text class="dim" x="44" y="282">    *.CPZ *.HPZ           files/symbols          ordered pass           pressure/gates</text>
-  <text class="dim" x="44" y="304">    *.ASZ *.MPZ           includes/asm           no guessing            hotspots</text>
+  <rect class="box" x="318" y="138" width="190" height="268" />
+  <text class="head" x="338" y="170">scanner core</text>
+  <text class="txt" x="338" y="204">holylex</text>
+  <text class="muted" x="338" y="226">tokens</text>
+  <text class="muted" x="338" y="246">strings</text>
+  <text class="txt" x="338" y="286">holyindex</text>
+  <text class="muted" x="338" y="308">files</text>
+  <text class="muted" x="338" y="328">symbols</text>
+  <text class="muted" x="338" y="348">includes</text>
 
-  <text class="w" x="44" y="346">  SparrowOS             holytools.exe          contract scripts       CONTRACT MAPS</text>
-  <text class="dim" x="44" y="368">    contrast tree         text/json cli          TempleOS + LoseThos    OSMain/Compiler</text>
-  <text class="dim" x="44" y="390">                           deterministic          source-contract       Kernel/Adam/Boot</text>
+  <rect class="box2" x="578" y="138" width="190" height="268" />
+  <text class="head" x="598" y="170">cli layer</text>
+  <text class="txt" x="598" y="204">holytools.exe</text>
+  <text class="muted" x="598" y="226">source-map</text>
+  <text class="muted" x="598" y="246">resolve-includes</text>
+  <text class="muted" x="598" y="266">entrypoints</text>
+  <text class="muted" x="598" y="286">reverse-includes</text>
+  <text class="txt" x="598" y="330">oracle lab</text>
+  <text class="muted" x="598" y="352">seeded text</text>
 
-  <text class="g" x="44" y="438">+-------------------+    +-------------------+    +-------------------+    +-------------------+</text>
-  <text class="g" x="44" y="460">| HARD RULES        |    | LEGACY LOSETHOS   |    | ORACLE LAB        |    | RELEASE GATE      |</text>
-  <text class="g" x="44" y="482">+-------------------+    +-------------------+    +-------------------+    +-------------------+</text>
+  <rect class="box2" x="838" y="138" width="250" height="268" />
+  <text class="head" x="858" y="170">report scripts</text>
+  <text class="txt" x="858" y="204">report.ps1</text>
+  <text class="txt" x="858" y="228">run-archaeology.ps1</text>
+  <text class="txt" x="858" y="252">resolve archaeology</text>
+  <text class="txt" x="858" y="276">reverse archaeology</text>
+  <text class="txt" x="858" y="300">contract archaeology</text>
+  <text class="muted" x="858" y="344">target-aware</text>
+  <text class="muted" x="858" y="364">TempleOS / LoseThos</text>
 
-  <text class="y" x="44" y="518">  no source rewrite       .HC =&gt; legacy ext      seeded random text     verify.ps1</text>
-  <text class="y" x="44" y="540">  no source mutation      .CPZ .ASZ .HPZ .MPZ   voice display skin    package/tag</text>
-  <text class="y" x="44" y="562">  no runtime proof        81 includes / 0 miss  no authority claim    clean tree</text>
+  <rect class="box3" x="198" y="462" width="782" height="82" />
+  <text class="head" x="218" y="494">outputs</text>
+  <text class="txt" x="218" y="522">SUMMARY.md | source-map.json | include-resolve.md | REVERSE.md | CONTRACT reports</text>
+  <text class="accent" x="218" y="546">known LoseThos line: 119 files, 81 includes, 81 resolved, 0 missing</text>
 
-  <text class="r" x="44" y="590">TRUST: file evidence only. source load order is not execution proof. pressure is not semantic proof.</text>
+  <path class="line" d="M248 272 H318" />
+  <path class="line" d="M508 272 H578" />
+  <path class="line" d="M768 272 H838" />
+  <path class="line-soft" d="M963 406 V462" />
+  <path class="line-soft" d="M673 406 V462" />
+  <path class="line-soft" d="M413 406 V462" />
+
+  <text class="muted" x="52" y="574">guard: no source rewrite | no formatter | no vm | no source-tree mutation | reports are evidence maps</text>
 </svg>
