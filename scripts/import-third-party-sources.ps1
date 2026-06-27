@@ -1,6 +1,7 @@
 param(
     [string]$TempleOS,
     [string]$LoseThos,
+    [string]$SparrowOS,
     [string]$OutRoot = "third_party/source",
     [switch]$Force
 )
@@ -82,8 +83,8 @@ function Add-SnapshotMetadata {
     [void]$Metadata.Add("")
 }
 
-if (-not $TempleOS -and -not $LoseThos) {
-    Write-Error "provide -TempleOS, -LoseThos, or both"
+if (-not $TempleOS -and -not $LoseThos -and -not $SparrowOS) {
+    Write-Error "provide -TempleOS, -LoseThos, -SparrowOS, or any combination"
     exit 1
 }
 
@@ -99,6 +100,7 @@ $metadata = [System.Collections.ArrayList]::new()
 
 $templeDest = Join-Path $OutRoot "templeos"
 $losethosDest = Join-Path $OutRoot "losethos"
+$sparrowDest = Join-Path $OutRoot "sparrowos"
 
 if ($TempleOS) {
     Copy-Snapshot -Name "TempleOS" -Source $TempleOS -Dest $templeDest
@@ -112,6 +114,13 @@ if ($LoseThos) {
     Add-SnapshotMetadata -Metadata $metadata -Title "LoseThos" -Source $LoseThos -Dest $losethosDest
 } elseif (Test-Path -LiteralPath $losethosDest -PathType Container) {
     Add-SnapshotMetadata -Metadata $metadata -Title "LoseThos" -Source "existing snapshot" -Dest $losethosDest
+}
+
+if ($SparrowOS) {
+    Copy-Snapshot -Name "SparrowOS" -Source $SparrowOS -Dest $sparrowDest
+    Add-SnapshotMetadata -Metadata $metadata -Title "SparrowOS" -Source $SparrowOS -Dest $sparrowDest
+} elseif (Test-Path -LiteralPath $sparrowDest -PathType Container) {
+    Add-SnapshotMetadata -Metadata $metadata -Title "SparrowOS" -Source "existing snapshot" -Dest $sparrowDest
 }
 
 [void]$metadata.Add("## Notes")
