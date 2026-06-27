@@ -16,7 +16,10 @@ $required = @(
     "LOSETHOS-CODE-TABLE.md",
     "LOSETHOS-CODE-FAMILIES.md",
     "LOSETHOS-CODE-TRIADS.md",
-    "LOSETHOS-CODE-TRIAD-SUMMARY.md"
+    "LOSETHOS-CODE-TRIAD-SUMMARY.md",
+    "LOSETHOS-COMPILER-CODEGEN-CORRELATE.md",
+    "LOSETHOS-COMPILER-EXPORT-CONTEXT.md",
+    "LOSETHOS-FILL-TABLES.md"
 )
 
 $html = @()
@@ -34,17 +37,18 @@ $html += "CODE.ASZ is the dominant source reference inside CMP.MPZ and is table-
 $html += "CODE.ASZ contains three complete parallel code-template families: ICT, UCT, and DCT."
 $html += "Each family has 285 labels and the same 285 suffixes; no ICT/UCT/DCT suffix is missing."
 $html += "UCT is the primary body-heavy family; ICT carries signed/integer-special bodies; DCT carries sparse double/FPU bodies."
-$html += "The triad summary supports this with body-line pressure and mnemonic pressure across all discovered suffixes.</pre></section>"
+$html += "LEX.CPZ exports table pointers such as code_table, unsigned_code_table, double_code_table, and internal_types_table."
+$html += "COMPILE.CPZ exports FillCompilerTables, which is the next bridge surface for table population evidence.</pre></section>"
 
 $html += "<section><h2>Working Model</h2><pre>LoseThos compiler codegen is not a loose blob: it has an exported map plus a triad code-template table."
 $html += "CMP.MPZ points outward to source locations. CODE.ASZ holds the code-template substrate."
+$html += "LEX.CPZ exposes the table symbols; COMPILE.CPZ appears to own initialization and table fill surfaces."
 $html += "ICT/UCT/DCT appear to represent integer/signed-ish, unsigned/generic, and double/FPU code paths, respectively."
 $html += "This is a lexical archaeology model, not runtime proof.</pre></section>"
 
-$html += "<section><h2>Next Targets</h2><pre>1. Inspect UCT largest bodies to identify the generic codegen backbone."
-$html += "2. Inspect DCT POWER and comparison bodies to map the FPU/double special path."
-$html += "3. Correlate LEX.CPZ and COMPILE.CPZ exported symbols from CMP.MPZ back to CODE.ASZ suffix usage."
-$html += "4. Keep all claims report-grounded; do not execute or rewrite LoseThos sources.</pre></section>"
+$html += "<section><h2>Next Targets</h2><pre>1. Inspect LOSETHOS-FILL-TABLES.md for direct code_table/fix_up_table reference lines."
+$html += "2. If FillCompilerTables proves table population, split table initialization and fix-up initialization into separate reports."
+$html += "3. Keep all claims report-grounded; do not execute or rewrite LoseThos sources.</pre></section>"
 
 $html += "<section><h2>Boundary</h2><pre>No compile. No execute. No rewrite. No source-tree mutation.</pre></section>"
 $html | Set-Content -Encoding utf8 $OutPath
