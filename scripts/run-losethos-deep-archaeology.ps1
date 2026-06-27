@@ -20,6 +20,7 @@ New-Item -ItemType Directory -Force $Out | Out-Null
 ./scripts/inspect-losethos-code-families.ps1 -LoseThos $LoseThos -OutPath (Join-Path $Out "LOSETHOS-CODE-FAMILIES.md")
 ./scripts/inspect-losethos-code-triads.ps1 -LoseThos $LoseThos -OutPath (Join-Path $Out "LOSETHOS-CODE-TRIADS.md")
 ./scripts/summarize-losethos-code-triads.ps1 -LoseThos $LoseThos -OutPath (Join-Path $Out "LOSETHOS-CODE-TRIAD-SUMMARY.md")
+./scripts/correlate-losethos-compiler-codegen.ps1 -LoseThos $LoseThos -OutPath (Join-Path $Out "LOSETHOS-COMPILER-CODEGEN-CORRELATE.md")
 ./scripts/rollup-losethos-codegen-state.ps1 -Root $Out -OutPath (Join-Path $Out "LOSETHOS-CODEGEN-STATE.md")
 
 Write-Host "losethos deep archaeology: ok"
