@@ -19,7 +19,8 @@ $required = @(
     "LOSETHOS-CODE-TRIAD-SUMMARY.md",
     "LOSETHOS-COMPILER-CODEGEN-CORRELATE.md",
     "LOSETHOS-COMPILER-EXPORT-CONTEXT.md",
-    "LOSETHOS-FILL-TABLES.md"
+    "LOSETHOS-FILL-TABLES.md",
+    "LOSETHOS-FIXUP-TABLES.md"
 )
 
 $html = @()
@@ -38,16 +39,17 @@ $html += "CODE.ASZ contains three complete parallel code-template families: ICT,
 $html += "Each family has 285 labels and the same 285 suffixes; no ICT/UCT/DCT suffix is missing."
 $html += "UCT is the primary body-heavy family; ICT carries signed/integer-special bodies; DCT carries sparse double/FPU bodies."
 $html += "LEX.CPZ exports table pointers such as code_table, unsigned_code_table, double_code_table, and internal_types_table."
-$html += "COMPILE.CPZ exports FillCompilerTables, which is the next bridge surface for table population evidence.</pre></section>"
+$html += "COMPILE.CPZ FillCompilerTables assigns signed, unsigned, and double fix-up table regions and maps EC_* entries to FUT_* formats."
+$html += "The observed unsigned_code_table references are exact symbol matches, not substring hits from code_table.</pre></section>"
 
 $html += "<section><h2>Working Model</h2><pre>LoseThos compiler codegen is not a loose blob: it has an exported map plus a triad code-template table."
 $html += "CMP.MPZ points outward to source locations. CODE.ASZ holds the code-template substrate."
-$html += "LEX.CPZ exposes the table symbols; COMPILE.CPZ appears to own initialization and table fill surfaces."
+$html += "LEX.CPZ exposes the table symbols; COMPILE.CPZ owns initialization, fix-up table assignment, and selected unsigned table patching."
 $html += "ICT/UCT/DCT appear to represent integer/signed-ish, unsigned/generic, and double/FPU code paths, respectively."
 $html += "This is a lexical archaeology model, not runtime proof.</pre></section>"
 
-$html += "<section><h2>Next Targets</h2><pre>1. Inspect LOSETHOS-FILL-TABLES.md for direct code_table/fix_up_table reference lines."
-$html += "2. If FillCompilerTables proves table population, split table initialization and fix-up initialization into separate reports."
+$html += "<section><h2>Next Targets</h2><pre>1. Inspect LOSETHOS-FIXUP-TABLES.md to compare unsigned, signed, and double EC_* to FUT_* mappings."
+$html += "2. Split unsigned_code_table patching from fix-up table assignment if more detail is needed."
 $html += "3. Keep all claims report-grounded; do not execute or rewrite LoseThos sources.</pre></section>"
 
 $html += "<section><h2>Boundary</h2><pre>No compile. No execute. No rewrite. No source-tree mutation.</pre></section>"
