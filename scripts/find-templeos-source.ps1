@@ -54,12 +54,16 @@ foreach ($root in $Roots) {
     }
 }
 
-$results = @($candidates.Values | Sort-Object score -Descending, path | Select-Object -First $MaxResults)
+$results = @(
+    $candidates.Values |
+        Sort-Object -Property @{ Expression = "score"; Descending = $true }, @{ Expression = "path"; Ascending = $true } |
+        Select-Object -First $MaxResults
+)
 
 if ($results.Count -eq 0) {
     Write-Host "no TempleOS source candidates found"
     Write-Host "try passing narrower roots, for example:"
-    Write-Host ".\scripts\find-templeos-source.ps1 -Roots D:\TECHNICAL,D:\Downloads"
+    Write-Host '.\scripts\find-templeos-source.ps1 -Roots D:\TECHNICAL,D:\Downloads'
     exit 0
 }
 
@@ -71,4 +75,4 @@ foreach ($result in $results) {
 
 Write-Host ""
 Write-Host "Import with:"
-Write-Host (".\scripts\import-third-party-sources.ps1 -TempleOS \"<candidate-path>\" -Force")
+Write-Host '.\scripts\import-third-party-sources.ps1 -TempleOS "<candidate-path>" -Force'
