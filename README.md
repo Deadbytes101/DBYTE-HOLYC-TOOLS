@@ -11,6 +11,16 @@
 <img width="1196" height="623" alt="SHOT" src="https://github.com/user-attachments/assets/7d34edc9-882b-4bb5-bc66-4da6049aaa4f" />
 
 <section>
+  <h2>Architecture</h2>
+  <p>
+    The toolchain is split into read-only scanners, a Windows CLI, deterministic report scripts,
+    target-specific archaeology passes, and generated evidence reports. The diagram below is kept
+    in-repository so the README does not depend on an external image host.
+  </p>
+  <img width="1280" height="760" alt="DBYTE HOLYC TOOLS read-only source archaeology architecture" src="docs/architecture.svg" />
+</section>
+
+<section>
   <h2>Rule</h2>
   <pre>No source rewrite.
 No formatter.
@@ -125,9 +135,33 @@ reports/archaeology/sparrowos/</pre>
 </section>
 
 <section>
+  <h2>LoseThos archaeology evidence</h2>
+  <table>
+    <tr><td>include-resolve.md</td><td>legacy include alias resolver proof</td></tr>
+    <tr><td>REVERSE.md</td><td>reverse include pressure and gate hotspots</td></tr>
+    <tr><td>BOOT-CHAIN.md</td><td>load-chain checkpoints without TempleOS StartOS assumption</td></tr>
+    <tr><td>SPINE.md</td><td>root outline checkpoints</td></tr>
+    <tr><td>LOSETHOS-CONTRACT.md</td><td>OSMain, compiler, Adam, and boot-media source-contract map</td></tr>
+    <tr><td>ARCHAEOLOGY-FINDINGS.md</td><td>single-page findings summary</td></tr>
+  </table>
+</section>
+
+<section>
   <h2>Known TempleOS proof line</h2>
   <pre>includes: 229
 resolved-includes: 229
+missing-includes: 0
+pipeline: ok</pre>
+</section>
+
+<section>
+  <h2>Known LoseThos proof line</h2>
+  <pre>holy-files: 119
+tokens: 408900
+functions: 1461
+classes: 118
+includes: 81
+resolved-includes: 81
 missing-includes: 0
 pipeline: ok</pre>
 </section>
@@ -162,6 +196,7 @@ scripts/compiler-contract-archaeology.ps1
 scripts/adam-manifest-archaeology.ps1
 scripts/desktop-surface-archaeology.ps1
 scripts/adam-subsystems-archaeology.ps1
+scripts/losethos-contract-archaeology.ps1
 scripts/archaeology-findings.ps1
 scripts/summarize-archaeology.ps1
 scripts/run-archaeology.ps1</pre>
