@@ -16,7 +16,7 @@
     Clean terminal-board architecture map. It is a repo-authored SVG built from
     plain boxes, monospace labels, and fixed arrows. No generated artwork dependency.
   </p>
-  <img alt="DBYTE HOLYC TOOLS clean architecture map" src="docs/architecture.svg" />
+  <img alt="DBYTE HOLYC TOOLS clean architecture board" src="docs/architecture-board.svg" />
   <pre>source trees
   -> holylex / holyindex
   -> holytools.exe
