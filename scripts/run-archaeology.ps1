@@ -128,6 +128,9 @@ function Invoke-Target {
         Invoke-Step { ./scripts/adam-manifest-archaeology.ps1 -SourcePath $SourcePath -OutDir $targetOut }
         Invoke-Step { ./scripts/desktop-surface-archaeology.ps1 -SourcePath $SourcePath -OutDir $targetOut }
         Invoke-Step { ./scripts/adam-subsystems-archaeology.ps1 -SourcePath $SourcePath -OutDir $targetOut }
+    } elseif ($Name -eq "losethos") {
+        Invoke-Step { ./scripts/losethos-contract-archaeology.ps1 -SourcePath $SourcePath -OutDir $targetOut }
+        Write-Host "archaeology: $Name target-specific TempleOS reports skipped"
     } else {
         Write-Host "archaeology: $Name target-specific TempleOS reports skipped"
     }
