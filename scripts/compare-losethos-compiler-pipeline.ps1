@@ -58,13 +58,13 @@ $html += "<h1>LOSETHOS COMPILER PIPELINE</h1>"
 $html += "<section><h2>Pipeline Pressure</h2><table>"
 $html += "    <tr><th>anchor</th><th>outgoing</th><th>incoming</th><th>read</th></tr>"
 foreach ($anchor in $anchors) {
-    $out = @(OutEdges $rows $anchor)
-    $in = @(InEdges $rows $anchor)
+    $outEdges = @(OutEdges $rows $anchor)
+    $inEdges = @(InEdges $rows $anchor)
     $read = "component"
     if ($anchor -eq "COMPILE/CMP.ASZ") { $read = "manifest" }
     elseif ($anchor -eq "COMPILE/CMP.HPZ") { $read = "header" }
     elseif ($anchor -eq "COMPILE/CMP.MPZ") { $read = "macro or metadata surface" }
-    $html += "    <tr><td>$(E $anchor)</td><td>$($out.Count)</td><td>$($in.Count)</td><td>$(E $read)</td></tr>"
+    $html += "    <tr><td>$(E $anchor)</td><td>$($outEdges.Count)</td><td>$($inEdges.Count)</td><td>$(E $read)</td></tr>"
 }
 $html += "  </table></section>"
 
