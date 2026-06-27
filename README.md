@@ -136,7 +136,8 @@ holytools oracle --preset after-egypt --voice uncle --seed 7 --count 2</pre>
 <section>
   <h2>Source archaeology</h2>
   <pre>./scripts/run-archaeology.ps1 -TempleOS D:/src/TempleOS
-./scripts/run-archaeology.ps1 -TempleOS D:/src/TempleOS -LoseThos D:/src/LoseThos -SparrowOS D:/src/SparrowOS</pre>
+./scripts/run-archaeology.ps1 -TempleOS D:/src/TempleOS -LoseThos D:/src/LoseThos -SparrowOS D:/src/SparrowOS
+./scripts/run-archaeology.ps1 -LoseThos D:/src/LoseThos -DeepLoseThos</pre>
   <p>Output:</p>
   <pre>reports/archaeology/SUMMARY.md
 reports/archaeology/templeos/
@@ -168,6 +169,8 @@ reports/archaeology/sparrowos/</pre>
     <tr><td>BOOT-CHAIN.md</td><td>load-chain checkpoints without TempleOS StartOS assumption</td></tr>
     <tr><td>SPINE.md</td><td>root outline checkpoints</td></tr>
     <tr><td>LOSETHOS-CONTRACT.md</td><td>OSMain, compiler, Adam, and boot-media source-contract map</td></tr>
+    <tr><td>LOSETHOS-CODEGEN-STATE.md</td><td>deep compiler codegen and fix-up grammar rollup</td></tr>
+    <tr><td>docs/LOSETHOS-CODEGEN-MILESTONE.md</td><td>sealed codegen archaeology milestone note</td></tr>
     <tr><td>ARCHAEOLOGY-FINDINGS.md</td><td>single-page findings summary</td></tr>
   </table>
 </section>
@@ -178,78 +181,4 @@ reports/archaeology/sparrowos/</pre>
 resolved-includes: 229
 missing-includes: 0
 pipeline: ok</pre>
-</section>
-
-<section>
-  <h2>Known LoseThos proof line</h2>
-  <pre>holy-files: 119
-tokens: 408900
-functions: 1461
-classes: 118
-includes: 81
-resolved-includes: 81
-missing-includes: 0
-pipeline: ok</pre>
-</section>
-
-<section>
-  <h2>Package</h2>
-  <pre>./scripts/package-windows.ps1
-./scripts/verify-package.ps1
-./scripts/package-zip.ps1</pre>
-  <p>Output:</p>
-  <pre>dist/dbyte-holyc-tools-windows/
-dist/dbyte-holyc-tools-windows.zip
-dist/dbyte-holyc-tools-windows.zip.sha256</pre>
-</section>
-
-<section>
-  <h2>Package contents</h2>
-  <pre>holytools.exe
-README.md
-CHANGELOG.md
-VERSION.txt
-SHA256SUMS.txt
-MANIFEST.txt
-scripts/check-includes.ps1
-scripts/report.ps1
-scripts/resolve-archaeology-includes.ps1
-scripts/reverse-archaeology.ps1
-scripts/boot-chain-archaeology.ps1
-scripts/spine-archaeology.ps1
-scripts/kernel-contract-archaeology.ps1
-scripts/compiler-contract-archaeology.ps1
-scripts/adam-manifest-archaeology.ps1
-scripts/desktop-surface-archaeology.ps1
-scripts/adam-subsystems-archaeology.ps1
-scripts/losethos-contract-archaeology.ps1
-scripts/archaeology-findings.ps1
-scripts/summarize-archaeology.ps1
-scripts/run-archaeology.ps1</pre>
-</section>
-
-<section>
-  <h2>Release gate</h2>
-  <pre>./scripts/release.ps1 v1.8.1</pre>
-  <p>
-    The gate runs format check, workspace check, tests, CLI verification,
-    package verification, ZIP creation, clean tree check, and tag push.
-  </p>
-</section>
-
-<section>
-  <h2>Verify</h2>
-  <pre>./scripts/verify.ps1</pre>
-  <p>Current smoke line:</p>
-  <pre>14 cli smoke tests</pre>
-</section>
-
-<section>
-  <h2>Final stance</h2>
-  <pre>read-only by default
-HolyC compatibility first
-deterministic output when seeded
-source archaeology without source mutation
-oracle/random text lab without authority claims
-voice skins without authority claims</pre>
 </section>
