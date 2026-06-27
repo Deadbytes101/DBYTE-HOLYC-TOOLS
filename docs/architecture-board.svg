@@ -28,7 +28,7 @@
   <rect class="frame" x="28" y="28" width="1124" height="584" />
 
   <text class="title" x="52" y="68">DBYTE HOLYC TOOLS - ARCHITECTURE BOARD</text>
-  <text class="muted" x="52" y="96">hand-written svg / plain boxes / fixed arrows / source archaeology only</text>
+  <text class="muted" x="52" y="96">hand-written svg. plain boxes. fixed arrows. source archaeology only.</text>
 
   <rect class="box" x="58" y="138" width="190" height="258" />
   <text class="head" x="78" y="170">source trees</text>
@@ -43,10 +43,13 @@
   <rect class="box" x="318" y="138" width="190" height="258" />
   <text class="head" x="338" y="170">scan core</text>
   <text class="txt" x="338" y="204">holylex</text>
-  <text class="muted" x="338" y="226">tokens / strings</text>
+  <text class="muted" x="338" y="226">tokens</text>
+  <text class="muted" x="338" y="246">strings</text>
   <text class="txt" x="338" y="270">holyindex</text>
-  <text class="muted" x="338" y="292">files / symbols</text>
-  <text class="muted" x="338" y="312">includes / asm</text>
+  <text class="muted" x="338" y="292">files</text>
+  <text class="muted" x="338" y="312">symbols</text>
+  <text class="muted" x="338" y="332">includes</text>
+  <text class="muted" x="338" y="352">asm blocks</text>
 
   <rect class="green" x="578" y="138" width="190" height="258" />
   <text class="head" x="598" y="170">tool head</text>
@@ -66,15 +69,15 @@
   <text class="txt" x="858" y="276">reverse map</text>
   <text class="txt" x="858" y="300">contract map</text>
   <text class="muted" x="858" y="344">target-aware</text>
-  <text class="muted" x="858" y="364">TempleOS / LoseThos</text>
+  <text class="muted" x="858" y="364">TempleOS and LoseThos</text>
 
   <rect class="brown" x="198" y="460" width="782" height="94" />
   <text class="head" x="218" y="492">evidence files</text>
-  <text class="txt" x="218" y="520">SUMMARY.md | source-map.json | include-resolve.md | REVERSE.md</text>
-  <text class="txt" x="218" y="542">CONTRACT reports | ARCHAEOLOGY-FINDINGS.md</text>
+  <text class="txt" x="218" y="520">SUMMARY.md  source-map.json  include-resolve.md  REVERSE.md</text>
+  <text class="txt" x="218" y="542">CONTRACT reports  ARCHAEOLOGY-FINDINGS.md</text>
 
-  <text class="ok" x="218" y="584">LoseThos check: 119 files / 81 includes / 81 resolved / 0 missing</text>
-  <text class="muted" x="52" y="606">guard: no source rewrite | no formatter | no vm | no source-tree mutation | evidence maps only</text>
+  <text class="ok" x="218" y="584">LoseThos check: 119 files. 81 includes. 81 resolved. 0 missing.</text>
+  <text class="muted" x="52" y="606">guard: no source rewrite. no formatter. no vm. no source-tree mutation. evidence maps only.</text>
 
   <path class="wire" d="M248 267 H318" />
   <path class="wire" d="M508 267 H578" />
