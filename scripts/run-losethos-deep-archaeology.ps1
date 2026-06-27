@@ -23,6 +23,7 @@ New-Item -ItemType Directory -Force $Out | Out-Null
 ./scripts/correlate-losethos-compiler-codegen.ps1 -LoseThos $LoseThos -OutPath (Join-Path $Out "LOSETHOS-COMPILER-CODEGEN-CORRELATE.md")
 ./scripts/inspect-losethos-export-context.ps1 -LoseThos $LoseThos -OutPath (Join-Path $Out "LOSETHOS-COMPILER-EXPORT-CONTEXT.md")
 ./scripts/inspect-losethos-fill-tables.ps1 -LoseThos $LoseThos -OutPath (Join-Path $Out "LOSETHOS-FILL-TABLES.md")
+./scripts/inspect-losethos-fixup-tables.ps1 -LoseThos $LoseThos -OutPath (Join-Path $Out "LOSETHOS-FIXUP-TABLES.md")
 ./scripts/rollup-losethos-codegen-state.ps1 -Root $Out -OutPath (Join-Path $Out "LOSETHOS-CODEGEN-STATE.md")
 
 Write-Host "losethos deep archaeology: ok"
