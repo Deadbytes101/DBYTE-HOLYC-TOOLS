@@ -17,6 +17,22 @@ function S {
     $Path.Replace([char]92, [char]47)
 }
 
+function NP {
+    param([string]$Path)
+    $value = S $Path
+    if ([string]::IsNullOrWhiteSpace($value)) { return "" }
+    $prefix = ""
+    if ($value -match '^[A-Za-z]:/') { $prefix = $value.Substring(0, 3); $value = $value.Substring(3) }
+    elseif ($value.StartsWith('/')) { $prefix = "/"; $value = $value.TrimStart('/') }
+    $stack = New-Object System.Collections.Generic.List[string]
+    foreach ($part in ($value -split '/')) {
+        if ([string]::IsNullOrWhiteSpace($part) -or $part -eq '.') { continue }
+        if ($part -eq '..') { if ($stack.Count -gt 0) { $stack.RemoveAt($stack.Count - 1) }; continue }
+        $stack.Add($part)
+    }
+    return $prefix + ($stack -join '/')
+}
+
 function Rows {
     param([string]$Path)
     if (-not (Test-Path -LiteralPath $Path -PathType Leaf)) { return @() }
@@ -35,6 +51,14 @@ function InEdges {
     param([array]$Rows, [string]$Anchor)
     $suffix = (S $Anchor).ToLowerInvariant()
     return @($Rows | Where-Object { (S ([string]$_.resolved)).ToLowerInvariant().EndsWith($suffix) } | Sort-Object file,line,column,target)
+}
+
+function ShortLT {
+    param([string]$Path)
+    $value = NP $Path
+    $index = $value.IndexOf("LT/", [System.StringComparison]::OrdinalIgnoreCase)
+    if ($index -ge 0) { return $value.Substring($index) }
+    return $value
 }
 
 $rows = @(Rows (Join-Path $Root "losethos/include-resolve.json"))
@@ -71,9 +95,7 @@ $html += "  </table></section>"
 $html += "<section><h2>CMP.ASZ Load List</h2><table>"
 $html += "    <tr><th>line</th><th>target</th><th>status</th><th>resolved</th></tr>"
 foreach ($edge in @(OutEdges $rows "COMPILE/CMP.ASZ")) {
-    $resolved = S ([string]$edge.resolved)
-    $index = $resolved.IndexOf("LT/", [System.StringComparison]::OrdinalIgnoreCase)
-    if ($index -ge 0) { $resolved = $resolved.Substring($index) }
+    $resolved = ShortLT ([string]$edge.resolved)
     $html += "    <tr><td>$($edge.line)</td><td>$(E ([string]$edge.target))</td><td>$(E ([string]$edge.status))</td><td>$(E $resolved)</td></tr>"
 }
 $html += "  </table></section>"
