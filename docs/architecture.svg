@@ -70,17 +70,18 @@
   <text class="muted" x="858" y="344">target-aware</text>
   <text class="muted" x="858" y="364">TempleOS / LoseThos</text>
 
-  <rect class="box3" x="198" y="462" width="782" height="82" />
-  <text class="head" x="218" y="494">outputs</text>
-  <text class="txt" x="218" y="522">SUMMARY.md | source-map.json | include-resolve.md | REVERSE.md | CONTRACT reports</text>
-  <text class="accent" x="218" y="546">known LoseThos line: 119 files, 81 includes, 81 resolved, 0 missing</text>
+  <rect class="box3" x="198" y="452" width="782" height="108" />
+  <text class="head" x="218" y="484">outputs</text>
+  <text class="txt" x="218" y="512">SUMMARY.md | source-map.json | include-resolve.md | REVERSE.md</text>
+  <text class="txt" x="218" y="534">CONTRACT reports | ARCHAEOLOGY-FINDINGS.md</text>
+  <text class="accent" x="218" y="552">LoseThos proof: 119 files / 81 includes / 81 resolved / 0 missing</text>
 
   <path class="line" d="M248 272 H318" />
   <path class="line" d="M508 272 H578" />
   <path class="line" d="M768 272 H838" />
-  <path class="line-soft" d="M963 406 V462" />
-  <path class="line-soft" d="M673 406 V462" />
-  <path class="line-soft" d="M413 406 V462" />
+  <path class="line-soft" d="M963 406 V452" />
+  <path class="line-soft" d="M673 406 V452" />
+  <path class="line-soft" d="M413 406 V452" />
 
-  <text class="muted" x="52" y="574">guard: no source rewrite | no formatter | no vm | no source-tree mutation | reports are evidence maps</text>
+  <text class="muted" x="52" y="578">guard: no source rewrite | no formatter | no vm | no source-tree mutation | reports are evidence maps</text>
 </svg>
