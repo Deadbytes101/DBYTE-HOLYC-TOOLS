@@ -25,6 +25,7 @@ New-Item -ItemType Directory -Force $Out | Out-Null
 ./scripts/inspect-losethos-fill-tables.ps1 -LoseThos $LoseThos -OutPath (Join-Path $Out "LOSETHOS-FILL-TABLES.md")
 ./scripts/inspect-losethos-fixup-tables.ps1 -LoseThos $LoseThos -OutPath (Join-Path $Out "LOSETHOS-FIXUP-TABLES.md")
 ./scripts/compare-losethos-fixup-tables.ps1 -LoseThos $LoseThos -OutPath (Join-Path $Out "LOSETHOS-FIXUP-COMPARE.md")
+./scripts/summarize-losethos-fixup-grammar.ps1 -LoseThos $LoseThos -OutPath (Join-Path $Out "LOSETHOS-FIXUP-GRAMMAR.md")
 ./scripts/rollup-losethos-codegen-state.ps1 -Root $Out -OutPath (Join-Path $Out "LOSETHOS-CODEGEN-STATE.md")
 
 Write-Host "losethos deep archaeology: ok"
