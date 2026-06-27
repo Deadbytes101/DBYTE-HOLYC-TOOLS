@@ -7,6 +7,7 @@ param(
 $ErrorActionPreference = "Stop"
 function E { param([string]$Text) if ($null -eq $Text) { return "" } $Text.Replace('&', '&amp;').Replace('<', '&lt;').Replace('>', '&gt;').Replace('"', '&quot;') }
 function PrefixOf { param([string]$Name) if ($Name -match '^([A-Za-z]+)') { return $Matches[1] } return $Name }
+function NameParts { param([string]$Name) return @($Name.ToUpperInvariant() -split '[^A-Z0-9]+' | Where-Object { $_ }) }
 
 $cmpMap = Join-Path $LoseThos "COMPILE/CMP.MPZ"
 $codePath = Join-Path $LoseThos "COMPILE/CODE.ASZ"
@@ -19,12 +20,13 @@ $suffixSet = New-Object System.Collections.Generic.HashSet[string]
 foreach ($line in $codeLines) {
     if ($line -match '^\s*(ICT|UCT|DCT)_([A-Za-z0-9_]+)\s*:{1,2}') { [void]$suffixSet.Add($Matches[2]) }
 }
-$suffixes = @($suffixSet | Sort-Object)
+$suffixes = @($suffixSet | Where-Object { $_.Length -ge 4 } | Sort-Object)
 
 $exports = @()
 foreach ($line in @(Get-Content -LiteralPath $cmpMap)) {
     if ($line -notmatch 'FL:::/LT/([^",$]+),([0-9]+)') { continue }
     $source = ($Matches[1]).Replace('\','/')
+    $lineNo = [int]$Matches[2]
     if ($sources -notcontains $source) { continue }
     $symbol = ""
     if ($line -match '^\$LK(?:\s+\+BI)?\s*,?"([^"]+)"') { $symbol = $Matches[1].Trim() }
@@ -33,7 +35,7 @@ foreach ($line in @(Get-Content -LiteralPath $cmpMap)) {
     if ($line -match 'Funct Export') { $kind = "Funct Export" }
     elseif ($line -match 'StrConst') { $kind = "StrConst" }
     elseif ($line -match 'Export') { $kind = "Export" }
-    $exports += [pscustomobject]@{ source = $source; symbol = $symbol; line = [int]$Matches[2]; kind = $kind }
+    $exports += [pscustomobject]@{ source = $source; symbol = $symbol; line = $lineNo; kind = $kind }
 }
 
 $directRefs = @()
@@ -52,7 +54,8 @@ foreach ($source in $sources) {
 
 $symbolHints = @()
 foreach ($export in $exports) {
-    $hits = @($suffixes | Where-Object { $export.symbol -and ($export.symbol.ToUpperInvariant().Contains($_) -or $_.Contains($export.symbol.ToUpperInvariant())) } | Select-Object -First 8)
+    $parts = @(NameParts $export.symbol)
+    $hits = @($suffixes | Where-Object { $parts -contains $_ } | Select-Object -First 8)
     if ($hits.Count -gt 0) { $symbolHints += [pscustomobject]@{ source = $export.source; symbol = $export.symbol; kind = $export.kind; suffixHints = ($hits -join ", ") } }
 }
 
@@ -96,6 +99,7 @@ $html += "  </table></section>"
 
 $html += "<section><h2>Read Line</h2><pre>This report correlates CMP.MPZ exports from LEX.CPZ and COMPILE.CPZ with CODE.ASZ triad labels."
 $html += "Direct references are stronger evidence than symbol-name suffix hints."
+$html += "Suffix hints require token boundary matches and ignore short suffix noise."
 $html += "This is lexical correlation only, not semantic or runtime proof.</pre></section>"
 $html += "<section><h2>Boundary</h2><pre>No compile. No execute. No rewrite. No source-tree mutation.</pre></section>"
 $html | Set-Content -Encoding utf8 $OutPath
