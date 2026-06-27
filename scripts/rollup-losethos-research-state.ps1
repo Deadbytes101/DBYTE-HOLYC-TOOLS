@@ -15,6 +15,7 @@ $templeMap = ReadJson (Join-Path $Root "templeos/source-map.json")
 $loseMap = ReadJson (Join-Path $Root "losethos/source-map.json")
 $templeInc = @(Rows (Join-Path $Root "templeos/include-resolve.json"))
 $loseInc = @(Rows (Join-Path $Root "losethos/include-resolve.json"))
+$codegenPresent = (ReportStatus "LOSETHOS-CODEGEN-STATE.md") -eq "present"
 
 New-Item -ItemType Directory -Force (Split-Path -Parent $OutPath) | Out-Null
 
@@ -29,7 +30,12 @@ $html += "  </table></section>"
 $html += "<section><h2>Evidence Chain</h2><pre>Boot: OSMain/OS.ASZ fans into OSMain, IRQ, memory, scheduler, command, and disk layers."
 $html += "Bridge: OSMain/ADAMK.CPZ pulls ADAMK headers, compiler header, and ADAM/ADAM2.CPZ."
 $html += "Compiler: COMPILE/CMP.ASZ pulls CODE, LEX, SPRINTF2, ASM, PARSE, OPT, and COMPILE."
-$html += "Adam: ADAM/ADAM2.CPZ pulls math, ODE, graphics, disk, comm, input, window, edit, login, and wordstat surfaces.</pre></section>"
+$html += "Adam: ADAM/ADAM2.CPZ pulls math, ODE, graphics, disk, comm, input, window, edit, login, and wordstat surfaces."
+if ($codegenPresent) {
+    $html += "Codegen: CMP.MPZ maps exported compiler symbols to source refs; CODE.ASZ holds complete ICT/UCT/DCT code-template triads.</pre></section>"
+} else {
+    $html += "Codegen: deep LoseThos codegen archaeology has not been generated yet.</pre></section>"
+}
 
 $html += "<section><h2>Generated Reports</h2><table>"
 $html += "    <tr><th>report</th><th>status</th></tr>"
@@ -40,13 +46,19 @@ foreach ($name in @(
     "TEMPLEOS-LOSETHOS-COMPILER-CMP-COMPARE.md",
     "LOSETHOS-COMPILER-PIPELINE.md",
     "LOSETHOS-ADAM-SURFACE.md",
-    "TEMPLEOS-LOSETHOS-ADAM-LAYER-COMPARE.md"
+    "TEMPLEOS-LOSETHOS-ADAM-LAYER-COMPARE.md",
+    "LOSETHOS-CODEGEN-STATE.md"
 )) { $html += "    <tr><td>$(E $name)</td><td>$(ReportStatus $name)</td></tr>" }
 $html += "  </table></section>"
 
 $html += "<section><h2>Research State</h2><pre>LoseThos is a compact early system, not a thin fragment."
-$html += "The include evidence shows boot, kernel/Adam bridge, compiler manifest, compiler pipeline, and Adam-layer manifest."
-$html += "Next useful work is source outline inspection for CMP.MPZ, ADAM2.CPZ, and the compiler component files."
+if ($codegenPresent) {
+    $html += "The include evidence shows boot, kernel/Adam bridge, compiler manifest, compiler pipeline, Adam-layer manifest, and compiler codegen triads."
+    $html += "Next useful work is correlating LEX.CPZ and COMPILE.CPZ exports with CODE.ASZ suffix usage."
+} else {
+    $html += "The include evidence shows boot, kernel/Adam bridge, compiler manifest, compiler pipeline, and Adam-layer manifest."
+    $html += "Next useful work is source outline inspection for CMP.MPZ, ADAM2.CPZ, and the compiler component files."
+}
 $html += "All claims here are generated-report evidence, not runtime proof.</pre></section>"
 $html += "<section><h2>Boundary</h2><pre>No compile. No execute. No rewrite. No source-tree mutation.</pre></section>"
 
