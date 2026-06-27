@@ -9,6 +9,23 @@ $ErrorActionPreference = "Stop"
 function E { param([string]$Text) if ($null -eq $Text) { return "" } $Text.Replace('&', '&amp;').Replace('<', '&lt;').Replace('>', '&gt;').Replace('"', '&quot;') }
 function CountKind { param([object]$Json, [string]$Kind) return @($Json.items | Where-Object { $_.kind -eq $Kind }).Count }
 function CountRegex { param([string]$Text, [string]$Pattern) return ([regex]::Matches($Text, $Pattern)).Count }
+function Get-RelativeSourcePath {
+    param(
+        [Parameter(Mandatory = $true)]
+        [string]$Root,
+        [Parameter(Mandatory = $true)]
+        [string]$Path
+    )
+
+    $rootPath = (Resolve-Path -LiteralPath $Root).Path.TrimEnd('\', '/')
+    $fullPath = (Resolve-Path -LiteralPath $Path).Path
+
+    if ($fullPath.StartsWith($rootPath, [System.StringComparison]::OrdinalIgnoreCase)) {
+        return $fullPath.Substring($rootPath.Length).TrimStart('\', '/').Replace('\', '/')
+    }
+
+    return $fullPath.Replace('\', '/')
+}
 
 $packagedTool = Join-Path $PSScriptRoot "../holytools.exe"
 $repoTool = Join-Path $PSScriptRoot "../target/release/holytools.exe"
@@ -35,7 +52,7 @@ foreach ($pattern in $patterns) {
 
 $rows = @()
 foreach ($file in @($files | Sort-Object)) {
-    $relative = [System.IO.Path]::GetRelativePath((Resolve-Path -LiteralPath $SparrowOS).Path, $file).Replace('\', '/')
+    $relative = Get-RelativeSourcePath -Root $SparrowOS -Path $file
     try {
         $json = & $tool outline $file --json | ConvertFrom-Json
         $rows += [pscustomobject]@{
