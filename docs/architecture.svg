@@ -1,101 +1,124 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1280" height="760" viewBox="0 0 1280 760" role="img" aria-labelledby="title desc">
-  <title id="title">DBYTE HOLYC TOOLS architecture</title>
-  <desc id="desc">Read-only architecture diagram for HolyC source scanning, archaeology reporting, target-specific TempleOS and LoseThos reports, and oracle random text lab.</desc>
+  <title id="title">DBYTE HOLYC TOOLS VGA architecture map</title>
+  <desc id="desc">Hand-authored 16-color VGA style architecture diagram for the read-only HolyC archaeology toolchain. No AI-generated art.</desc>
   <defs>
     <style>
-      .bg { fill: #0b0f14; }
-      .panel { fill: #121923; stroke: #344255; stroke-width: 2; rx: 18; }
-      .box { fill: #172232; stroke: #5b6f89; stroke-width: 2; rx: 14; }
-      .target { fill: #182c24; stroke: #4d8067; stroke-width: 2; rx: 14; }
-      .output { fill: #2a2138; stroke: #8064a6; stroke-width: 2; rx: 14; }
-      .guard { fill: #33241b; stroke: #a8744f; stroke-width: 2; rx: 14; }
-      .text { fill: #e8edf3; font-family: Consolas, Menlo, monospace; font-size: 22px; }
-      .small { fill: #c2ccd8; font-family: Consolas, Menlo, monospace; font-size: 17px; }
-      .tiny { fill: #9eabba; font-family: Consolas, Menlo, monospace; font-size: 14px; }
-      .title { fill: #ffffff; font-family: Consolas, Menlo, monospace; font-size: 34px; font-weight: 700; }
-      .line { stroke: #91a7bf; stroke-width: 3; fill: none; marker-end: url(#arrow); }
-      .dashed { stroke: #91a7bf; stroke-width: 2.5; stroke-dasharray: 9 7; fill: none; marker-end: url(#arrow); }
+      .bg { fill: #0000aa; }
+      .screen { fill: #000000; stroke: #aaaaaa; stroke-width: 4; }
+      .grid { stroke: #000055; stroke-width: 1; }
+      .box-blue { fill: #0000aa; stroke: #ffffff; stroke-width: 3; }
+      .box-cyan { fill: #00aaaa; stroke: #ffffff; stroke-width: 3; }
+      .box-green { fill: #00aa00; stroke: #ffffff; stroke-width: 3; }
+      .box-red { fill: #aa0000; stroke: #ffffff; stroke-width: 3; }
+      .box-magenta { fill: #aa00aa; stroke: #ffffff; stroke-width: 3; }
+      .box-brown { fill: #aa5500; stroke: #ffffff; stroke-width: 3; }
+      .box-gray { fill: #555555; stroke: #ffffff; stroke-width: 3; }
+      .box-black { fill: #000000; stroke: #ffffff; stroke-width: 3; }
+      .wire { stroke: #ffff55; stroke-width: 4; fill: none; marker-end: url(#arrow); }
+      .wire2 { stroke: #55ffff; stroke-width: 3; fill: none; marker-end: url(#arrow2); }
+      .txt { fill: #ffffff; font-family: Consolas, 'Courier New', monospace; font-size: 21px; font-weight: 700; }
+      .tiny { fill: #ffff55; font-family: Consolas, 'Courier New', monospace; font-size: 15px; font-weight: 700; }
+      .cyan { fill: #55ffff; }
+      .yellow { fill: #ffff55; }
+      .green { fill: #55ff55; }
+      .red { fill: #ff5555; }
+      .shadow { fill: #555555; }
     </style>
-    <marker id="arrow" markerWidth="12" markerHeight="12" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
-      <path d="M0,0 L0,6 L9,3 z" fill="#91a7bf" />
+    <marker id="arrow" markerWidth="14" markerHeight="14" refX="11" refY="4" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,8 L12,4 z" fill="#ffff55" />
+    </marker>
+    <marker id="arrow2" markerWidth="12" markerHeight="12" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#55ffff" />
     </marker>
   </defs>
 
-  <rect class="bg" x="0" y="0" width="1280" height="760" />
-  <text class="title" x="40" y="56">DBYTE HOLYC TOOLS — read-only source archaeology</text>
-  <text class="small" x="42" y="88">No source rewrite. No VM. No fake C parser. Reports are evidence maps, not runtime proof.</text>
+  <rect class="bg" width="1280" height="760" />
+  <g opacity="0.35">
+    <path class="grid" d="M0 80 H1280 M0 160 H1280 M0 240 H1280 M0 320 H1280 M0 400 H1280 M0 480 H1280 M0 560 H1280 M0 640 H1280 M0 720 H1280" />
+    <path class="grid" d="M80 0 V760 M160 0 V760 M240 0 V760 M320 0 V760 M400 0 V760 M480 0 V760 M560 0 V760 M640 0 V760 M720 0 V760 M800 0 V760 M880 0 V760 M960 0 V760 M1040 0 V760 M1120 0 V760 M1200 0 V760" />
+  </g>
 
-  <rect class="panel" x="35" y="120" width="285" height="500" />
-  <text class="text" x="58" y="158">Source targets</text>
-  <rect class="target" x="60" y="185" width="235" height="72" />
-  <text class="small" x="80" y="214">TempleOS tree</text>
-  <text class="tiny" x="80" y="238">*.HC / *.HH layout</text>
-  <rect class="target" x="60" y="280" width="235" height="88" />
-  <text class="small" x="80" y="310">LoseThos tree</text>
-  <text class="tiny" x="80" y="334">legacy aliases</text>
-  <text class="tiny" x="80" y="356">*.CPZ *.HPZ *.ASZ *.MPZ</text>
-  <rect class="target" x="60" y="392" width="235" height="72" />
-  <text class="small" x="80" y="421">SparrowOS tree</text>
-  <text class="tiny" x="80" y="445">contrast target</text>
-  <rect class="guard" x="60" y="496" width="235" height="84" />
-  <text class="small" x="80" y="525">Source boundary</text>
-  <text class="tiny" x="80" y="549">read only</text>
-  <text class="tiny" x="80" y="571">no mutation / no execution</text>
+  <rect class="screen" x="28" y="28" width="1224" height="704" />
+  <text class="txt yellow" x="48" y="66">DBYTE HOLYC TOOLS :: SOURCE ARCHAEOLOGY MAP</text>
+  <text class="tiny" x="48" y="94">HAND-AUTHORED SVG / 16-COLOR VGA STYLE / NO AI-GENERATED ART</text>
+  <text class="tiny cyan" x="790" y="94">READ ONLY - NO EXECUTE - NO MUTATE - NO FAKE PARSER</text>
 
-  <rect class="panel" x="365" y="120" width="310" height="500" />
-  <text class="text" x="390" y="158">Core scanner</text>
-  <rect class="box" x="395" y="185" width="250" height="82" />
-  <text class="small" x="418" y="215">holylex</text>
-  <text class="tiny" x="418" y="239">tokens, strings, comments</text>
-  <rect class="box" x="395" y="295" width="250" height="92" />
-  <text class="small" x="418" y="325">holyindex</text>
-  <text class="tiny" x="418" y="349">files, symbols, classes</text>
-  <text class="tiny" x="418" y="371">includes, asm blocks</text>
-  <rect class="box" x="395" y="418" width="250" height="108" />
-  <text class="small" x="418" y="448">holytools.exe</text>
-  <text class="tiny" x="418" y="472">source-map / symbols</text>
-  <text class="tiny" x="418" y="494">resolve-includes</text>
-  <text class="tiny" x="418" y="516">entrypoints / reverse</text>
+  <rect class="box-blue" x="54" y="132" width="244" height="392" />
+  <text class="txt" x="76" y="166">TARGET TREES</text>
+  <rect class="box-black" x="78" y="192" width="196" height="70" />
+  <text class="tiny green" x="96" y="222">TEMPLEOS</text>
+  <text class="tiny" x="96" y="244">*.HC *.HH</text>
+  <rect class="box-black" x="78" y="286" width="196" height="86" />
+  <text class="tiny green" x="96" y="316">LOSETHOS</text>
+  <text class="tiny" x="96" y="338">*.CPZ *.HPZ</text>
+  <text class="tiny" x="96" y="358">*.ASZ *.MPZ</text>
+  <rect class="box-black" x="78" y="396" width="196" height="70" />
+  <text class="tiny green" x="96" y="426">SPARROWOS</text>
+  <text class="tiny" x="96" y="448">CONTRAST TREE</text>
+  <text class="tiny red" x="74" y="500">NO SOURCE WRITE</text>
 
-  <rect class="panel" x="720" y="120" width="250" height="500" />
-  <text class="text" x="745" y="158">Report scripts</text>
-  <rect class="box" x="750" y="185" width="190" height="72" />
-  <text class="small" x="772" y="214">report.ps1</text>
-  <text class="tiny" x="772" y="238">base report pack</text>
-  <rect class="box" x="750" y="280" width="190" height="86" />
-  <text class="small" x="772" y="310">run-archaeology</text>
-  <text class="tiny" x="772" y="334">multi-target</text>
-  <text class="tiny" x="772" y="354">pipeline gate</text>
-  <rect class="box" x="750" y="394" width="190" height="92" />
-  <text class="small" x="772" y="424">contract reports</text>
-  <text class="tiny" x="772" y="448">TempleOS-specific</text>
-  <text class="tiny" x="772" y="470">LoseThos-specific</text>
-  <rect class="guard" x="750" y="516" width="190" height="64" />
-  <text class="small" x="772" y="546">verify.ps1</text>
-  <text class="tiny" x="772" y="568">release gate input</text>
+  <rect class="box-cyan" x="360" y="132" width="250" height="392" />
+  <text class="txt" x="388" y="166">SCANNER CORE</text>
+  <rect class="box-black" x="386" y="194" width="198" height="74" />
+  <text class="tiny yellow" x="404" y="224">holylex</text>
+  <text class="tiny" x="404" y="246">TOKENS / STRINGS</text>
+  <rect class="box-black" x="386" y="298" width="198" height="94" />
+  <text class="tiny yellow" x="404" y="328">holyindex</text>
+  <text class="tiny" x="404" y="350">FILES SYMBOLS</text>
+  <text class="tiny" x="404" y="372">INCLUDES ASM</text>
+  <rect class="box-black" x="386" y="420" width="198" height="74" />
+  <text class="tiny yellow" x="404" y="450">holytools.exe</text>
+  <text class="tiny" x="404" y="472">TEXT + JSON CLI</text>
 
-  <rect class="panel" x="1015" y="120" width="230" height="500" />
-  <text class="text" x="1040" y="158">Outputs</text>
-  <rect class="output" x="1040" y="185" width="175" height="96" />
-  <text class="small" x="1060" y="215">SUMMARY.md</text>
-  <text class="tiny" x="1060" y="239">counts by target</text>
-  <text class="tiny" x="1060" y="261">ok / missing</text>
-  <rect class="output" x="1040" y="306" width="175" height="108" />
-  <text class="small" x="1060" y="336">REVERSE.md</text>
-  <text class="tiny" x="1060" y="360">pressure maps</text>
-  <text class="tiny" x="1060" y="382">hotspots</text>
-  <text class="tiny" x="1060" y="402">gates</text>
-  <rect class="output" x="1040" y="438" width="175" height="112" />
-  <text class="small" x="1060" y="468">CONTRACT.md</text>
-  <text class="tiny" x="1060" y="492">Kernel/Compiler</text>
-  <text class="tiny" x="1060" y="514">Adam / LoseThos</text>
-  <text class="tiny" x="1060" y="536">source-contract</text>
+  <rect class="box-green" x="668" y="132" width="252" height="392" />
+  <text class="txt" x="696" y="166">REPORT PASS</text>
+  <rect class="box-black" x="692" y="194" width="204" height="66" />
+  <text class="tiny yellow" x="710" y="224">report.ps1</text>
+  <text class="tiny" x="710" y="246">BASE PACK</text>
+  <rect class="box-black" x="692" y="286" width="204" height="82" />
+  <text class="tiny yellow" x="710" y="316">run-archaeology</text>
+  <text class="tiny" x="710" y="338">MULTI TARGET</text>
+  <text class="tiny" x="710" y="358">ORDERED STEPS</text>
+  <rect class="box-black" x="692" y="398" width="204" height="82" />
+  <text class="tiny yellow" x="710" y="428">CONTRACT MAPS</text>
+  <text class="tiny" x="710" y="450">TEMPLEOS +</text>
+  <text class="tiny" x="710" y="470">LOSETHOS</text>
 
-  <rect class="panel" x="365" y="650" width="880" height="70" />
-  <text class="text" x="390" y="690">Oracle lab stays separate: seeded random text, voice skins, no prophecy claims.</text>
+  <rect class="box-magenta" x="980" y="132" width="244" height="392" />
+  <text class="txt" x="1012" y="166">EVIDENCE</text>
+  <rect class="box-black" x="1004" y="194" width="196" height="66" />
+  <text class="tiny yellow" x="1022" y="224">SUMMARY.md</text>
+  <text class="tiny" x="1022" y="246">COUNTS / OK</text>
+  <rect class="box-black" x="1004" y="286" width="196" height="82" />
+  <text class="tiny yellow" x="1022" y="316">REVERSE.md</text>
+  <text class="tiny" x="1022" y="338">PRESSURE</text>
+  <text class="tiny" x="1022" y="358">HOTSPOTS</text>
+  <rect class="box-black" x="1004" y="398" width="196" height="82" />
+  <text class="tiny yellow" x="1022" y="428">CONTRACT.md</text>
+  <text class="tiny" x="1022" y="450">LOAD CHAINS</text>
+  <text class="tiny" x="1022" y="470">ANCHORS</text>
 
-  <path class="line" d="M320 350 C340 350 350 350 365 350" />
-  <path class="line" d="M675 350 C695 350 700 350 720 350" />
-  <path class="line" d="M970 350 C990 350 1000 350 1015 350" />
-  <path class="dashed" d="M845 580 C845 640 720 662 650 662" />
+  <path class="wire" d="M298 328 H360" />
+  <path class="wire" d="M610 328 H668" />
+  <path class="wire" d="M920 328 H980" />
+
+  <rect class="box-red" x="86" y="574" width="372" height="84" />
+  <text class="txt" x="110" y="608">TRUST BOUNDARY</text>
+  <text class="tiny" x="110" y="634">SOURCE ORDER != RUNTIME PROOF</text>
+  <text class="tiny" x="110" y="654">OUTLINE PRESSURE != SEMANTIC PROOF</text>
+
+  <rect class="box-brown" x="520" y="574" width="304" height="84" />
+  <text class="txt" x="544" y="608">ORACLE LAB</text>
+  <text class="tiny" x="544" y="634">SEEDED RANDOM TEXT</text>
+  <text class="tiny" x="544" y="654">VOICE SKINS / NO PROPHECY</text>
+
+  <rect class="box-gray" x="888" y="574" width="306" height="84" />
+  <text class="txt" x="912" y="608">RELEASE GATE</text>
+  <text class="tiny" x="912" y="634">VERIFY / PACKAGE / TAG</text>
+  <text class="tiny" x="912" y="654">CLEAN TREE ONLY</text>
+
+  <path class="wire2" d="M794 480 V552 H1040 V574" />
+  <path class="wire2" d="M486 494 V552 H672 V574" />
+
+  <text class="tiny green" x="48" y="708">LOSETHOS PROOF LINE: 119 FILES / 408900 TOKENS / 81 INCLUDES / 81 RESOLVED / 0 MISSING</text>
 </svg>
