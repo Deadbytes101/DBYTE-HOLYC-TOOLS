@@ -18,7 +18,7 @@
   </p>
   <img alt="DBYTE HOLYC TOOLS clean architecture board" src="docs/architecture-board.svg" />
   <pre>source trees
-  -> holylex / holyindex
+  -> holylex and holyindex
   -> holytools.exe
   -> report scripts
   -> archaeology reports
