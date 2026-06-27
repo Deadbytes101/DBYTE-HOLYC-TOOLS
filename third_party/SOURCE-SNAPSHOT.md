@@ -6,7 +6,7 @@ Boundary: imported source trees are research inputs for DBYTE HOLYC TOOLS.
 
 ## TempleOS
 
-Source path: D:\src\TempleOS
+Source path: existing snapshot
 Snapshot path: third_party\source\templeos
 Files: 686
 
@@ -15,6 +15,12 @@ Files: 686
 Source path: existing snapshot
 Snapshot path: third_party\source\losethos
 Files: 152
+
+## SparrowOS
+
+Source path: D:\TECHNICAL\TOSCUSTOM\SparrowOSCD_2012-11-02T12_57_28\SparrowOS
+Snapshot path: third_party\source\sparrowos
+Files: 711
 
 ## Notes
 
