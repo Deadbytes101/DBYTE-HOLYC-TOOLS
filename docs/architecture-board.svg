@@ -1,6 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1180" height="640" viewBox="0 0 1180 640" role="img" aria-labelledby="title desc">
+<svg xmlns="http://www.w3.org/2000/svg" width="1180" height="560" viewBox="0 0 1180 560" role="img" aria-labelledby="title desc">
   <title id="title">DBYTE HOLYC TOOLS architecture board</title>
-  <desc id="desc">Clean hand-authored architecture board for the DBYTE HOLYC TOOLS read-only source archaeology pipeline.</desc>
+  <desc id="desc">Minimal architecture board for the DBYTE HOLYC TOOLS read-only archaeology pipeline.</desc>
   <defs>
     <style>
       .bg { fill: #101418; }
@@ -14,7 +14,6 @@
       .head { fill: #f2f6fa; font-family: Consolas, 'Courier New', monospace; font-size: 17px; font-weight: 700; }
       .txt { fill: #ccd5df; font-family: Consolas, 'Courier New', monospace; font-size: 14px; }
       .muted { fill: #8d98a5; font-family: Consolas, 'Courier New', monospace; font-size: 13px; }
-      .ok { fill: #b8f7d4; font-family: Consolas, 'Courier New', monospace; font-size: 13px; }
     </style>
     <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
       <path d="M0,0 L0,6 L8,3 z" fill="#d6dde6" />
@@ -24,65 +23,45 @@
     </marker>
   </defs>
 
-  <rect class="bg" width="1180" height="640" />
-  <rect class="frame" x="28" y="28" width="1124" height="584" />
+  <rect class="bg" width="1180" height="560" />
+  <rect class="frame" x="28" y="28" width="1124" height="504" />
 
-  <text class="title" x="52" y="68">DBYTE HOLYC TOOLS - ARCHITECTURE BOARD</text>
-  <text class="muted" x="52" y="96">hand-written svg. plain boxes. fixed arrows. source archaeology only.</text>
+  <text class="title" x="52" y="68">DBYTE HOLYC TOOLS - ARCHITECTURE</text>
+  <text class="muted" x="52" y="94">read-only source archaeology</text>
 
-  <rect class="box" x="58" y="138" width="190" height="258" />
-  <text class="head" x="78" y="170">source trees</text>
-  <text class="txt" x="78" y="204">TempleOS</text>
-  <text class="muted" x="78" y="226">.HC .HH</text>
-  <text class="txt" x="78" y="260">LoseThos</text>
-  <text class="muted" x="78" y="282">.CPZ .HPZ</text>
-  <text class="muted" x="78" y="302">.ASZ .MPZ</text>
-  <text class="txt" x="78" y="336">SparrowOS</text>
-  <text class="muted" x="78" y="358">comparison target</text>
+  <rect class="box" x="58" y="132" width="190" height="210" />
+  <text class="head" x="78" y="164">source trees</text>
+  <text class="txt" x="78" y="198">TempleOS</text>
+  <text class="txt" x="78" y="228">LoseThos</text>
+  <text class="txt" x="78" y="258">SparrowOS</text>
 
-  <rect class="box" x="318" y="138" width="190" height="258" />
-  <text class="head" x="338" y="170">scan core</text>
-  <text class="txt" x="338" y="204">holylex</text>
-  <text class="muted" x="338" y="226">tokens</text>
-  <text class="muted" x="338" y="246">strings</text>
-  <text class="txt" x="338" y="270">holyindex</text>
-  <text class="muted" x="338" y="292">files</text>
-  <text class="muted" x="338" y="312">symbols</text>
-  <text class="muted" x="338" y="332">includes</text>
-  <text class="muted" x="338" y="352">asm blocks</text>
+  <rect class="box" x="318" y="132" width="190" height="210" />
+  <text class="head" x="338" y="164">scan core</text>
+  <text class="txt" x="338" y="198">holylex</text>
+  <text class="txt" x="338" y="228">holyindex</text>
 
-  <rect class="green" x="578" y="138" width="190" height="258" />
-  <text class="head" x="598" y="170">tool head</text>
-  <text class="txt" x="598" y="204">holytools.exe</text>
-  <text class="muted" x="598" y="226">source-map</text>
-  <text class="muted" x="598" y="246">resolve-includes</text>
-  <text class="muted" x="598" y="266">entrypoints</text>
-  <text class="muted" x="598" y="286">reverse-includes</text>
-  <text class="txt" x="598" y="334">oracle lab</text>
-  <text class="muted" x="598" y="356">seeded text only</text>
+  <rect class="green" x="578" y="132" width="190" height="210" />
+  <text class="head" x="598" y="164">cli layer</text>
+  <text class="txt" x="598" y="198">holytools.exe</text>
+  <text class="txt" x="598" y="228">source map</text>
+  <text class="txt" x="598" y="258">oracle lab</text>
 
-  <rect class="green" x="838" y="138" width="250" height="258" />
-  <text class="head" x="858" y="170">report pass</text>
-  <text class="txt" x="858" y="204">report.ps1</text>
-  <text class="txt" x="858" y="228">run-archaeology.ps1</text>
-  <text class="txt" x="858" y="252">include resolver</text>
-  <text class="txt" x="858" y="276">reverse map</text>
-  <text class="txt" x="858" y="300">contract map</text>
-  <text class="muted" x="858" y="344">target-aware</text>
-  <text class="muted" x="858" y="364">TempleOS and LoseThos</text>
+  <rect class="green" x="838" y="132" width="250" height="210" />
+  <text class="head" x="858" y="164">report pass</text>
+  <text class="txt" x="858" y="198">run-archaeology.ps1</text>
+  <text class="txt" x="858" y="228">contract reports</text>
+  <text class="txt" x="858" y="258">findings summary</text>
 
-  <rect class="brown" x="198" y="460" width="782" height="94" />
-  <text class="head" x="218" y="492">evidence files</text>
-  <text class="txt" x="218" y="520">SUMMARY.md  source-map.json  include-resolve.md  REVERSE.md</text>
-  <text class="txt" x="218" y="542">CONTRACT reports  ARCHAEOLOGY-FINDINGS.md</text>
+  <rect class="brown" x="218" y="402" width="742" height="74" />
+  <text class="head" x="238" y="434">outputs</text>
+  <text class="txt" x="238" y="460">SUMMARY.md   source-map.json   include-resolve.md   REVERSE.md</text>
 
-  <text class="ok" x="218" y="584">LoseThos check: 119 files. 81 includes. 81 resolved. 0 missing.</text>
-  <text class="muted" x="52" y="606">guard: no source rewrite. no formatter. no vm. no source-tree mutation. evidence maps only.</text>
+  <text class="muted" x="52" y="510">no rewrite. no formatter. reports only.</text>
 
-  <path class="wire" d="M248 267 H318" />
-  <path class="wire" d="M508 267 H578" />
-  <path class="wire" d="M768 267 H838" />
-  <path class="drop" d="M413 396 V460" />
-  <path class="drop" d="M673 396 V460" />
-  <path class="drop" d="M963 396 V460" />
+  <path class="wire" d="M248 237 H318" />
+  <path class="wire" d="M508 237 H578" />
+  <path class="wire" d="M768 237 H838" />
+  <path class="drop" d="M413 342 V402" />
+  <path class="drop" d="M673 342 V402" />
+  <path class="drop" d="M963 342 V402" />
 </svg>
