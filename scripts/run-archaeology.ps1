@@ -23,34 +23,16 @@ function Invoke-Step {
     }
 }
 
-function Invoke-Target {
+function Write-NotesTemplate {
     param(
         [Parameter(Mandatory = $true)]
         [string]$Name,
 
         [Parameter(Mandatory = $true)]
-        [string]$SourcePath
+        [string]$TargetOut
     )
 
-    if (-not (Test-Path $SourcePath)) {
-        Write-Error "missing source tree: $SourcePath"
-        exit 1
-    }
-
-    $targetOut = Join-Path $Out $Name
-    Invoke-Step { ./scripts/report.ps1 $SourcePath $targetOut }
-    Invoke-Step { ./scripts/resolve-archaeology-includes.ps1 -SourcePath $SourcePath -OutDir $targetOut }
-    Invoke-Step { ./scripts/reverse-archaeology.ps1 -SourcePath $SourcePath -OutDir $targetOut }
-    Invoke-Step { ./scripts/boot-chain-archaeology.ps1 -SourcePath $SourcePath -OutDir $targetOut }
-    Invoke-Step { ./scripts/spine-archaeology.ps1 -SourcePath $SourcePath -OutDir $targetOut }
-    Invoke-Step { ./scripts/kernel-contract-archaeology.ps1 -SourcePath $SourcePath -OutDir $targetOut }
-    Invoke-Step { ./scripts/compiler-contract-archaeology.ps1 -SourcePath $SourcePath -OutDir $targetOut }
-    Invoke-Step { ./scripts/adam-manifest-archaeology.ps1 -SourcePath $SourcePath -OutDir $targetOut }
-    Invoke-Step { ./scripts/desktop-surface-archaeology.ps1 -SourcePath $SourcePath -OutDir $targetOut }
-    Invoke-Step { ./scripts/adam-subsystems-archaeology.ps1 -SourcePath $SourcePath -OutDir $targetOut }
-    Invoke-Step { ./scripts/archaeology-findings.ps1 -SourcePath $SourcePath -OutDir $targetOut -TargetName $Name }
-
-    $notes = Join-Path $targetOut "NOTES.md"
+    $notes = Join-Path $TargetOut "NOTES.md"
     if (-not (Test-Path $notes)) {
         @(
             "<h1>$Name NOTES</h1>",
@@ -92,6 +74,61 @@ function Invoke-Target {
             "</section>"
         ) | Set-Content -Encoding utf8 $notes
     }
+}
+
+function Get-HolyFileCount {
+    param(
+        [Parameter(Mandatory = $true)]
+        [string]$TargetOut
+    )
+
+    $sourceMap = Join-Path $TargetOut "source-map.json"
+    if (-not (Test-Path -LiteralPath $sourceMap -PathType Leaf)) {
+        return $null
+    }
+
+    $json = Get-Content -LiteralPath $sourceMap -Raw | ConvertFrom-Json
+    return [int]$json.holy_files
+}
+
+function Invoke-Target {
+    param(
+        [Parameter(Mandatory = $true)]
+        [string]$Name,
+
+        [Parameter(Mandatory = $true)]
+        [string]$SourcePath
+    )
+
+    if (-not (Test-Path $SourcePath)) {
+        Write-Error "missing source tree: $SourcePath"
+        exit 1
+    }
+
+    $targetOut = Join-Path $Out $Name
+    Invoke-Step { ./scripts/report.ps1 $SourcePath $targetOut }
+    Invoke-Step { ./scripts/resolve-archaeology-includes.ps1 -SourcePath $SourcePath -OutDir $targetOut }
+    Invoke-Step { ./scripts/reverse-archaeology.ps1 -SourcePath $SourcePath -OutDir $targetOut }
+
+    $holyFiles = Get-HolyFileCount $targetOut
+    if ($null -ne $holyFiles -and $holyFiles -eq 0) {
+        Invoke-Step { ./scripts/archaeology-findings.ps1 -SourcePath $SourcePath -OutDir $targetOut -TargetName $Name }
+        Write-NotesTemplate $Name $targetOut
+        Write-Host "archaeology: $Name -> $targetOut"
+        Write-Host "archaeology: $Name has no supported HolyC source files; target-specific reports skipped"
+        return
+    }
+
+    Invoke-Step { ./scripts/boot-chain-archaeology.ps1 -SourcePath $SourcePath -OutDir $targetOut }
+    Invoke-Step { ./scripts/spine-archaeology.ps1 -SourcePath $SourcePath -OutDir $targetOut }
+    Invoke-Step { ./scripts/kernel-contract-archaeology.ps1 -SourcePath $SourcePath -OutDir $targetOut }
+    Invoke-Step { ./scripts/compiler-contract-archaeology.ps1 -SourcePath $SourcePath -OutDir $targetOut }
+    Invoke-Step { ./scripts/adam-manifest-archaeology.ps1 -SourcePath $SourcePath -OutDir $targetOut }
+    Invoke-Step { ./scripts/desktop-surface-archaeology.ps1 -SourcePath $SourcePath -OutDir $targetOut }
+    Invoke-Step { ./scripts/adam-subsystems-archaeology.ps1 -SourcePath $SourcePath -OutDir $targetOut }
+    Invoke-Step { ./scripts/archaeology-findings.ps1 -SourcePath $SourcePath -OutDir $targetOut -TargetName $Name }
+
+    Write-NotesTemplate $Name $targetOut
 
     Write-Host "archaeology: $Name -> $targetOut"
 }
