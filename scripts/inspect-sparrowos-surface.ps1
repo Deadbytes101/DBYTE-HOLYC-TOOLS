@@ -6,6 +6,23 @@ param(
 
 $ErrorActionPreference = "Stop"
 function E { param([string]$Text) if ($null -eq $Text) { return "" } $Text.Replace('&', '&amp;').Replace('<', '&lt;').Replace('>', '&gt;').Replace('"', '&quot;') }
+function Get-RelativeSourcePath {
+    param(
+        [Parameter(Mandatory = $true)]
+        [string]$Root,
+        [Parameter(Mandatory = $true)]
+        [string]$Path
+    )
+
+    $rootPath = (Resolve-Path -LiteralPath $Root).Path.TrimEnd('\', '/')
+    $fullPath = (Resolve-Path -LiteralPath $Path).Path
+
+    if ($fullPath.StartsWith($rootPath, [System.StringComparison]::OrdinalIgnoreCase)) {
+        return $fullPath.Substring($rootPath.Length).TrimStart('\', '/').Replace('\', '/')
+    }
+
+    return $fullPath.Replace('\', '/')
+}
 
 $extensions = @(
     "*.HC", "*.HH", "*.DD", "*.PRJ", "*.ASM", "*.ASZ", "*.C", "*.CPP", "*.HPP", "*.TXT",
@@ -19,7 +36,7 @@ foreach ($ext in $extensions) {
 
 $rows = @()
 foreach ($file in @($files | Sort-Object FullName -Unique)) {
-    $relative = [System.IO.Path]::GetRelativePath((Resolve-Path -LiteralPath $SparrowOS).Path, $file.FullName).Replace('\', '/')
+    $relative = Get-RelativeSourcePath -Root $SparrowOS -Path $file.FullName
     $top = ($relative -split '/')[0]
     $text = ""
     try { $text = Get-Content -LiteralPath $file.FullName -Raw -ErrorAction Stop } catch { $text = "" }
