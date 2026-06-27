@@ -10,24 +10,41 @@
 
 <img width="1196" height="623" alt="SHOT" src="https://github.com/user-attachments/assets/7d34edc9-882b-4bb5-bc66-4da6049aaa4f" />
 
-<section>
-  <h2>Architecture</h2>
-  <p>
-    Clean terminal-board architecture map. It is a repo-authored SVG built from
-    plain boxes, monospace labels, and fixed arrows. No generated artwork dependency.
-  </p>
-  <img alt="DBYTE HOLYC TOOLS clean architecture board" src="docs/architecture-board.svg" />
-  <pre>source trees
-  -> holylex and holyindex
-  -> holytools.exe
-  -> report scripts
-  -> archaeology reports
+## Architecture
 
-read-only scanner
-no source rewrite
-no source-tree mutation
-no runtime proof claims</pre>
-</section>
+Source trees go in. Evidence reports come out. The target source trees stay read-only.
+
+```mermaid
+flowchart LR
+    A[Source trees] --> B[Lexer]
+    B --> C[Index]
+    C --> D[CLI]
+    D --> E[Report scripts]
+    E --> F[Evidence reports]
+
+    A1[TempleOS] --> A
+    A2[LoseThos] --> A
+    A3[SparrowOS] --> A
+
+    F --> F1[Source map]
+    F --> F2[Include resolve]
+    F --> F3[Reverse map]
+    F --> F4[Contract reports]
+
+    G[Trust boundary]
+    G --> G1[No rewrite]
+    G --> G2[No VM]
+    G --> G3[No source-tree mutation]
+```
+
+```txt
+source trees
+  -> lexer
+  -> index
+  -> cli
+  -> report scripts
+  -> evidence reports
+```
 
 <section>
   <h2>Rule</h2>
