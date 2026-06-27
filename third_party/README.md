@@ -1,10 +1,15 @@
 # Third-Party Source Snapshots
 
-This directory is reserved for optional local snapshots of external research source trees such as TempleOS and LoseThos.
+This repository uses a root-level archival layout for third-party research source snapshots:
 
-The main tool does not require these snapshots to be committed. The normal and preferred workflow is to keep target source trees outside this repository and pass their paths to the report scripts.
+```text
+templeos/
+losethos/
+sparrowos/
+SOURCE-SNAPSHOTS.md
+```
 
-Use this directory only when you intentionally want a self-contained archival snapshot inside this repository.
+The `third_party/` directory is kept only for notes and migration helpers.
 
 ## Boundary
 
@@ -12,22 +17,16 @@ Third-party source snapshots are research inputs, not project-owned source.
 
 Do not rewrite, format, compile, execute, or mutate the imported target source trees as part of DBYTE HOLYC TOOLS.
 
-## Suggested layout
-
-```text
-third_party/source/templeos/
-third_party/source/losethos/
-third_party/SOURCE-SNAPSHOT.md
-```
-
-## Import
+## Move existing snapshots to root
 
 Use:
 
 ```powershell
-.\scripts\import-third-party-sources.ps1 \
-  -TempleOS "D:\src\TempleOS" \
-  -LoseThos "D:\TECHNICAL\LoseThos-extracted\LT_EXE\LT"
+.\scripts\move-source-snapshots-to-root.ps1
 ```
 
 Then inspect the diff carefully before committing.
+
+## Import new snapshots
+
+Use `scripts/import-third-party-sources.ps1` when importing or refreshing snapshots from external local source trees. If you keep the root-level layout, move or copy the refreshed snapshot into the root layout intentionally and review the diff before pushing.
