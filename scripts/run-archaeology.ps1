@@ -2,7 +2,8 @@ param(
     [string]$TempleOS,
     [string]$LoseThos,
     [string]$SparrowOS,
-    [string]$Out = "reports/archaeology"
+    [string]$Out = "reports/archaeology",
+    [switch]$ReportsOnly
 )
 
 $ErrorActionPreference = "Stop"
@@ -167,6 +168,18 @@ function Invoke-CrossTargetReports {
     Write-Host "archaeology: cross-target LoseThos reports -> $Root"
 }
 
+if ($ReportsOnly) {
+    if ($TempleOS -or $LoseThos -or $SparrowOS) {
+        Write-Error "-ReportsOnly cannot be combined with source path parameters"
+        exit 1
+    }
+
+    Invoke-CrossTargetReports $Out
+    Invoke-Step { ./scripts/summarize-archaeology.ps1 $Out }
+    Write-Host "archaeology: reports-only ok"
+    return
+}
+
 if ($TempleOS) {
     Invoke-Target "templeos" $TempleOS
 }
@@ -180,7 +193,7 @@ if ($SparrowOS) {
 }
 
 if (-not $TempleOS -and -not $LoseThos -and -not $SparrowOS) {
-    Write-Error "provide at least one source path: -TempleOS, -LoseThos, or -SparrowOS"
+    Write-Error "provide at least one source path: -TempleOS, -LoseThos, or -SparrowOS; use -ReportsOnly to refresh existing report rollups"
     exit 1
 }
 
