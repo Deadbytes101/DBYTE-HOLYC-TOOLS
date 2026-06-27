@@ -14,8 +14,9 @@
   <h2>Architecture</h2>
   <p>
     The toolchain is split into read-only scanners, a Windows CLI, deterministic report scripts,
-    target-specific archaeology passes, and generated evidence reports. The diagram below is kept
-    in-repository so the README does not depend on an external image host.
+    target-specific archaeology passes, and generated evidence reports. The diagram below is a
+    hand-authored, 16-color VGA-style SVG kept in-repository. It is not AI-generated artwork and
+    does not depend on an external image host.
   </p>
   <img width="1280" height="760" alt="DBYTE HOLYC TOOLS read-only source archaeology architecture" src="docs/architecture.svg" />
 </section>
@@ -27,7 +28,7 @@ No formatter.
 No VM.
 No fake C parser.
 No source-tree mutation.
-Oracle output is random text lab output, not prophecy.</pre>
+Oracle output is random text lab output, not an authority claim.</pre>
 </section>
 
 <section>
@@ -70,7 +71,7 @@ holytools oracle --corpus my-lines.txt --voice uncle --count 5
 holytools oracle --json
 holytools oracle-keymap</pre>
   <p>
-    The oracle command is a TempleOS-inspired random text research tool. Voice mode is a display skin over random text, not a supernatural claim.
+    The oracle command is a TempleOS-inspired random text research tool. Voice mode is a display skin over random text, not an authority claim.
   </p>
 </section>
 
@@ -224,6 +225,6 @@ scripts/run-archaeology.ps1</pre>
 HolyC compatibility first
 deterministic output when seeded
 source archaeology without source mutation
-oracle/random text lab without supernatural claims
-voice skins without oracle authority claims</pre>
+oracle/random text lab without authority claims
+voice skins without authority claims</pre>
 </section>
