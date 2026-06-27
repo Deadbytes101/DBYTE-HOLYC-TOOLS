@@ -102,6 +102,7 @@ $html = Add-ReportRow $html "include-resolve.md" "include resolver proof"
 $html = Add-ReportRow $html "REVERSE.md" "reverse include pressure"
 $html = Add-ReportRow $html "BOOT-CHAIN.md" "source load-chain checkpoints"
 $html = Add-ReportRow $html "SPINE.md" "root outline checkpoints"
+$html = Add-ReportRow $html "LOSETHOS-CONTRACT.md" "LoseThos-specific source-contract map when visible"
 $html = Add-ReportRow $html "KERNEL-CONTRACT.md" "kernel contract map when visible"
 $html = Add-ReportRow $html "COMPILER-CONTRACT.md" "compiler contract map when visible"
 $html = Add-ReportRow $html "ADAM-MANIFEST.md" "Adam manifest when visible"
@@ -179,12 +180,12 @@ switch ($target) {
         )
 
         $html = Add-Section $html "Next Inspection Targets" @(
-            "1. losethos/source-map.txt for total shape and scanner counts.",
-            "2. losethos/include-resolve.md for include health and broken edges.",
-            "3. losethos/entrypoints.txt for source roots and standalone candidates.",
-            "4. losethos/dependency-order.txt for first-pass load ordering.",
-            "5. losethos/REVERSE.md for pressure points.",
-            "6. losethos/KERNEL-CONTRACT.md and losethos/COMPILER-CONTRACT.md if present."
+            "1. losethos/LOSETHOS-CONTRACT.md for OSMain, compiler, Adam, and boot-media source-contract anchors.",
+            "2. losethos/source-map.txt for total shape and scanner counts.",
+            "3. losethos/include-resolve.md for include health and broken edges.",
+            "4. losethos/entrypoints.txt for source roots and standalone candidates.",
+            "5. losethos/dependency-order.txt for first-pass load ordering.",
+            "6. losethos/REVERSE.md for pressure points."
         )
     }
 
