@@ -6,6 +6,8 @@ param(
 
 $ErrorActionPreference = "Stop"
 function E { param([string]$Text) if ($null -eq $Text) { return "" } $Text.Replace('&', '&amp;').Replace('<', '&lt;').Replace('>', '&gt;').Replace('"', '&quot;') }
+function SymbolPattern { param([string]$Symbol) return "(?<![A-Za-z0-9_])$([regex]::Escape($Symbol))(?![A-Za-z0-9_])" }
+function HasSymbol { param([string]$Text, [string]$Symbol) return $Text -match (SymbolPattern $Symbol) }
 
 $path = Join-Path $LoseThos "COMPILE/COMPILE.CPZ"
 if (-not (Test-Path -LiteralPath $path -PathType Leaf)) { Write-Error "missing source: $path"; exit 1 }
@@ -34,19 +36,19 @@ $html += "<section><h2>Focused Symbol References</h2><table>"
 $html += "    <tr><th>symbol</th><th>refs</th></tr>"
 $text = ($window | ForEach-Object { $_.text }) -join "`n"
 foreach ($symbol in $symbols) {
-    $count = ([regex]::Matches($text, [regex]::Escape($symbol))).Count
+    $count = ([regex]::Matches($text, (SymbolPattern $symbol))).Count
     $html += "    <tr><td>$(E $symbol)</td><td>$count</td></tr>"
 }
 $html += "  </table></section>"
 $html += "<section><h2>Hit Lines</h2><table>"
-$html += "    <tr><th>line</th><th>text</th></tr>"
+$html += "    <tr><th>line</th><th>symbols</th><th>text</th></tr>"
 foreach ($row in $window) {
-    $hit = $false
-    foreach ($symbol in $symbols) { if ($row.text -match [regex]::Escape($symbol)) { $hit = $true; break } }
-    if ($hit) { $html += "    <tr><td>$($row.line)</td><td><pre>$(E $row.text.Trim())</pre></td></tr>" }
+    $hits = @($symbols | Where-Object { HasSymbol $row.text $_ })
+    if ($hits.Count -gt 0) { $html += "    <tr><td>$($row.line)</td><td>$(E ($hits -join ', '))</td><td><pre>$(E $row.text.Trim())</pre></td></tr>" }
 }
 $html += "  </table></section>"
-$html += "<section><h2>Read Line</h2><pre>This report inspects the FillCompilerTables source window with lexical reference counts only.</pre></section>"
+$html += "<section><h2>Read Line</h2><pre>This report inspects the FillCompilerTables source window with exact lexical symbol reference counts only."
+$html += "Symbol matching uses identifier boundaries, so code_table is not counted inside unsigned_code_table.</pre></section>"
 $html += "<section><h2>Boundary</h2><pre>No source-tree mutation.</pre></section>"
 $html | Set-Content -Encoding utf8 $OutPath
 Write-Host "inspect-losethos-fill-tables: $OutPath"
