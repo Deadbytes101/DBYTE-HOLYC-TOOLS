@@ -29,11 +29,11 @@
 *.S linguist-language=Assembly
 *.s linguist-language=Assembly
 
-# Project implementation and tooling
+# Project tooling
 *.rs linguist-language=Rust
-*.ps1 text eol=crlf linguist-language=PowerShell
-*.psm1 text eol=crlf linguist-language=PowerShell
-*.psd1 text eol=crlf linguist-language=PowerShell
+*.ps1 text eol=crlf linguist-vendored
+*.psm1 text eol=crlf linguist-vendored
+*.psd1 text eol=crlf linguist-vendored
 *.sh linguist-language=Shell
 *.bat linguist-language=Batchfile
 *.cmd linguist-language=Batchfile
