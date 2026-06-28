@@ -1,8 +1,49 @@
 * text=auto eol=lf
+
+# HolyC / TempleOS-family source snapshots
 *.HC linguist-language=HolyC
 *.HH linguist-language=HolyC
 *.hc linguist-language=HolyC
 *.hh linguist-language=HolyC
-*.ps1 text eol=crlf linguist-vendored
-*.psm1 text eol=crlf linguist-vendored
-*.psd1 text eol=crlf linguist-vendored
+*.HC.Z linguist-language=HolyC
+*.HH.Z linguist-language=HolyC
+*.CPZ linguist-language=HolyC
+*.HPZ linguist-language=HolyC
+*.GLZ linguist-language=HolyC
+
+# C / C++ snapshot sources, including SparrowOS compressed text source names
+*.c linguist-language=C
+*.h linguist-language=C
+*.C linguist-language=C
+*.CPP linguist-language=C++
+*.HPP linguist-language=C++
+*.cpp linguist-language=C++
+*.hpp linguist-language=C++
+*.CPP.Z linguist-language=C++
+*.HPP.Z linguist-language=C++
+
+# Assembly-like snapshot sources
+*.ASM linguist-language=Assembly
+*.asm linguist-language=Assembly
+*.ASZ linguist-language=Assembly
+*.S linguist-language=Assembly
+*.s linguist-language=Assembly
+
+# Project implementation and tooling
+*.rs linguist-language=Rust
+*.ps1 text eol=crlf linguist-language=PowerShell
+*.psm1 text eol=crlf linguist-language=PowerShell
+*.psd1 text eol=crlf linguist-language=PowerShell
+*.sh linguist-language=Shell
+*.bat linguist-language=Batchfile
+*.cmd linguist-language=Batchfile
+
+# Config, reports, docs, and structured data
+*.md linguist-language=Markdown
+*.html linguist-language=HTML
+*.htm linguist-language=HTML
+*.toml linguist-language=TOML
+*.json linguist-language=JSON
+*.yml linguist-language=YAML
+*.yaml linguist-language=YAML
+*.css linguist-language=CSS
